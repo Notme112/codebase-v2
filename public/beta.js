@@ -241,29 +241,40 @@ const scriptInfo_1 = __webpack_require__(/*! ./scriptInfo */ "./src/generalFunct
 // }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let fetchedAPIs = {};
-async function getAPI(name) {
+function getBigLetterName(name) {
+    return name.substring(0, 1).toUpperCase() + name.substring(1);
+}
+async function getAPI(name, useSessionStorage = true, store = true) {
     return new Promise(async (res, reject) => {
-        if (fetchedAPIs[name]) {
-            res(fetchedAPIs[name]);
+        let storage = useSessionStorage ? sessionStorage : localStorage;
+        if (!storage['a' + getBigLetterName(name)] ||
+            JSON.parse(storage['a' + getBigLetterName(name)]).lastUpdate < (new Date()).getTime() - 5 * 1000 * 60 ||
+            !store) {
+            try {
+                let response = await fetch(`/api/${name}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                });
+                let data = await response.json();
+                if (store)
+                    storage.setItem('a' + getBigLetterName(name), JSON.stringify({
+                        lastUpdate: (new Date()).getTime(),
+                        value: data
+                    }));
+                res(data);
+            }
+            catch (e) {
+                // @ts-ignore
+                noticeModal('Error', `Es ist ein Fehler bei einem GET einer API aufgetreten<br>Script: ${scriptInfo_1.scriptInfo.name}<br>Version: ${scriptInfo_1.scriptInfo.version} <br>Autor: ${scriptInfo_1.scriptInfo.author}`);
+                console.error(`Error while fetching API ${name}: ${e}`);
+                reject();
+            }
         }
-        ;
-        try {
-            let response = await fetch(`/api/${name}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            });
-            let data = await response.json();
-            fetchedAPIs[name] = data;
-            res(data);
-        }
-        catch (e) {
-            // @ts-ignore
-            noticeModal('Error', `Es ist ein Fehler bei einem GET einer API aufgetreten<br>Script: ${scriptInfo_1.scriptInfo.name}<br>Version: ${scriptInfo_1.scriptInfo.version} <br>Autor: ${scriptInfo_1.scriptInfo.author}`);
-            console.error(`Error while fetching API ${name}: ${e}`);
-            reject();
+        else {
+            res(JSON.parse(storage['a' + getBigLetterName(name)]).value);
         }
     });
 }
@@ -2135,7 +2146,7 @@ const getAPI_1 = __webpack_require__(/*! ../generalFunctions/getAPI */ "./src/ge
 async function differenceToAnotherUser(s) {
     if (!location.pathname.includes('/profile/'))
         return;
-    const res = await (0, getAPI_1.getAPI)('user');
+    const res = await (0, getAPI_1.getAPI)('user', false);
     // @ts-ignore
     var diff = parseInt(document.querySelectorAll('.detail-subtitle b')[2]?.textContent?.replaceAll('.', '') || '0') - res.muenzenTotal, negative;
     diff < 0 ? negative = true : negative = false;
@@ -2539,7 +2550,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gesamtmuenzen = void 0;
 const getAPI_1 = __webpack_require__(/*! ../generalFunctions/getAPI */ "./src/generalFunctions/getAPI.ts");
 async function gesamtmuenzen(s) {
-    const r = await (0, getAPI_1.getAPI)('user');
+    const r = await (0, getAPI_1.getAPI)('user', false);
     let newElement = document.createElement('li');
     // @ts-ignore
     newElement.innerHTML = `<li>${r?.muenzenTotal?.toLocaleString()} Münzen</li>`;
@@ -3043,7 +3054,7 @@ async function showNAChance(s) {
     if (!location.pathname.includes('/mission/'))
         return;
     // @ts-ignore
-    const data = (await (0, getAPI_1.getAPI)('missions'))[parseInt(document.querySelector('.detail-title')?.getAttribute('missionid') || '0')];
+    const data = (await (0, getAPI_1.getAPI)('missions', false))[parseInt(document.querySelector('.detail-title')?.getAttribute('missionid') || '0')];
     let newElement = document.createElement('span');
     // @ts-ignore
     newElement.innerHTML = `Grundvariante: ${data.patients.min}-${data.patients.max} Patienten, ${data.patients.naChance}\% NA-Wahrscheinlichkeit`;
@@ -3082,8 +3093,8 @@ async function statisticsLST(s) {
     if (document.querySelectorAll('#tab_controlCenter_stats').length && location.pathname.includes('/department/')) {
         var config = JSON.parse(localStorage.counterConfig);
         //vehicles
-        const userVehicles = await (0, getAPI_1.getAPI)('userVehicles');
-        const vehicleCategories = await (0, getAPI_1.getAPI)('vehicleCategories');
+        const userVehicles = await (0, getAPI_1.getAPI)('userVehicles', false);
+        const vehicleCategories = await (0, getAPI_1.getAPI)('vehicleCategories', false);
         // @ts-ignore
         for (var i in userVehicles) {
             // @ts-ignore
@@ -3099,8 +3110,8 @@ async function statisticsLST(s) {
             }
         }
         //buildings
-        const userBuildings = await (0, getAPI_1.getAPI)('userBuildings');
-        const buildingCategories = await (0, getAPI_1.getAPI)('buildings');
+        const userBuildings = await (0, getAPI_1.getAPI)('userBuildings', false);
+        const buildingCategories = await (0, getAPI_1.getAPI)('buildings', false);
         // @ts-ignore
         userBuildings.forEach((el) => {
             // @ts-ignore
@@ -3282,7 +3293,7 @@ exports.toplist = void 0;
 const getAPI_1 = __webpack_require__(/*! ../generalFunctions/getAPI */ "./src/generalFunctions/getAPI.ts");
 const variableError_1 = __webpack_require__(/*! ../generalFunctions/variableError */ "./src/generalFunctions/variableError.ts");
 async function toplist(s) {
-    const r = await (0, getAPI_1.getAPI)('user');
+    const r = await (0, getAPI_1.getAPI)('user', false);
     let element = document.querySelectorAll('.dropdown-content li')[3];
     if (!element) {
         (0, variableError_1.variableIsIncorrect)('element (toplist-position)', element);

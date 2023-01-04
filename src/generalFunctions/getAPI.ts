@@ -48,27 +48,39 @@ import {
 let fetchedAPIs: {
     [k: string]: any
 } = {};
-export async function getAPI(name: string) {
+function getBigLetterName(name:string){
+    return name.substring(0, 1).toUpperCase() + name.substring(1);
+}
+export async function getAPI(name: string, useSessionStorage: boolean = true, store:boolean = true) {
     return new Promise<object>(async (res, reject): Promise<void> => {
-        if (fetchedAPIs[name]) {
-            res(fetchedAPIs[name]);
-        };
-        try {
-            let response = await fetch(`/api/${name}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
-            });
-            let data = await response.json()
-            fetchedAPIs[name] = data;
-            res(data);
-        } catch (e) {
-            // @ts-ignore
-            noticeModal('Error', `Es ist ein Fehler bei einem GET einer API aufgetreten<br>Script: ${scriptInfo.name}<br>Version: ${scriptInfo.version} <br>Autor: ${scriptInfo.author}`);
-            console.error(`Error while fetching API ${name}: ${e}`);
-            reject();
+        let storage = useSessionStorage ? sessionStorage : localStorage;
+        if (
+            !storage['a' + getBigLetterName(name)] ||
+            JSON.parse(storage['a' + getBigLetterName(name)]).lastUpdate < (new Date()).getTime() - 5 * 1000 * 60 ||
+            !store
+          ){
+            try {
+                let response = await fetch(`/api/${name}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                });
+                let data = await response.json();
+                if(store) storage.setItem('a' + getBigLetterName(name), JSON.stringify({
+                    lastUpdate: (new Date()).getTime(),
+                    value: data
+                }))
+                res(data);
+            } catch (e) {
+                // @ts-ignore
+                noticeModal('Error', `Es ist ein Fehler bei einem GET einer API aufgetreten<br>Script: ${scriptInfo.name}<br>Version: ${scriptInfo.version} <br>Autor: ${scriptInfo.author}`);
+                console.error(`Error while fetching API ${name}: ${e}`);
+                reject();
+            }
+        } else {
+            res(JSON.parse(storage['a' + getBigLetterName(name)]).value)
         }
-    })
+    });
 }

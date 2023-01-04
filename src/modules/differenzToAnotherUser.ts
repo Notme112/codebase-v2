@@ -3,7 +3,7 @@ import { ReSiCodebaseSettingsType } from "../types/codebase";
 
 export async function differenceToAnotherUser (s: ReSiCodebaseSettingsType): Promise<void> {
     if (!location.pathname.includes('/profile/')) return
-    const res = await getAPI('user')
+    const res = await getAPI('user', false)
     // @ts-ignore
     var diff = parseInt(document.querySelectorAll<HTMLElement>('.detail-subtitle b')[2]?.textContent?.replaceAll('.', '') || '0') - res.muenzenTotal,
         negative;

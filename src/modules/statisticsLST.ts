@@ -16,8 +16,8 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
     if (document.querySelectorAll('#tab_controlCenter_stats').length && location.pathname.includes('/department/')) {
         var config = JSON.parse(localStorage.counterConfig)
         //vehicles
-        const userVehicles = await getAPI('userVehicles');
-        const vehicleCategories = await getAPI('vehicleCategories');
+        const userVehicles = await getAPI('userVehicles', false);
+        const vehicleCategories = await getAPI('vehicleCategories', false);
         // @ts-ignore
         for (var i in userVehicles) {
             // @ts-ignore
@@ -32,8 +32,8 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
             }
         }
         //buildings
-        const userBuildings = await getAPI('userBuildings');
-        const buildingCategories = await getAPI('buildings');
+        const userBuildings = await getAPI('userBuildings', false);
+        const buildingCategories = await getAPI('buildings', false);
         // @ts-ignore
         userBuildings.forEach((el) => {
             // @ts-ignore
