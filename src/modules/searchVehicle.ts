@@ -15,7 +15,7 @@ export async function searchVehicle(s: ReSiCodebaseSettingsType){
         <div class="input-label">Name</div>
         <div class="input-content">
           <input class="input-round" type="text" id="vehicleSearch" placeholder="Suche eingeben..." autocomplete="off">
-          <div class="input-icon"><i class="fas fa-filter" data-tooltip="Icons by Fontawsome (fontawesome.com) unter CC BY 4.0 Lizenz"></i></div>
+          <div class="input-icon"><i class="bi bi-funnel" data-tooltip="Icons by Fontawsome (fontawesome.com) unter CC BY 4.0 Lizenz"></i></div>
         </div>
       </div>
     </div>`
