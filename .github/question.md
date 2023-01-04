@@ -1,7 +1,7 @@
 ---
 name: Frage
 about: Hast du Fragen? Raus damit!
-title: QUESTION
+title: 'QUESTION: '
 labels: help wanted, question
 assignees: 'NiZi112'
 ---
