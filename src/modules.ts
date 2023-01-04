@@ -35,6 +35,7 @@ import { filterAssociationMembers } from "./modules/filterAccosiationMembers";
 import { averageMoneyInMissionOverview } from "./modules/averageMoneyInMissionOverview";
 import { removeEventText } from "./modules/removeEventText";
 import { bigMap } from "./modules/bigMap";
+import { mapMode } from "./modules/mapMode";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -568,7 +569,7 @@ export const modules = [{
         keywords: ["AAO", "Alarm", "zurücksetzten", "Alarm- und Ausrückeordnung", "Reset"],
         hasSettings: true,
         allSite: true,
-        settings:[{
+        settings: [{
             subtarget: "resetAAOOptions",
             target: "keyToResetCheck",
             name: "Taste (bitte nur ein Buchstabe / Zahl)",
@@ -589,7 +590,7 @@ export const modules = [{
         keywords: ["Einsatz", "anlegen", "Autofocus", "neuer", "Einsatz"],
         hasSettings: true,
         allSite: true,
-        settings:[{
+        settings: [{
             subtarget: "autofocusMissionNewOptions",
             target: "autofocusMissionNewChoose",
             name: "Feld, welches fokussiert werden soll",
@@ -643,7 +644,7 @@ export const modules = [{
         keywords: ["Verband", "Mitglieder", "Filter", "einfacher", "Überblick"],
         hasSettings: false,
         allSite: true,
-        settings:[]
+        settings: []
     },
     {
         name: "Durchschnittlicher Verdienst in der Einsatzübersicht",
@@ -656,7 +657,7 @@ export const modules = [{
         keywords: ["Einsatz", "Einsätze", "*bersicht", "Münzen", "Geld"],
         hasSettings: false,
         allSite: true,
-        settings:[]
+        settings: []
     },
     {
         name: "Event-Label in der Kopfleiste entfernen",
@@ -669,7 +670,7 @@ export const modules = [{
         keywords: ["Event", "Saison", "Saisonal", "entfernen", "Einsätze"],
         hasSettings: false,
         allSite: false,
-        settings:[]
+        settings: []
     },
     {
         name: "Karte dauerhaft groß",
@@ -682,6 +683,19 @@ export const modules = [{
         keywords: ["Karte", "iFrame", "schließen", "groß", "Map"],
         hasSettings: false,
         allSite: false,
-        settings:[]
+        settings: []
+    },
+    {
+        name: "Mapmode",
+        description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
+        settingsTarget: "mapMode",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "mapModeCheck",
+        func: mapMode,
+        keywords: ["Map", "Karte", "groß", "Modus", "dauerhaft"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
     }
 ];

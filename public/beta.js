@@ -2,6 +2,190 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/generalFunctions/addListenerForOpenSettings.ts":
+/*!************************************************************!*\
+  !*** ./src/generalFunctions/addListenerForOpenSettings.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addListenerForOpenSettings = void 0;
+function addListenerForOpenSettings() {
+    if (window.location.pathname == '/') {
+        document.querySelectorAll('.openCodebaseSettings').forEach((el) => {
+            el?.addEventListener('click', () => {
+                document.querySelector('#Codebase')?.click();
+            });
+        });
+    }
+}
+exports.addListenerForOpenSettings = addListenerForOpenSettings;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/addLoadListener.ts":
+/*!*************************************************!*\
+  !*** ./src/generalFunctions/addLoadListener.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addLoadListener = void 0;
+const loadCodebaseFrame_1 = __webpack_require__(/*! ../iframeFunctions/loadCodebaseFrame */ "./src/iframeFunctions/loadCodebaseFrame.ts");
+const variableError_1 = __webpack_require__(/*! ./variableError */ "./src/generalFunctions/variableError.ts");
+function addLoadListener(element, frame, s) {
+    element.addEventListener('click', async () => {
+        // @ts-ignore
+        openFrame('', '1/1/4/5');
+        if (!frame) {
+            (0, variableError_1.variableIsIncorrect)('frame', frame);
+        }
+        frame?.addEventListener('load', () => (0, loadCodebaseFrame_1.loadCodebaseFrame)(frame, s));
+    });
+}
+exports.addLoadListener = addLoadListener;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/buildDefaultStorage.ts":
+/*!*****************************************************!*\
+  !*** ./src/generalFunctions/buildDefaultStorage.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.buildDefaultStorage = void 0;
+const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
+function buildDefaultStorage() {
+    let obj = {};
+    modules_1.modules.forEach((el) => {
+        obj[el.settingsTarget] = false;
+        if (el.hasSettings) {
+            el.settings.forEach((setting) => {
+                if (setting.subtarget && !obj[setting.subtarget])
+                    obj[setting.subtarget] = {};
+                if (setting.subtarget)
+                    obj[setting.subtarget][setting.settingsKey] = setting.default;
+                else
+                    obj[setting.settingsKey] = setting.default;
+            });
+        }
+    });
+    return obj;
+}
+exports.buildDefaultStorage = buildDefaultStorage;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/checkForDarkmode.ts":
+/*!**************************************************!*\
+  !*** ./src/generalFunctions/checkForDarkmode.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkForDarkmode = void 0;
+const variableError_1 = __webpack_require__(/*! ./variableError */ "./src/generalFunctions/variableError.ts");
+function checkForDarkmode() {
+    if (location.pathname == '/') {
+        let darkModeBtn = document.querySelector('#darkMode');
+        if (!darkModeBtn) {
+            (0, variableError_1.variableIsIncorrect)('darkModeBtn', darkModeBtn);
+        }
+        try {
+            if (darkModeBtn?.innerHTML?.includes('Tag'))
+                localStorage.setItem('darkmode_resi_base', 'true');
+            else
+                localStorage.setItem('darkmode_resi_base', 'false');
+        }
+        catch {
+            console.error('Darkmode-Button nicht gefunden');
+        }
+        ;
+        darkModeBtn?.addEventListener('click', () => {
+            if (localStorage.getItem('darkmode_resi_base') == 'true')
+                localStorage.setItem('darkmode_resi_base', 'false');
+            else
+                localStorage.setItem('darkmode_resi_base', 'true');
+        });
+    }
+    ;
+}
+exports.checkForDarkmode = checkForDarkmode;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/checkSettings.ts":
+/*!***********************************************!*\
+  !*** ./src/generalFunctions/checkSettings.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkSettings = void 0;
+const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
+const reload_1 = __webpack_require__(/*! ./reload */ "./src/generalFunctions/reload.ts");
+function checkSettings(s) {
+    if (!localStorage.storage_resi_base)
+        (0, reload_1.reload)();
+    modules_1.modules.forEach((el) => {
+        if (el.hasSettings) {
+            el.settings.forEach((setting) => {
+                if (setting.subtarget && !s[setting.subtarget]) {
+                    s[setting.subtarget] = {};
+                }
+            });
+        }
+    });
+}
+exports.checkSettings = checkSettings;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/classes/Codebase.class.ts":
+/*!********************************************************!*\
+  !*** ./src/generalFunctions/classes/Codebase.class.ts ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReSiCodebase = void 0;
+const scriptInfo_1 = __webpack_require__(/*! ../scriptInfo */ "./src/generalFunctions/scriptInfo.ts");
+class ReSiCodebase {
+    version;
+    settings;
+    isProduction;
+    constructor(s) {
+        this.version = scriptInfo_1.scriptInfo.version;
+        this.settings = s;
+        this.isProduction = scriptInfo_1.scriptInfo.isProduktion;
+    }
+    getSettings() {
+        return this.settings;
+    }
+    getVersion() {
+        return this.version;
+    }
+    getProduction() {
+        return this.isProduction;
+    }
+}
+exports.ReSiCodebase = ReSiCodebase;
+
+
+/***/ }),
+
 /***/ "./src/generalFunctions/getAPI.ts":
 /*!****************************************!*\
   !*** ./src/generalFunctions/getAPI.ts ***!
@@ -88,6 +272,84 @@ exports.getAPI = getAPI;
 
 /***/ }),
 
+/***/ "./src/generalFunctions/handleNewUser.ts":
+/*!***********************************************!*\
+  !*** ./src/generalFunctions/handleNewUser.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.handleNewUser = exports.LAST_REMOVED_STORAGE = void 0;
+const buildDefaultStorage_1 = __webpack_require__(/*! ./buildDefaultStorage */ "./src/generalFunctions/buildDefaultStorage.ts");
+exports.LAST_REMOVED_STORAGE = '1.5.1';
+function handleNewUser() {
+    if (!localStorage.storage_resi_base) {
+        //set storage
+        localStorage.setItem('storage_resi_base', JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)()));
+        localStorage.setItem('resiBaseRemovedStorage', exports.LAST_REMOVED_STORAGE);
+        //show welcome message
+        // @ts-ignore
+        systemMessage({
+            title: 'Willkommen bei der ReSi-Codebase!',
+            message: `Schön, dass Du dich entschlossen hast, die ReSi-Codebase zu nutzen!<br><br>
+Du kannst jeden Modul einzeln aktivieren, die Möglichkeit findest Du in einem Einstellungs-Panel, welches Du über die Seitenleiste aufrufen kannst.<br>
+Probier doch einfach mal alle Module aus. Wenn Du nicht weißt, was ein Modul tut, dann klick einfach auf das [?] hinter dem Namen, damit kommst Du zur Wikiseite des Moduls.<br><br>
+Fehler bitte im Forum melden - oder im Thread ReSi-Codebase auf Discord im Bereich <code>#skripting</code><br><br>
+Gerne kannst du auch unserem Discord-Server beitreten: <i class="bi bi-discord"></i> <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs</a><br><br>
+
+<b>Bitte beachte: die Browser Safari und Internet Explorer werden derzeit nicht unterstützt! Die meisten Module werden auch in diesen Browsern funktionieren, jedoch wird für diese Browser kein Support angeboten.</b>
+
+Viel Spaß,<br>
+Dein Team der ReSi-Codebase`,
+            type: 'info'
+        });
+    }
+}
+exports.handleNewUser = handleNewUser;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/loadIcons.ts":
+/*!*******************************************!*\
+  !*** ./src/generalFunctions/loadIcons.ts ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadIcons = void 0;
+function loadIcons() {
+    let stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css';
+    document.head.appendChild(stylesheet);
+}
+exports.loadIcons = loadIcons;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/loadStyles.ts":
+/*!********************************************!*\
+  !*** ./src/generalFunctions/loadStyles.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadStyles = void 0;
+function loadStyles() {
+    let css = document.createElement('style');
+    css.innerHTML = `.codebase:focus{outline: none;}`;
+    document.head?.appendChild(css);
+}
+exports.loadStyles = loadStyles;
+
+
+/***/ }),
+
 /***/ "./src/generalFunctions/notificationFunction.ts":
 /*!******************************************************!*\
   !*** ./src/generalFunctions/notificationFunction.ts ***!
@@ -137,6 +399,69 @@ function reload() {
     }
 }
 exports.reload = reload;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/removeStorageIfNeeded.ts":
+/*!*******************************************************!*\
+  !*** ./src/generalFunctions/removeStorageIfNeeded.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.removeStorageIfNeeded = void 0;
+const buildDefaultStorage_1 = __webpack_require__(/*! ./buildDefaultStorage */ "./src/generalFunctions/buildDefaultStorage.ts");
+const handleNewUser_1 = __webpack_require__(/*! ./handleNewUser */ "./src/generalFunctions/handleNewUser.ts");
+function removeStorageIfNeeded() {
+    if (localStorage.resiBaseRemovedStorage != handleNewUser_1.LAST_REMOVED_STORAGE) {
+        localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+        localStorage.resiBaseRemovedStorage = handleNewUser_1.LAST_REMOVED_STORAGE;
+    }
+    if (localStorage.storage_resi_base == '[object Object]') {
+        // @ts-ignore
+        systemMessage({
+            'title': `Fehler in den Codebase-Einstellungen`,
+            'message': `Es gab einen Fehler in den Codebase-Einstellungen, die Einstellungen wurden zurückgesetzt.`,
+            'type': 'danger'
+        });
+        localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+    }
+}
+exports.removeStorageIfNeeded = removeStorageIfNeeded;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/run.ts":
+/*!*************************************!*\
+  !*** ./src/generalFunctions/run.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = void 0;
+const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
+async function run(s) {
+    modules_1.modules.forEach(async (el) => {
+        try {
+            if (s[el.settingsTarget]) {
+                if (location.pathname != "/" && el.allSite) {
+                    await el.func(s);
+                }
+                if (location.pathname == "/") {
+                    await el.func(s);
+                }
+            }
+        }
+        catch (e) {
+            console.error(`Fehler im Modul ${el.name}: ${e}`);
+        }
+    });
+}
+exports.run = run;
 
 
 /***/ }),
@@ -194,6 +519,625 @@ exports.variableIsIncorrect = variableIsIncorrect;
 
 /***/ }),
 
+/***/ "./src/generalFunctions/writeLog.ts":
+/*!******************************************!*\
+  !*** ./src/generalFunctions/writeLog.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.writeLog = void 0;
+function writeLog(scriptInfo) {
+    console.log(`Führe aus: ${scriptInfo.name} in V${scriptInfo.version} auf der Seite "${window.location.href}"!\nDas Team der Codebase wünscht viel Spaß!`);
+}
+exports.writeLog = writeLog;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts":
+/*!************************************************************!*\
+  !*** ./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.autoUncollapseCards = void 0;
+function autoUncollapseCards(e, frame) {
+    let el = frame.contentDocument?.querySelector(`.card-collapse[for-module="${e.id}"]`);
+    if (e.checked && el?.classList.contains('collapsed'))
+        el?.classList.remove('collapsed');
+    if (!e.checked && !el?.classList.contains('collapsed'))
+        el?.classList.add('collapsed');
+}
+exports.autoUncollapseCards = autoUncollapseCards;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/collapseCards.ts":
+/*!**********************************************!*\
+  !*** ./src/iframeFunctions/collapseCards.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.collapsecards = void 0;
+function collapsecards(event) {
+    let el = event.target;
+    el.parentElement?.parentElement?.parentElement?.parentElement?.classList.toggle('collapsed');
+}
+exports.collapsecards = collapsecards;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/createListElement.ts":
+/*!**************************************************!*\
+  !*** ./src/iframeFunctions/createListElement.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createListElement = void 0;
+function createListElement() {
+    const element = document.createElement('li');
+    element.id = 'Codebase';
+    element.innerHTML = `ReSi-Codebase <i class="bi bi-gear" style="padding-left:5px;"></i>`;
+    document.querySelector('#darkMode')?.after(element);
+    return element;
+}
+exports.createListElement = createListElement;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/exportSettings.ts":
+/*!***********************************************!*\
+  !*** ./src/iframeFunctions/exportSettings.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.exportSettings = void 0;
+function exportSettings(s) {
+    // @ts-ignore
+    noticeModal('Codebase-Einstellungen exportieren <i class="bi bi-download"></i>', `Hier kannst du deine Einstellungen kopieren und an Freunde weitergeben:<div style='overflow:auto'><code>${JSON.stringify(s)}</code></div><br><button class="button button-round button-success" id="shareSettings">In Zwischenablage kopieren <i class="bi bi-clipboard"></i></button>`, 'Schließen');
+    document.querySelector('#shareSettings')?.addEventListener('click', (e) => {
+        navigator.clipboard.writeText(JSON.stringify(s)).then(() => {
+            if (!e.target)
+                return;
+            if (e.target instanceof HTMLElement)
+                e.target.innerHTML = 'Kopiert! <i class="bi bi-clipboard-check"></i>';
+            setTimeout(() => {
+                if (!e.target)
+                    return;
+                if (e.target instanceof HTMLElement)
+                    e.target.innerHTML = 'In Zwischenablage kopieren <i class="bi bi-clipboard"></i>';
+            }, 3000);
+        });
+    });
+}
+exports.exportSettings = exportSettings;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/importSettings.ts":
+/*!***********************************************!*\
+  !*** ./src/iframeFunctions/importSettings.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.importSettings = void 0;
+const reload_1 = __webpack_require__(/*! ../generalFunctions/reload */ "./src/generalFunctions/reload.ts");
+async function importSettings() {
+    //alerts wrong data
+    function invalid() {
+        // @ts-ignore
+        noticeModal('<i class="bi bi-exclamation-triangle"></i> Fehler beim Importieren der Codebase-Einstellungen', 'Die Einstellungen sind nicht valide, bitte überprüfe diese!', 'Schließen');
+    }
+    //asks for data string
+    // @ts-ignore
+    var newSettings = await inputModal({
+        title: 'Codebase-Einstellungen importieren <i class="bi bi-upload"></i>',
+        label: 'Gib hier deine Einstellungen ein:',
+        placeholder: 'Gib hier die Codebase-Einstellungen ein'
+    });
+    var error;
+    //try to parse string
+    try {
+        JSON.parse(newSettings);
+    }
+    catch (e) {
+        //if error show dialog
+        invalid();
+        error = true;
+    }
+    //if no error save
+    if (!error) {
+        localStorage.storage_resi_base = newSettings;
+        (0, reload_1.reload)();
+    }
+}
+exports.importSettings = importSettings;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/leaveSettings.ts":
+/*!**********************************************!*\
+  !*** ./src/iframeFunctions/leaveSettings.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.leaveSettings = void 0;
+function leaveSettings(frame, changes) {
+    if (changes === true) {
+        // @ts-ignore
+        modal("Ohne Speichern verlassen?", "Du hast Änderungen vorgenommen, willst du diese Seichern?", "Speichern", "Ohne speichern verlassen", 
+        // @ts-ignore
+        () => { frame?.contentDocument?.querySelector("#saveCodebaseSettings")?.click(); }, 
+        // @ts-ignore
+        () => { parent?.closeFrame(); });
+    }
+    else {
+        // @ts-ignore
+        parent?.closeFrame();
+    }
+}
+exports.leaveSettings = leaveSettings;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/loadCodebaseFrame.ts":
+/*!**************************************************!*\
+  !*** ./src/iframeFunctions/loadCodebaseFrame.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadCodebaseFrame = void 0;
+const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
+const autoUnCollapseWhenUnChecked_1 = __webpack_require__(/*! ./autoUnCollapseWhenUnChecked */ "./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts");
+const collapseCards_1 = __webpack_require__(/*! ./collapseCards */ "./src/iframeFunctions/collapseCards.ts");
+const exportSettings_1 = __webpack_require__(/*! ./exportSettings */ "./src/iframeFunctions/exportSettings.ts");
+const importSettings_1 = __webpack_require__(/*! ./importSettings */ "./src/iframeFunctions/importSettings.ts");
+const leaveSettings_1 = __webpack_require__(/*! ./leaveSettings */ "./src/iframeFunctions/leaveSettings.ts");
+const openProfile_1 = __webpack_require__(/*! ./openProfile */ "./src/iframeFunctions/openProfile.ts");
+const resetSettings_1 = __webpack_require__(/*! ./resetSettings */ "./src/iframeFunctions/resetSettings.ts");
+const saveSettings_1 = __webpack_require__(/*! ./saveSettings */ "./src/iframeFunctions/saveSettings.ts");
+const searchInFrame_1 = __webpack_require__(/*! ./searchInFrame */ "./src/iframeFunctions/searchInFrame.ts");
+const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunctions/showStorage.ts");
+const tabs_1 = __webpack_require__(/*! ./tabs */ "./src/iframeFunctions/tabs.ts");
+async function loadCodebaseFrame(frame, s) {
+    //build frame content
+    var frameContent = `<div class='panel-body'>
+<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `'></script>
+<link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `' charset='utf-8'>
+<script src='https://rettungssimulator.online/js/index.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `'></script>
+<script src='https://rettungssimulator.online/js/iframe.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `'></script>
+<script src='https://rettungssimulator.online/js/controlCenter.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `'></script>
+<script src="https://rettungssimulator.online/js/popper.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `" charset="utf-8"></script>
+<script src='https://rettungssimulator.online/js/tippy.js?v=`
+        // @ts-ignore
+        + ReSi.resiVersion + `'></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
+<div class='detail-header'><div class='detail-title'>ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
+<div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
+<i class="bi bi-share" style="padding-left:5px;"></i></div><div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
+<a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent"><i class="bi bi-discord" style="padding-left:5px;"></i></a></div>
+<div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen"><a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
+<i class="bi bi-chat-left-text" style="padding-left:5px;"></i></a></div></div><div class='detail-subtitle'>Verwalte hier deine Einstellungen für die ReSi-Codebase
+<button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
+<button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
+<button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
+<button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+<div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
+<input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div></div></div>
+<!-- ENDE HEADER -->
+<div class='tabs tabs-horizotal'>
+<div class='tab tab-active' for='settings-moduls'>Module</div>
+<div class='tab' for='licence'>Sonstiges & Lizenzen</div>
+</div>
+<div class='tab-container'>
+<div class='tab-content tab-content-active' id='tab_settings-moduls'>
+<h2>Module:</h2>
+<h4 class='label label-info searchNoResult hidden'>Die Suche lieferte keine Ergebnisse! Bitte probiere es mit einem anderen Suchwort!</h4>`;
+    //checkboxes for modules
+    modules_1.modules.forEach((el) => {
+        frameContent += `<div class='checkbox-container searchable'><input id='${el.target}' type='checkbox' ${s[el.settingsTarget] ? 'checked' : ''}><label for='${el.target}'>${el.name} aktivieren<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a> ${el.hasSettings ? '<span data-tooltip="Dieses Modul hat Einstellungen! Passe es dir nach deinem Geschmack an!"><i class="bi bi-exclamation-circle"></i></span>' : ''} <span class="label label-success"><i class="bi bi-person"></i> von: ${'<a href="javascript:;" class="open-profile pointer" profile="' + el.author + '">' + el.author + '</a>'}</span> <span class="label label-success"><i class="bi bi-git"></i> V${el.version}</span></label><div class='hidden keyword-serach'>${el.keywords.join(' ')}</div></div>`;
+        if (el.hasSettings) {
+            frameContent += `<div class="searchable card card-collapse${s[el.settingsTarget] ? '' : ' collapsed'}" for-module="${el.target}" style="padding-left:100px;">
+<div class="card-headline card-headline-danger">
+<i class="bi bi-gear"></i> Einstellungen zu ${el.name}
+<div class="card-tools">
+<span class="card-collapse-toggle pointer" style="font-size:15px;overflow:hidden;vertical-algin:middle"> <i class="bi bi-caret-${s[el.settingsTarget] ? 'up' : 'down'}"></i></span>
+</div>
+</div>
+<div class="card-body">`;
+            el.settings.forEach((setting) => {
+                var value = setting.subtarget ? s[setting.subtarget][setting.settingsKey] : s[setting.settingsKey];
+                switch (setting.type) {
+                    case 'checkbox':
+                        frameContent += `<div class='checkbox-container'><input id='${setting.target}' ${value ? 'checked' : ''} type='checkbox'><label for='${setting.target}'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></label></div>`;
+                        break;
+                    case 'input-text':
+                        frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div><div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div><input class='input-round' value='${value ? value : ''}' autocomplete='off' id='${setting.target}' placeholder='${setting.preset}'></div></div>`;
+                        break;
+                    case 'input-number':
+                        frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div><div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div><input class='input-round' type='number' value='${value ? value : ''}' autocomplete='off' id='${setting.target}' placeholder='${setting.preset}'></div></div>`;
+                        break;
+                    case 'input-choose':
+                        frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div>
+                        <div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div>
+                        <select id="${setting.target}" class="input-round">`;
+                        setting.options.forEach((option) => {
+                            let valueOfSetting = (setting.subtarget ? s[setting.subtarget][setting.settingsKey] : s[setting.settingsKey]) ?? setting.default;
+                            frameContent += `<option value="${option.value}" ${(option.value === valueOfSetting || (!valueOfSetting && option.value == setting.default)) ? ' selected' : ''}>${option.name}</option>`;
+                        });
+                        frameContent += `</select>
+                            </div></div>
+                        </div>`;
+                        break;
+                    default:
+                        frameContent += `<div class='alert alert-info'>Unbekannte Einstellungsmöglichkeit ${setting.type} @ ${el.name}</div>`;
+                        break;
+                }
+            });
+            frameContent += `</div></div>`;
+        }
+    });
+    frameContent += `<button class='button-success button button-round' id='saveCodebaseSettings'>Speichern <i class="bi bi-cloud-arrow-up"></i></button></div>
+<div class='tab-content' id='tab_licence'><h2>Fehler melden:</h2><p><a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent button button-round button-success">Discord-Server <i class="bi bi-discord"></i></a> - <a href='https://github.com/Notme112/Codebase/issues/new/choose' class='no-prevent button button-success button-round' target='_blank'>Github <i class="bi bi-github"></i></a> - <a href='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-0/&action=lastPost' class='no-prevent button button-success button-round' target='_blank'>Forum <i class="bi bi-chat-left-text"></i></a> - ReSi-Discord <i class="bi bi-discord"></i>: im Thread ReSi-Codebase im Bereich <code>#skripting</code>
+<h3>Vielen Danke für deine Mithilfe!</h3></p><h2>Open-Source:</h2><p>Bootstrap-Icons:<br>
+Copyright (c) 2019-2021 The Bootstrap Authors<br>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p><p>
+JQuery:<br>Copyright (c) 2021 OpenJS Foundation and other contributors, https://openjsf.org/, <br>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<br>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</div></div>
+<center>Joine unserem Discord-Server: <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs <i class="bi bi-discord"></i></a><br><br></center>
+<h3>Danke für die Nutzung der ReSi-Codebase!</h3></div>`;
+    if (!frame || !frame.contentWindow || !frame.contentDocument)
+        return;
+    frame.contentDocument.body.innerHTML = frameContent;
+    if (document.body.classList.contains('dark')) {
+        frame.contentDocument.body.classList.add('dark');
+    }
+    let closeFrameOrig = closeFrame;
+    function closeFrame() {
+        if (!frame || !frame.contentWindow || !frame.contentDocument)
+            return;
+        frame.contentDocument.body.innerHTML = '';
+        closeFrameOrig();
+        // @ts-ignore
+        closeFrame = closeFrameOrig;
+    }
+    //frame functions
+    let changes = false;
+    frame.contentDocument.querySelectorAll('.checkbox-container, .input-round').forEach((element) => {
+        ['click', 'keyup', 'change'].forEach((event) => {
+            element?.addEventListener(event, (e) => {
+                if (!e?.target.classList.contains('nochange'))
+                    changes = true;
+            });
+        });
+    });
+    frame.contentDocument?.body?.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape')
+            frame.contentDocument?.querySelector(".right.pointer")?.click();
+    });
+    frame.contentDocument?.querySelectorAll('.open-profile').forEach((el) => {
+        el.addEventListener('click', (e) => (0, openProfile_1.openProfile)(e, frame));
+    });
+    ['keyup', 'change', 'input'].forEach((event) => {
+        frame?.contentDocument?.querySelector('#input_search')?.addEventListener(event, (e) => (0, searchInFrame_1.searchInFrame)(frame));
+    }),
+        frame.contentDocument.querySelector('.right.pointer')?.addEventListener('click', () => (0, leaveSettings_1.leaveSettings)(frame, changes));
+    frame.contentDocument.querySelector('#showStorage')?.addEventListener('click', showStorage_1.showStorage);
+    frame.contentDocument.querySelector('#importSettings')?.addEventListener('click', importSettings_1.importSettings);
+    frame.contentDocument.querySelector('#exportSettings')?.addEventListener('click', () => (0, exportSettings_1.exportSettings)(s));
+    frame.contentDocument.querySelector('#resetStorage')?.addEventListener('click', resetSettings_1.resetStorage);
+    frame.contentDocument.querySelectorAll('.tab[for]').forEach(el => el.addEventListener('click', (e) => (0, tabs_1.onTabClick)(e, frame)));
+    frame.contentDocument.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e, frame)));
+    frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => (0, collapseCards_1.collapsecards)(event)));
+    frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s, frame));
+}
+exports.loadCodebaseFrame = loadCodebaseFrame;
+;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/openProfile.ts":
+/*!********************************************!*\
+  !*** ./src/iframeFunctions/openProfile.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.openProfile = void 0;
+function openProfile(e, frame) {
+    e.preventDefault();
+    let author = e.target.getAttribute('profile');
+    if (!author)
+        return;
+    // @ts-ignore
+    if (changes)
+        modal('Profil des Autors aufrufen?', `Willst du das Profil von <b>${author}</b> aufrufen? Du hast ungespeicherte Änderungen in den Einstellungen. Diese gehen verloren, wenn du das Profil des Autors aufrufst.`, 'Aufrufen', 'Hier bleiben', () => {
+            if (!frame.contentWindow)
+                return;
+            frame.contentWindow.location.href = '/profile/' + author;
+        }, () => { });
+    else {
+        if (!frame.contentWindow)
+            return;
+        frame.contentWindow.location.href = '/profile/' + author;
+    }
+}
+exports.openProfile = openProfile;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/resetSettings.ts":
+/*!**********************************************!*\
+  !*** ./src/iframeFunctions/resetSettings.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resetStorage = void 0;
+const buildDefaultStorage_1 = __webpack_require__(/*! ../generalFunctions/buildDefaultStorage */ "./src/generalFunctions/buildDefaultStorage.ts");
+const reload_1 = __webpack_require__(/*! ../generalFunctions/reload */ "./src/generalFunctions/reload.ts");
+function resetStorage() {
+    // @ts-ignore
+    modal('Alle Einstellungen zurücksetzen', 'Willst du wirklich alle Einstellungen zurücksetzten? Die aktuellen Einstellungen sind dann unwiderruflich verloren!', 'Ja, zurücksetzen', 'Nein, behalten', () => {
+        localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+        (0, reload_1.reload)();
+    }, () => { });
+}
+exports.resetStorage = resetStorage;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/saveSettings.ts":
+/*!*********************************************!*\
+  !*** ./src/iframeFunctions/saveSettings.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.saveCodebaseSettings = void 0;
+const checkSettings_1 = __webpack_require__(/*! ../generalFunctions/checkSettings */ "./src/generalFunctions/checkSettings.ts");
+const reload_1 = __webpack_require__(/*! ../generalFunctions/reload */ "./src/generalFunctions/reload.ts");
+const validate_1 = __webpack_require__(/*! ../generalFunctions/validate */ "./src/generalFunctions/validate.ts");
+const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
+function saveCodebaseSettings(s, frame) {
+    (0, checkSettings_1.checkSettings)(s);
+    modules_1.modules.forEach((el) => {
+        s[el.settingsTarget] = frame?.contentDocument?.querySelector(`#${el.target}`)?.checked;
+        if (el.hasSettings) {
+            el.settings.forEach((setting) => {
+                switch (setting.type) {
+                    case 'checkbox':
+                        if (setting.subtarget) {
+                            s[setting.subtarget][setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
+                        }
+                        else {
+                            s[setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
+                        }
+                        break;
+                    case 'input-text':
+                        if (setting.subtarget) {
+                            s[setting.subtarget][setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
+                        }
+                        else {
+                            s[setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
+                        }
+                        break;
+                    case 'input-number':
+                        if (setting.subtarget) {
+                            s[setting.subtarget][setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
+                        }
+                        else {
+                            s[setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
+                        }
+                        break;
+                    case 'input-choose':
+                        let value = frame?.contentDocument?.querySelector(`#${setting.target}`)?.value, found = false;
+                        setting.options.forEach((option) => {
+                            if (option.value == value)
+                                found = true;
+                        });
+                        if (!found) {
+                            value = setting.default;
+                        }
+                        if (setting.subtarget) {
+                            s[setting.subtarget][setting.settingsKey] = value;
+                        }
+                        else {
+                            s[setting.settingsKey] = value;
+                        }
+                        break;
+                    default:
+                        console.error(`Can't save setting ${setting.name} @ ${el.name} with target ${el.target} to storage @ subcategory ${setting.subtarget ?? 'none'} and category ${setting.settingsKey} with type ${setting.type}`);
+                }
+            });
+        }
+    });
+    localStorage.storage_resi_base = JSON.stringify(s);
+    (0, reload_1.reload)();
+}
+exports.saveCodebaseSettings = saveCodebaseSettings;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/searchInFrame.ts":
+/*!**********************************************!*\
+  !*** ./src/iframeFunctions/searchInFrame.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.searchInFrame = void 0;
+function searchInFrame(frame) {
+    var searchWord = frame?.contentDocument?.querySelector('#input_search')?.value?.toLowerCase() || '';
+    if (searchWord == '') {
+        frame?.contentDocument?.querySelectorAll('.searchable').forEach((el) => {
+            el.classList.remove('searchHidde');
+        });
+        frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+            el.classList.add('hidden');
+        });
+        return;
+    }
+    let searchAbles = frame?.contentDocument?.querySelectorAll('.searchable') || [];
+    for (var j = 0; j <= searchAbles?.length; j++) {
+        if (searchAbles[j]?.textContent?.toLowerCase()?.includes(searchWord)) {
+            searchAbles[j]?.classList?.remove('searchHidden');
+            frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+                el?.classList?.add('hidden');
+            });
+        }
+        else {
+            searchAbles[j]?.classList?.add('searchHidden');
+        }
+    }
+    if (searchAbles?.length == frame?.contentDocument?.querySelectorAll('.searchHidden')?.length) {
+        frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+            el?.classList?.remove('hidden');
+        });
+    }
+}
+exports.searchInFrame = searchInFrame;
+;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/showStorage.ts":
+/*!********************************************!*\
+  !*** ./src/iframeFunctions/showStorage.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.showStorage = void 0;
+const buildDefaultStorage_1 = __webpack_require__(/*! ../generalFunctions/buildDefaultStorage */ "./src/generalFunctions/buildDefaultStorage.ts");
+const reload_1 = __webpack_require__(/*! ../generalFunctions/reload */ "./src/generalFunctions/reload.ts");
+function showStorage() {
+    let table = '<table class="table-divider striped"><thead><tr><th>Key</th><th>Wert</th></tr><tbody>';
+    for (var i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (!key)
+            continue;
+        table += `<tr><td>${key}</td><td>${localStorage[key]}</td><td onclick='localStorage.removeItem("${key}");$(this).parent().remove()'>löschen <i class="bi bi-trash"></i></td></tr>`;
+    }
+    var table2 = '<table class="table-divider striped"><thead><tr><th>Session-Storage: Key</th><th>Value</th></tr><tbody>';
+    for (var i = 0; i < sessionStorage.length; i++) {
+        let key = sessionStorage.key(i);
+        if (!key)
+            continue;
+        table2 += `<tr><td>${key}</td><td>${sessionStorage[key]}</td><td onclick='sessionStorage.removeItem("${key}");$(this).parent().remove()'>löschen <i class="bi bi-trash"></i></td></tr>`;
+    }
+    table += '</tbody></table>';
+    table2 += '</tbody></table>';
+    // @ts-ignore
+    let tableModal = () => noticeModal('Gescheicherte Daten', `Hier siehst du, welche Daten im sog. local- & session-Storage gespeichert wurden. Davon ausgenommen sind sog. indexDB und Cookies<div style="height: 200px;overflow:auto">${table}${table2}</div><div>Session-Storage löschen: <button class="button button-round button-danger deleteSessionStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div><div>Local-Storage löschen: <button class="button button-round button-danger deleteLocalStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div><div>Session- & Local-Storage löschen: <button class="button button-round button-danger deleteAllStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div>`);
+    tableModal();
+    document.querySelector('.deleteLocalStorage')?.addEventListener('click', () => {
+        // @ts-ignore
+        modal('Local-Storage wirklich leeren?', 'Willst du den Local-Storage wirklich löschen? Dabei gehen alle <b>permanenten</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
+            localStorage.clear();
+            localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+            tableModal();
+            (0, reload_1.reload)();
+        }, () => {
+            tableModal();
+        });
+    });
+    document.querySelector('.deleteSessionStorage')?.addEventListener('click', () => {
+        // @ts-ignore
+        modal('Session-Storage wirklich leeren?', 'Willst du den Session-Storage wirklich löschen? Dabei gehen alle <b>temporären</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
+            sessionStorage.clear();
+            localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+            tableModal();
+            (0, reload_1.reload)();
+        }, () => {
+            tableModal();
+        });
+    });
+    document.querySelector('.deleteAllStorage')?.addEventListener('click', () => {
+        // @ts-ignore
+        modal('Session- und Local-Storage wirklich leeren?', 'Willst du den Session-Storage und Local-Storage wirklich löschen? Dabei gehen alle <b>temporären</b> und <b>permanenten</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
+            sessionStorage.clear();
+            localStorage.storage_resi_base = JSON.stringify((0, buildDefaultStorage_1.buildDefaultStorage)());
+            tableModal();
+            (0, reload_1.reload)();
+        }, () => {
+            tableModal();
+        });
+    });
+}
+exports.showStorage = showStorage;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/tabs.ts":
+/*!*************************************!*\
+  !*** ./src/iframeFunctions/tabs.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.onTabClick = void 0;
+function onTabClick(e, frame) {
+    let target = e.target;
+    frame.contentDocument?.querySelector('.tab-active')?.classList.remove('tab-active');
+    frame.contentDocument?.querySelector('.tab-content-active')?.classList.remove('tab-content-active');
+    target?.classList.add('tab-active');
+    frame.contentDocument?.querySelector(`#tab_${target.getAttribute('for')}`)?.classList.add('tab-content-active');
+}
+exports.onTabClick = onTabClick;
+
+
+/***/ }),
+
 /***/ "./src/modules.ts":
 /*!************************!*\
   !*** ./src/modules.ts ***!
@@ -234,6 +1178,13 @@ const searchVehicle_1 = __webpack_require__(/*! ./modules/searchVehicle */ "./sr
 const showAverageMoneyInMissionOverview_1 = __webpack_require__(/*! ./modules/showAverageMoneyInMissionOverview */ "./src/modules/showAverageMoneyInMissionOverview.ts");
 const resetAAOHotkey_1 = __webpack_require__(/*! ./modules/resetAAOHotkey */ "./src/modules/resetAAOHotkey.ts");
 const autofocusMissionNew_1 = __webpack_require__(/*! ./modules/autofocusMissionNew */ "./src/modules/autofocusMissionNew.ts");
+const improvedAAOMovement_1 = __webpack_require__(/*! ./modules/improvedAAOMovement */ "./src/modules/improvedAAOMovement.ts");
+const shortlinks_1 = __webpack_require__(/*! ./modules/shortlinks */ "./src/modules/shortlinks.ts");
+const filterAccosiationMembers_1 = __webpack_require__(/*! ./modules/filterAccosiationMembers */ "./src/modules/filterAccosiationMembers.ts");
+const averageMoneyInMissionOverview_1 = __webpack_require__(/*! ./modules/averageMoneyInMissionOverview */ "./src/modules/averageMoneyInMissionOverview.ts");
+const removeEventText_1 = __webpack_require__(/*! ./modules/removeEventText */ "./src/modules/removeEventText.ts");
+const bigMap_1 = __webpack_require__(/*! ./modules/bigMap */ "./src/modules/bigMap.ts");
+const mapMode_1 = __webpack_require__(/*! ./modules/mapMode */ "./src/modules/mapMode.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -803,6 +1754,97 @@ exports.modules = [{
                     { value: 'newMissionCustomText', name: 'Freitext' }
                 ]
             }]
+    },
+    {
+        name: "Shortlinks",
+        description: "Bietet unter der Werbung einen schnellen Zugriff auf Forum, Wiki & FAQ.",
+        settingsTarget: "shortlinks",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "shortlinksCheck",
+        func: shortlinks_1.shortlinks,
+        keywords: ["schnell", "Zugriff", "Links", "Forum", "Wiki", "FAQ", "Fragen"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
+    },
+    {
+        name: "Verbessertes AAO-bearbeiten",
+        description: "Lässt euch beim bearbeiten eurer AAO diese gleich 5 Schritte auf einmal verschieben",
+        settingsTarget: "improvedAAOMovement",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "improvedAAOMovementCheck",
+        func: improvedAAOMovement_1.improvedAAOMovement,
+        keywords: ["AAO", "Alarm- und Auchrückeordnung", "Verbesserung", "einfacher", "Bewegung"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Verbandsmitglieder filtern",
+        description: "Lässt euch auf der Seite eines Verbandes auswählen, welche Art von Mitgliedern euch angezeigt werden soll",
+        settingsTarget: "FilterAssociationMembers",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "FilterAssociationMembersCheck",
+        func: filterAccosiationMembers_1.filterAssociationMembers,
+        keywords: ["Verband", "Mitglieder", "Filter", "einfacher", "Überblick"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Durchschnittlicher Verdienst in der Einsatzübersicht",
+        description: "Zeigt euch den durchschnittlichen Verdienst aller Einsätze in der Einsatzübersicht.",
+        settingsTarget: "AverageMoneyInMissionOverview",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "AverageMoneyInMissionOverviewCheck",
+        func: averageMoneyInMissionOverview_1.averageMoneyInMissionOverview,
+        keywords: ["Einsatz", "Einsätze", "*bersicht", "Münzen", "Geld"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Event-Label in der Kopfleiste entfernen",
+        description: "Entfernt das Label aus der Kopfleiste, sofern es den Text \"Event\" enthält.",
+        settingsTarget: "RemoveEventtext",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "removeEventTextCheck",
+        func: removeEventText_1.removeEventText,
+        keywords: ["Event", "Saison", "Saisonal", "entfernen", "Einsätze"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
+    },
+    {
+        name: "Karte dauerhaft groß",
+        description: "Setzt die Karte nach dem Schließen eines Fenster wieder in den großen Modus",
+        settingsTarget: "bigMap",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "bigMapCheck",
+        func: bigMap_1.bigMap,
+        keywords: ["Karte", "iFrame", "schließen", "groß", "Map"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
+    },
+    {
+        name: "Mapmode",
+        description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
+        settingsTarget: "mapMode",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "mapModeCheck",
+        func: mapMode_1.mapMode,
+        keywords: ["Map", "Karte", "groß", "Modus", "dauerhaft"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
     }
 ];
 
@@ -907,17 +1949,76 @@ exports.autocomplete = autocomplete;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.autofocusMissionNew = void 0;
 async function autofocusMissionNew(s) {
-    if (location.href.includes('/missionNew/'))
-        document.addEventListener('keyup', (e) => {
-            if (e.key.toLowerCase() == s.resetAAO.keyToReset) {
-                document.querySelectorAll('#mission-vehicle-group-by-vehicle .mission-vehicle.vehicle.mission-vehicle-selected')?.forEach(e => {
-                    e.click();
-                });
-                document.querySelectorAll('.mission-aao-available').forEach(e => e.removeAttribute('aaocount'));
-            }
-        });
+    if (location.href.includes('/missionNew/')) {
+        document.querySelector('#' + s.autofocusMissionNewOptions.field)?.focus();
+    }
 }
 exports.autofocusMissionNew = autofocusMissionNew;
+
+
+/***/ }),
+
+/***/ "./src/modules/averageMoneyInMissionOverview.ts":
+/*!******************************************************!*\
+  !*** ./src/modules/averageMoneyInMissionOverview.ts ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.averageMoneyInMissionOverview = void 0;
+async function averageMoneyInMissionOverview(s) {
+    if (!location.pathname.includes('/missionOverview/'))
+        return;
+    function getAverageMissionCredits() {
+        let list = document.querySelectorAll('table > tbody > tr > td:nth-child(3) > a');
+        let sum = 0;
+        list.forEach((el) => {
+            sum += parseInt(el.innerHTML.replaceAll('.', ''));
+        });
+        return (sum / list.length).toFixed(2);
+    }
+    let span = document.createElement('span');
+    span.innerHTML = `Durchschnittlicher Verdienst pro Einsatz: ${getAverageMissionCredits()} Münzen`;
+    span.classList.add('label label-info');
+    document.querySelector('.detail-subtitle')?.append(span);
+}
+exports.averageMoneyInMissionOverview = averageMoneyInMissionOverview;
+
+
+/***/ }),
+
+/***/ "./src/modules/bigMap.ts":
+/*!*******************************!*\
+  !*** ./src/modules/bigMap.ts ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.bigMap = void 0;
+async function bigMap(s) {
+    //@ts-ignore
+    const CopyOfCloseFrame = closeFrame;
+    //@ts-ignore
+    closeFrame = function () {
+        CopyOfCloseFrame();
+        if (document.querySelector("#map")?.classList.contains("expanded")) {
+            //@ts-ignore
+            toggleMap();
+            //@ts-ignore
+            toggleMap();
+        }
+        else {
+            //@ts-ignore
+            toggleMap();
+        }
+        ;
+    };
+    //@ts-ignore
+    toggleMap();
+}
+exports.bigMap = bigMap;
 
 
 /***/ }),
@@ -1183,6 +2284,99 @@ exports.einsatzzaehler = einsatzzaehler;
 
 /***/ }),
 
+/***/ "./src/modules/filterAccosiationMembers.ts":
+/*!*************************************************!*\
+  !*** ./src/modules/filterAccosiationMembers.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.filterAssociationMembers = void 0;
+async function filterAssociationMembers(s) {
+    if (!window.location.pathname.startsWith('/association/'))
+        return;
+    let element = Array.from(document.querySelectorAll('.card')).filter(e => e.innerHTML.includes('Verbandsleitung'))[0];
+    let newDiv = document.createElement('div');
+    newDiv.innerHTML = `<label for="showAbsent">Inaktive Mitglieder anzeigen (funktioniert nur bei (Co-)Admins) <input type="checkbox" id="showAbsent" checked></label><br>
+    <label for="showAdmins">(Co-)Admins anzeigen <input type="checkbox" id="showAdmins" checked></label><br>
+    <label for="showTeam">Schuldirektoren anzeigen <input type="checkbox" id="showTeam" checked></label><br>
+    <label for="showOnline">Online Mitglieder anzeigen <input type="checkbox" id="showOnline" checked></label><br>
+    <label for="showOffline">Offline Mitglieder anzeigen <input type="checkbox" id="showOffline" checked></label>`;
+    element.after(newDiv);
+    function showParent(query, doupleParent = false) {
+        document.querySelectorAll(query).forEach(e => {
+            if (!e.parentElement)
+                return;
+            if (!doupleParent) {
+                e.parentElement.style.display = 'none';
+            }
+            else {
+                if (!e.parentElement.parentElement)
+                    return;
+                e.parentElement.parentElement.style.display = 'none';
+            }
+        });
+    }
+    function hideParent(query, doupleParent = false) {
+        document.querySelectorAll(query).forEach(e => {
+            if (!e.parentElement)
+                return;
+            if (!doupleParent) {
+                e.parentElement.style.display = 'block';
+            }
+            else {
+                if (!e.parentElement.parentElement)
+                    return;
+                e.parentElement.parentElement.style.display = 'block';
+            }
+        });
+    }
+    document.querySelectorAll('input').forEach(el => {
+        el.addEventListener('change', (e) => {
+            if (!(e.target instanceof HTMLInputElement))
+                return;
+            switch (e.target?.id) {
+                case 'showAbsent':
+                    if (e.target.checked)
+                        showParent('.toplist-absent');
+                    else
+                        hideParent('.toplist-absent');
+                    break;
+                case 'showAdmins':
+                    if (e.target.checked)
+                        showParent('.label-info:contains("Admin")', true);
+                    else
+                        hideParent('.label-info:contains("Admin")', true);
+                    break;
+                case 'showTeam':
+                    if (e.target.checked)
+                        showParent('.label-info:contains("Schul")', true);
+                    else
+                        hideParent('.label-info:contains("Schul")', true);
+                    break;
+                case 'showOnline':
+                    if (e.target.checked)
+                        showParent('.toplist-online');
+                    else
+                        hideParent('.toplist-online');
+                    break;
+                case 'showOffline':
+                    if (e.target.checked)
+                        showParent('.toplist-offline');
+                    else
+                        hideParent('.toplist-offline');
+                    break;
+            }
+            ;
+        });
+    });
+}
+exports.filterAssociationMembers = filterAssociationMembers;
+
+
+/***/ }),
+
 /***/ "./src/modules/filterKH.ts":
 /*!*********************************!*\
   !*** ./src/modules/filterKH.ts ***!
@@ -1405,6 +2599,87 @@ exports.hideDevelopedStepsAtRoadmap = hideDevelopedStepsAtRoadmap;
 
 /***/ }),
 
+/***/ "./src/modules/improvedAAOMovement.ts":
+/*!********************************************!*\
+  !*** ./src/modules/improvedAAOMovement.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.improvedAAOMovement = void 0;
+async function improvedAAOMovement(s) {
+    const MOVING_STEPS = 5;
+    document.querySelectorAll('.aao-set-order').forEach((el) => {
+        let prepend_span = document.createElement('span');
+        prepend_span.classList.add('move-more-forward');
+        prepend_span.innerHTML = '<i class="bi bi-arrow-bar-right" style="padding-right:2px;"></i>';
+        let append_span = document.createElement('span');
+        append_span.classList.add('move-more-backward');
+        append_span.innerHTML = '<i class="bi bi-arrow-bar-right" style="padding-right:2px;"></i>';
+        el.prepend(prepend_span);
+        el.append(append_span);
+        el.style.width = '100px';
+    });
+    document.querySelectorAll('.move-more-forward').forEach((el) => {
+        el.addEventListener('click', (t) => {
+            for (let i = 0; i < MOVING_STEPS; i++) {
+                if (!(t.target instanceof HTMLElement))
+                    return;
+                if (!(t.target?.parentElement?.nextElementSibling instanceof HTMLElement))
+                    return;
+                t.target?.parentElement?.nextElementSibling?.click();
+            }
+        });
+    });
+    document.querySelectorAll('.move-more-backward').forEach((el) => {
+        el.addEventListener('click', (t) => {
+            for (let i = 0; i < MOVING_STEPS; i++) {
+                if (!(t.target instanceof HTMLElement))
+                    return;
+                if (!(t.target?.parentElement?.previousElementSibling instanceof HTMLElement))
+                    return;
+                t.target?.parentElement?.previousElementSibling?.click();
+            }
+        });
+    });
+}
+exports.improvedAAOMovement = improvedAAOMovement;
+
+
+/***/ }),
+
+/***/ "./src/modules/mapMode.ts":
+/*!********************************!*\
+  !*** ./src/modules/mapMode.ts ***!
+  \********************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mapMode = void 0;
+async function mapMode(s) {
+    function toggleBigMap() {
+        //@ts-ignore
+        setTimeout(toggleMap, 1000);
+        document.querySelector('header')?.remove();
+    }
+    ;
+    if (window.location.href.endsWith('#map=true') || window.location.href.endsWith('&map=true') || window.location.href.includes('#map=true') || window.location.href.includes('&map=true')) {
+        document.addEventListener('load', toggleBigMap);
+    }
+    else {
+        let span = document.createElement('span');
+        span.innerHTML = '<a href="https://rettungssimulator.online#map=true" class="button button-success button-round no-prevent" style="width:50%" target="_blank">Karte in großem Fenster öffnen</a>';
+        document.querySelector('#ad')?.appendChild(span);
+    }
+    ;
+}
+exports.mapMode = mapMode;
+
+
+/***/ }),
+
 /***/ "./src/modules/missionStatistics.ts":
 /*!******************************************!*\
   !*** ./src/modules/missionStatistics.ts ***!
@@ -1513,6 +2788,25 @@ async function pushFMS5(s) {
     });
 }
 exports.pushFMS5 = pushFMS5;
+
+
+/***/ }),
+
+/***/ "./src/modules/removeEventText.ts":
+/*!****************************************!*\
+  !*** ./src/modules/removeEventText.ts ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.removeEventText = void 0;
+async function removeEventText(s) {
+    let element = document.querySelector('.brand')?.querySelector('.label');
+    if (element && element.innerHTML.toLowerCase().includes('event'))
+        element.remove();
+}
+exports.removeEventText = removeEventText;
 
 
 /***/ }),
@@ -1679,6 +2973,28 @@ async function settingsInNavbar(s) {
     });
 }
 exports.settingsInNavbar = settingsInNavbar;
+
+
+/***/ }),
+
+/***/ "./src/modules/shortlinks.ts":
+/*!***********************************!*\
+  !*** ./src/modules/shortlinks.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shortlinks = void 0;
+async function shortlinks(s) {
+    let div = document.createElement('div');
+    div.classList.add('button-split');
+    div.innerHTML = `<a target="_blank" href="https://forum.rettungssimulator.online/" class="no-prevent button button-round button-success button-w100"><center>Forum</center></a>
+    <a target="_blank" href="https://wiki.rettungssimulator.online/" class="no-prevent button button-round button-success button-w100"><center>Wiki</center></a>
+    <a target="_blank" href="https://rettungssimulator.online/faq" class="no-prevent button button-round button-success button-w100"><center>FAQ</center></a>`;
+    document.querySelector('#ad')?.append(div);
+}
+exports.shortlinks = shortlinks;
 
 
 /***/ }),
@@ -2063,626 +3379,47 @@ var exports = __webpack_exports__;
   \**********************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const validate_1 = __webpack_require__(/*! ./generalFunctions/validate */ "./src/generalFunctions/validate.ts");
 const scriptInfo_1 = __webpack_require__(/*! ./generalFunctions/scriptInfo */ "./src/generalFunctions/scriptInfo.ts");
-const variableError_1 = __webpack_require__(/*! ./generalFunctions/variableError */ "./src/generalFunctions/variableError.ts");
-const modules_1 = __webpack_require__(/*! ./modules */ "./src/modules.ts");
-const reload_1 = __webpack_require__(/*! ./generalFunctions/reload */ "./src/generalFunctions/reload.ts");
+const addListenerForOpenSettings_1 = __webpack_require__(/*! ./generalFunctions/addListenerForOpenSettings */ "./src/generalFunctions/addListenerForOpenSettings.ts");
+const run_1 = __webpack_require__(/*! ./generalFunctions/run */ "./src/generalFunctions/run.ts");
+const writeLog_1 = __webpack_require__(/*! ./generalFunctions/writeLog */ "./src/generalFunctions/writeLog.ts");
+const loadIcons_1 = __webpack_require__(/*! ./generalFunctions/loadIcons */ "./src/generalFunctions/loadIcons.ts");
+const loadStyles_1 = __webpack_require__(/*! ./generalFunctions/loadStyles */ "./src/generalFunctions/loadStyles.ts");
+const checkForDarkmode_1 = __webpack_require__(/*! ./generalFunctions/checkForDarkmode */ "./src/generalFunctions/checkForDarkmode.ts");
+const handleNewUser_1 = __webpack_require__(/*! ./generalFunctions/handleNewUser */ "./src/generalFunctions/handleNewUser.ts");
+const removeStorageIfNeeded_1 = __webpack_require__(/*! ./generalFunctions/removeStorageIfNeeded */ "./src/generalFunctions/removeStorageIfNeeded.ts");
+const Codebase_class_1 = __webpack_require__(/*! ./generalFunctions/classes/Codebase.class */ "./src/generalFunctions/classes/Codebase.class.ts");
+const createListElement_1 = __webpack_require__(/*! ./iframeFunctions/createListElement */ "./src/iframeFunctions/createListElement.ts");
+const checkSettings_1 = __webpack_require__(/*! ./generalFunctions/checkSettings */ "./src/generalFunctions/checkSettings.ts");
+const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadListener */ "./src/generalFunctions/addLoadListener.ts");
 (async () => {
-    const LAST_REMOVED_STORAGE = '1.5.1';
     //return 
     if (document.querySelectorAll('.landing-header').length)
         return;
-    //load icons
-    let stylesheet = document.createElement('link');
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css';
-    document.head.appendChild(stylesheet);
-    //add own css to head
-    let css = document.createElement('style');
-    css.innerHTML = `.codebase:focus{outline: none;}`;
-    document.head?.appendChild(css);
-    //save darkmode-settings in localstorage
-    if (location.pathname == '/') {
-        let darkModeBtn = document.querySelector('#darkMode');
-        if (!darkModeBtn) {
-            (0, variableError_1.variableIsIncorrect)('darkModeBtn', darkModeBtn);
-        }
-        try {
-            if (darkModeBtn?.innerHTML?.includes('Tag'))
-                localStorage.setItem('darkmode_resi_base', 'true');
-            else
-                localStorage.setItem('darkmode_resi_base', 'false');
-        }
-        catch {
-            console.error('Darkmode-Button nicht gefunden');
-        }
-        ;
-        darkModeBtn?.addEventListener('click', () => {
-            if (localStorage.getItem('darkmode_resi_base') == 'true')
-                localStorage.setItem('darkmode_resi_base', 'false');
-            else
-                localStorage.setItem('darkmode_resi_base', 'true');
-        });
-    }
-    ;
-    //function build default storage object from modules
-    function buildDefaultStorage() {
-        let obj = {};
-        modules_1.modules.forEach((el) => {
-            obj[el.settingsTarget] = false;
-            if (el.hasSettings) {
-                el.settings.forEach((setting) => {
-                    if (setting.subtarget && !obj[setting.subtarget])
-                        obj[setting.subtarget] = {};
-                    if (setting.subtarget)
-                        obj[setting.subtarget][setting.settingsKey] = setting.default;
-                    else
-                        obj[setting.settingsKey] = setting.default;
-                });
-            }
-        });
-        return obj;
-    }
-    //new user
-    if (!localStorage.storage_resi_base) {
-        //set storage
-        localStorage.setItem('storage_resi_base', JSON.stringify(buildDefaultStorage()));
-        localStorage.setItem('resiBaseRemovedStorage', LAST_REMOVED_STORAGE);
-        //show welcome message
-        // @ts-ignore
-        systemMessage({
-            title: 'Willkommen bei der ReSi-Codebase!',
-            message: `Schön, dass Du dich entschlossen hast, die ReSi-Codebase zu nutzen!<br><br>
-Du kannst jeden Modul einzeln aktivieren, die Möglichkeit findest Du in einem Einstellungs-Panel, welches Du über die Seitenleiste aufrufen kannst.<br>
-Probier doch einfach mal alle Module aus. Wenn Du nicht weißt, was ein Modul tut, dann klick einfach auf das [?] hinter dem Namen, damit kommst Du zur Wikiseite des Moduls.<br><br>
-Fehler bitte im Forum melden - oder im Thread ReSi-Codebase auf Discord im Bereich <code>#skripting</code><br><br>
-Gerne kannst du auch unserem Discord-Server beitreten: <i class="bi bi-discord"></i> <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs</a><br><br>
-
-<b>Bitte beachte: die Browser Safari und Internet Explorer werden derzeit nicht unterstützt! Die meisten Module werden auch in diesen Browsern funktionieren, jedoch wird für diese Browser kein Support angeboten.</b>
-
-Viel Spaß,<br>
-Dein Team der ReSi-Codebase`,
-            type: 'info'
-        });
-    }
-    //remove storage if necessary
-    if (localStorage.resiBaseRemovedStorage != LAST_REMOVED_STORAGE) {
-        localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-        localStorage.resiBaseRemovedStorage = LAST_REMOVED_STORAGE;
-    }
-    //if bad storage, reset storage
-    if (localStorage.storage_resi_base == '[object Object]') {
-        // @ts-ignore
-        systemMessage({
-            'title': `Fehler in den Codebase-Einstellungen`,
-            'message': `Es gab einen Fehler in den Codebase-Einstellungen, die Einstellungen wurden zurückgesetzt.`,
-            'type': 'danger'
-        });
-        localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-    }
+    (0, loadIcons_1.loadIcons)();
+    (0, loadStyles_1.loadStyles)();
+    (0, checkForDarkmode_1.checkForDarkmode)();
+    (0, handleNewUser_1.handleNewUser)();
+    (0, removeStorageIfNeeded_1.removeStorageIfNeeded)();
     //load storage
     const s = JSON.parse(localStorage.storage_resi_base);
     //codebase class
-    class ReSiCodebase {
-        version;
-        settings;
-        isProduction;
-        constructor() {
-            this.version = scriptInfo_1.scriptInfo.version;
-            this.settings = s;
-            this.isProduction = scriptInfo_1.scriptInfo.isProduktion;
-        }
-        getSettings() {
-            return this.settings;
-        }
-        getVersion() {
-            return this.version;
-        }
-        getProduction() {
-            return this.isProduction;
-        }
-    }
     //function check settings and catching errors when there is a new branch
-    function checkSettings() {
-        if (!localStorage.storage_resi_base)
-            (0, reload_1.reload)();
-        modules_1.modules.forEach((el) => {
-            if (el.hasSettings) {
-                el.settings.forEach((setting) => {
-                    if (setting.subtarget && !s[setting.subtarget]) {
-                        s[setting.subtarget] = {};
-                    }
-                });
-            }
-        });
-    }
-    checkSettings();
+    (0, checkSettings_1.checkSettings)(s);
     //create object from codebase class
-    let codebase = new ReSiCodebase();
+    let codebase = new Codebase_class_1.ReSiCodebase(s);
     //own frame
     //create list element
-    const element = document.createElement('li');
-    element.id = 'Codebase';
-    element.innerHTML = `ReSi-Codebase <i class="bi bi-gear" style="padding-left:5px;"></i>`;
-    document.querySelector('#darkMode')?.after(element);
+    let element = (0, createListElement_1.createListElement)();
     const frame = document.querySelector('#iframe');
-    async function loadCodebaseFrame() {
-        //build frame content
-        var frameContent = `<div class='panel-body'>
-    <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `'></script>
-    <link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `' charset='utf-8'>
-    <script src='https://rettungssimulator.online/js/index.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `'></script>
-    <script src='https://rettungssimulator.online/js/iframe.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `'></script>
-    <script src='https://rettungssimulator.online/js/controlCenter.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `'></script>
-    <script src="https://rettungssimulator.online/js/popper.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `" charset="utf-8"></script>
-    <script src='https://rettungssimulator.online/js/tippy.js?v=`
-            // @ts-ignore
-            + ReSi.resiVersion + `'></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    <style>
-    .searchHidden{
-    display: none;
-    };
-    </style>
-    <div class='detail-header'>
-    <div class='detail-title'>ReSi-Codebase-Einstellungen
-    <div class='right pointer'>
-    <i class="bi bi-x"></i>
-    </div>
-    <div
-        class='right pointer share'
-        data-tooltip='Die ReSi-Codebase weiterempfehlen'
-        share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'
-    >
-    <i class="bi bi-share" style="padding-left:5px;"></i>
-    </div>
-    <div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
-    <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">
-    <i class="bi bi-discord" style="padding-left:5px;"></i>
-    </a>
-    </div>
-    <div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen">
-    <a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
-    <i class="bi bi-chat-left-text" style="padding-left:5px;"></i>
-    </a>
-    </div>
-    </div>
-    <div class='detail-subtitle'>Verwalte hier deine Einstellungen für die ReSi-Codebase
-    <button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
-    <button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
-    <button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
-    <button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
-    <div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
-    <input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off">
-    </div>
-    </div>
-    </div>
-    <div class='tabs tabs-horizotal'>
-    <div class='tab tab-active' for='settings-moduls'>Module</div>
-    <div class='tab' for='licence'>Sonstiges & Lizenzen</div>
-    </div>
-    <div class='tab-container'>
-    <div class='tab-content tab-content-active' id='tab_settings-moduls'>
-    <h2>Module:</h2>
-    <h4 class='label label-info searchNoResult hidden'>Die Suche lieferte keine Ergebnisse! Bitte probiere es mit einem anderen Suchwort!</h4>`;
-        //checkboxes for modules
-        modules_1.modules.forEach((el) => {
-            frameContent += `<div class='checkbox-container searchable'><input id='${el.target}' type='checkbox' ${s[el.settingsTarget] ? 'checked' : ''}><label for='${el.target}'>${el.name} aktivieren<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a> ${el.hasSettings ? '<span data-tooltip="Dieses Modul hat Einstellungen! Passe es dir nach deinem Geschmack an!"><i class="bi bi-exclamation-circle"></i></span>' : ''} <span class="label label-success"><i class="bi bi-person"></i> von: ${'<a href="javascript:;" class="open-profile pointer" profile="' + el.author + '">' + el.author + '</a>'}</span> <span class="label label-success"><i class="bi bi-git"></i> V${el.version}</span></label><div class='hidden keyword-serach'>${el.keywords.join(' ')}</div></div>`;
-            if (el.hasSettings) {
-                frameContent += `<div class="searchable card card-collapse${s[el.settingsTarget] ? '' : ' collapsed'}" for-module="${el.target}" style="padding-left:100px;">
-    <div class="card-headline card-headline-danger">
-    <i class="bi bi-gear"></i> Einstellungen zu ${el.name}
-    <div class="card-tools">
-    <span class="card-collapse-toggle pointer" style="font-size:15px;overflow:hidden;vertical-algin:middle"> <i class="bi bi-caret-${s[el.settingsTarget] ? 'up' : 'down'}"></i></span>
-    </div>
-    </div>
-    <div class="card-body">`;
-                el.settings.forEach((setting) => {
-                    var value = setting.subtarget ? s[setting.subtarget][setting.settingsKey] : s[setting.settingsKey];
-                    switch (setting.type) {
-                        case 'checkbox':
-                            frameContent += `<div class='checkbox-container'><input id='${setting.target}' ${value ? 'checked' : ''} type='checkbox'><label for='${setting.target}'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></label></div>`;
-                            break;
-                        case 'input-text':
-                            frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div><div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div><input class='input-round' value='${value ? value : ''}' autocomplete='off' id='${setting.target}' placeholder='${setting.preset}'></div></div>`;
-                            break;
-                        case 'input-number':
-                            frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div><div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div><input class='input-round' type='number' value='${value ? value : ''}' autocomplete='off' id='${setting.target}' placeholder='${setting.preset}'></div></div>`;
-                            break;
-                        case 'input-choose':
-                            frameContent += `<div class='input-container'><div class='input-label'>${setting.name} (${setting.preset})<a class='no-prevent' href='${el.helpLink}' target='_blank' data-tooltip='${el.description} Mehr im Hilfeartikel!'><i class="bi bi-question-circle" style="padding-left:5px;"></i></a></div>
-                            <div class="input-content"><div class='input-icon'><i class="bi bi-pencil"></i></div>
-                            <select id="${setting.target}" class="input-round">`;
-                            setting.options.forEach((option) => {
-                                let valueOfSetting = (setting.subtarget ? s[setting.subtarget][setting.settingsKey] : s[setting.settingsKey]) ?? setting.default;
-                                frameContent += `<option value="${option.value}" ${(option.value === valueOfSetting || (!valueOfSetting && option.value == setting.default)) ? ' selected' : ''}>${option.name}</option>`;
-                            });
-                            frameContent += `</select>
-                                </div></div>
-                            </div>`;
-                            break;
-                        default:
-                            frameContent += `<div class='alert alert-info'>Unbekannte Einstellungsmöglichkeit ${setting.type} @ ${el.name}</div>`;
-                            break;
-                    }
-                });
-                frameContent += `</div></div>`;
-            }
-        });
-        frameContent += `<button class='button-success button button-round' id='saveCodebaseSettings'>Speichern <i class="bi bi-cloud-arrow-up"></i></button>
-    </div>
-    <div class='tab-content' id='tab_licence'>
-    <h2>Fehler melden:</h2>
-    <p>
-    <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent button button-round button-success">Discord-Server <i class="bi bi-discord"></i></a> - <a href='https://github.com/Notme112/Codebase/issues/new/choose' class='no-prevent button button-success button-round' target='_blank'>Github <i class="bi bi-github"></i></a> - <a href='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-0/&action=lastPost' class='no-prevent button button-success button-round' target='_blank'>Forum <i class="bi bi-chat-left-text"></i></a> - ReSi-Discord <i class="bi bi-discord"></i>: im Thread ReSi-Codebase im Bereich <code>#skripting</code>
-    <h3>Vielen Danke für deine Mithilfe!</h3>
-    </p>
-    <h2>Open-Source:</h2>
-    <p>
-    Bootstrap-Icons:<br>
-    Copyright (c) 2019-2021 The Bootstrap Authors<br>
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br>
-    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    </p>
-    <p>
-    JQuery:<br>
-    Copyright (c) 2021 OpenJS Foundation and other contributors, https://openjsf.org/, <br>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-    <br>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
-    THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    </div>
-    </div>
-    <center>Joine unserem Discord-Server: <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs <i class="bi bi-discord"></i></a><br><br></center>
-    <h3>Danke für die Nutzung der ReSi-Codebase!</h3>
-    </div>`;
-        if (!frame || !frame.contentWindow || !frame.contentDocument)
-            return;
-        frame.contentDocument.body.innerHTML = frameContent;
-        if (document.body.classList.contains('dark')) {
-            frame.contentDocument.body.classList.add('dark');
-        }
-        let closeFrameOrig = closeFrame;
-        function closeFrame() {
-            if (!frame || !frame.contentWindow || !frame.contentDocument)
-                return;
-            frame.contentDocument.body.innerHTML = '';
-            closeFrameOrig();
-            // @ts-ignore
-            closeFrame = closeFrameOrig;
-        }
-        //frame functions
-        let changes = false;
-        frame.contentDocument.querySelectorAll('.checkbox-container, .input-round').forEach((element) => {
-            ['click', 'keyup', 'change'].forEach((event) => {
-                element?.addEventListener(event, (e) => {
-                    if (!e?.target.classList.contains('nochange'))
-                        changes = true;
-                });
-            });
-        });
-        frame.contentDocument?.body?.addEventListener('keyup', (e) => {
-            if (e.key === 'Escape')
-                frame.contentDocument?.querySelector(".right.pointer")?.click();
-        });
-        frame.contentDocument?.querySelectorAll('.open-profile').forEach((el) => {
-            el.addEventListener('click', (e) => {
-                e.preventDefault();
-                let author = e.target.getAttribute('profile');
-                if (!author)
-                    return;
-                // @ts-ignore
-                if (changes)
-                    modal('Profil des Autors aufrufen?', `Willst du das Profil von <b>${author}</b> aufrufen? Du hast ungespeicherte Änderungen in den Einstellungen. Diese gehen verloren, wenn du das Profil des Autors aufrufst.`, 'Aufrufen', 'Hier bleiben', () => {
-                        if (!frame.contentWindow)
-                            return;
-                        frame.contentWindow.location.href = '/profile/' + author;
-                    }, () => { });
-                else {
-                    if (!frame.contentWindow)
-                        return;
-                    frame.contentWindow.location.href = '/profile/' + author;
-                }
-            });
-        });
-        function searchInFrame() {
-            var searchWord = frame?.contentDocument?.querySelector('#input_search')?.value?.toLowerCase() || '';
-            if (searchWord == '') {
-                frame?.contentDocument?.querySelectorAll('.searchable').forEach((el) => {
-                    el.classList.remove('searchHidde');
-                });
-                frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
-                    el.classList.add('hidden');
-                });
-                return;
-            }
-            let searchAbles = frame?.contentDocument?.querySelectorAll('.searchable') || [];
-            for (var j = 0; j <= searchAbles?.length; j++) {
-                if (searchAbles[j]?.textContent?.toLowerCase()?.includes(searchWord)) {
-                    searchAbles[j]?.classList?.remove('searchHidden');
-                    frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
-                        el?.classList?.add('hidden');
-                    });
-                }
-                else {
-                    searchAbles[j]?.classList?.add('searchHidden');
-                }
-            }
-            if (searchAbles?.length == frame?.contentDocument?.querySelectorAll('.searchHidden')?.length) {
-                frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
-                    el?.classList?.remove('hidden');
-                });
-            }
-        }
-        ;
-        ['keyup', 'change', 'input'].forEach((event) => {
-            frame?.contentDocument?.querySelector('#input_search')?.addEventListener(event, searchInFrame);
-        }),
-            // ask if changes should be saved
-            frame.contentDocument.querySelector('.right.pointer')?.addEventListener('click', () => {
-                if (changes === true) {
-                    // @ts-ignore
-                    modal("Ohne Speichern verlassen?", "Du hast Änderungen vorgenommen, willst du diese Seichern?", "Speichern", "Ohne speichern verlassen", 
-                    // @ts-ignore
-                    () => { frame?.contentDocument?.querySelector("#saveCodebaseSettings")?.click(); }, 
-                    // @ts-ignore
-                    () => { parent?.closeFrame(); });
-                }
-                else {
-                    // @ts-ignore
-                    parent?.closeFrame();
-                }
-            });
-        //show localStorge & sessionStorage
-        frame.contentDocument.querySelector('#showStorage')?.addEventListener('click', async () => {
-            var table = '<table class="table-divider striped"><thead><tr><th>Key</th><th>Wert</th></tr><tbody>';
-            for (var i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                if (!key)
-                    continue;
-                table += `<tr><td>${key}</td><td>${localStorage[key]}</td><td onclick='localStorage.removeItem("${key}");$(this).parent().remove()'>löschen <i class="bi bi-trash"></i></td></tr>`;
-            }
-            var table2 = '<table class="table-divider striped"><thead><tr><th>Session-Storage: Key</th><th>Value</th></tr><tbody>';
-            for (var i = 0; i < sessionStorage.length; i++) {
-                let key = sessionStorage.key(i);
-                if (!key)
-                    continue;
-                table2 += `<tr><td>${key}</td><td>${sessionStorage[key]}</td><td onclick='sessionStorage.removeItem("${key}");$(this).parent().remove()'>löschen <i class="bi bi-trash"></i></td></tr>`;
-            }
-            table += '</tbody></table>';
-            table2 += '</tbody></table>';
-            // @ts-ignore
-            let tableModal = () => noticeModal('Gescheicherte Daten', `Hier siehst du, welche Daten im sog. local- & session-Storage gespeichert wurden. Davon ausgenommen sind sog. indexDB und Cookies<div style="height: 200px;overflow:auto">${table}${table2}</div><div>Session-Storage löschen: <button class="button button-round button-danger deleteSessionStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div><div>Local-Storage löschen: <button class="button button-round button-danger deleteLocalStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div><div>Session- & Local-Storage löschen: <button class="button button-round button-danger deleteAllStorage">Daten unwiederruflich löschen <i class="bi bi-trash"></i></button></div>`);
-            tableModal();
-            document.querySelector('.deleteLocalStorage')?.addEventListener('click', () => {
-                // @ts-ignore
-                modal('Local-Storage wirklich leeren?', 'Willst du den Local-Storage wirklich löschen? Dabei gehen alle <b>permanenten</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
-                    localStorage.clear();
-                    localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-                    tableModal();
-                    (0, reload_1.reload)();
-                }, () => {
-                    tableModal();
-                });
-            });
-            document.querySelector('.deleteSessionStorage')?.addEventListener('click', () => {
-                // @ts-ignore
-                modal('Session-Storage wirklich leeren?', 'Willst du den Session-Storage wirklich löschen? Dabei gehen alle <b>temporären</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
-                    sessionStorage.clear();
-                    localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-                    tableModal();
-                    (0, reload_1.reload)();
-                }, () => {
-                    tableModal();
-                });
-            });
-            document.querySelector('.deleteAllStorage')?.addEventListener('click', () => {
-                // @ts-ignore
-                modal('Session- und Local-Storage wirklich leeren?', 'Willst du den Session-Storage und Local-Storage wirklich löschen? Dabei gehen alle <b>temporären</b> und <b>permanenten</b> Daten von Scripten und ähnlichem <b>unwiederruflich</b> verloren!', 'Ja, <b>unwiederruflich LÖSCHEN <i class="bi bi-trash"></i></b>', 'Nein, abbrechen', () => {
-                    sessionStorage.clear();
-                    localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-                    tableModal();
-                    (0, reload_1.reload)();
-                }, () => {
-                    tableModal();
-                });
-            });
-        });
-        //import
-        frame.contentDocument.querySelector('#importSettings')?.addEventListener('click', async () => {
-            //alerts wrong data
-            function invalid() {
-                // @ts-ignore
-                noticeModal('<i class="bi bi-exclamation-triangle"></i> Fehler beim Importieren der Codebase-Einstellungen', 'Die Einstellungen sind nicht valide, bitte überprüfe diese!', 'Schließen');
-            }
-            //asks for data string
-            // @ts-ignore
-            var newSettings = await inputModal({
-                title: 'Codebase-Einstellungen importieren <i class="bi bi-upload"></i>',
-                label: 'Gib hier deine Einstellungen ein:',
-                placeholder: 'Gib hier die Codebase-Einstellungen ein'
-            });
-            var error;
-            //try to parse string
-            try {
-                JSON.parse(newSettings);
-            }
-            catch (e) {
-                //if error show dialog
-                invalid();
-                error = true;
-            }
-            //if no error save
-            if (!error) {
-                localStorage.storage_resi_base = newSettings;
-                (0, reload_1.reload)();
-            }
-        });
-        //export
-        frame.contentDocument.querySelector('#exportSettings')?.addEventListener('click', () => {
-            // @ts-ignore
-            noticeModal('Codebase-Einstellungen exportieren <i class="bi bi-download"></i>', `Hier kannst du deine Einstellungen kopieren und an Freunde weitergeben:<div style='overflow:auto'><code>${JSON.stringify(s)}</code></div><br><button class="button button-round button-success" id="shareSettings">In Zwischenablage kopieren <i class="bi bi-clipboard"></i></button>`, 'Schließen');
-            document.querySelector('#shareSettings')?.addEventListener('click', (e) => {
-                navigator.clipboard.writeText(JSON.stringify(s)).then(() => {
-                    if (!e.target)
-                        return;
-                    if (e.target instanceof HTMLElement)
-                        e.target.innerHTML = 'Kopiert! <i class="bi bi-clipboard-check"></i>';
-                    setTimeout(() => {
-                        if (!e.target)
-                            return;
-                        if (e.target instanceof HTMLElement)
-                            e.target.innerHTML = 'In Zwischenablage kopieren <i class="bi bi-clipboard"></i>';
-                    }, 3000);
-                });
-            });
-        });
-        frame.contentDocument.querySelector('#resetStorage')?.addEventListener('click', () => {
-            // @ts-ignore
-            modal('Alle Einstellungen zurücksetzen', 'Willst du wirklich alle Einstellungen zurücksetzten? Die aktuellen Einstellungen sind dann unwiderruflich verloren!', 'Ja, zurücksetzen', 'Nein, behalten', () => {
-                localStorage.storage_resi_base = JSON.stringify(buildDefaultStorage());
-                (0, reload_1.reload)();
-            }, () => { });
-        });
-        //save settings
-        function saveCodebaseSettings() {
-            checkSettings();
-            modules_1.modules.forEach((el) => {
-                s[el.settingsTarget] = frame?.contentDocument?.querySelector(`#${el.target}`)?.checked;
-                if (el.hasSettings) {
-                    el.settings.forEach((setting) => {
-                        switch (setting.type) {
-                            case 'checkbox':
-                                if (setting.subtarget) {
-                                    s[setting.subtarget][setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
-                                }
-                                else {
-                                    s[setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
-                                }
-                                break;
-                            case 'input-text':
-                                if (setting.subtarget) {
-                                    s[setting.subtarget][setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
-                                }
-                                else {
-                                    s[setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
-                                }
-                                break;
-                            case 'input-number':
-                                if (setting.subtarget) {
-                                    s[setting.subtarget][setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
-                                }
-                                else {
-                                    s[setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
-                                }
-                                break;
-                            case 'input-choose':
-                                let value = frame?.contentDocument?.querySelector(`#${setting.target}`)?.value, found = false;
-                                setting.options.forEach((option) => {
-                                    if (option.value == value)
-                                        found = true;
-                                });
-                                if (!found) {
-                                    value = setting.default;
-                                }
-                                if (setting.subtarget) {
-                                    s[setting.subtarget][setting.settingsKey] = value;
-                                }
-                                else {
-                                    s[setting.settingsKey] = value;
-                                }
-                                break;
-                            default:
-                                console.error(`Can't save setting ${setting.name} @ ${el.name} with target ${el.target} to storage @ subcategory ${setting.subtarget ?? 'none'} and category ${setting.settingsKey} with type ${setting.type}`);
-                        }
-                    });
-                }
-            });
-            localStorage.storage_resi_base = JSON.stringify(s);
-            (0, reload_1.reload)();
-        }
-        frame.contentDocument.querySelectorAll('.tab[for]').forEach((e) => {
-            e?.addEventListener('click', (e) => {
-                let target = e.target;
-                frame.contentDocument?.querySelector('.tab-active')?.classList.remove('tab-active');
-                frame.contentDocument?.querySelector('.tab-content-active')?.classList.remove('tab-content-active');
-                target?.classList.add('tab-active');
-                frame.contentDocument?.querySelector(`#tab_${target.getAttribute('for')}`)?.classList.add('tab-content-active');
-            });
-        });
-        frame.contentDocument.querySelectorAll('input[type="checkbox"]').forEach((e) => {
-            console.log(e);
-            e.addEventListener('change', () => {
-                console.log('change');
-                let el = frame.contentDocument?.querySelector(`.card-collapse[for-module="${e.id}"]`);
-                console.log(el);
-                if (e.checked && el?.classList.contains('collapsed'))
-                    el?.classList.remove('collapsed');
-                if (!e.checked && !el?.classList.contains('collapsed'))
-                    el?.classList.add('collapsed');
-            });
-        });
-        frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => {
-            e.addEventListener('click', (event) => {
-                let el = event.target;
-                el.parentElement?.parentElement?.parentElement?.parentElement?.classList.toggle('collapsed');
-            });
-        });
-        frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', saveCodebaseSettings);
-        frame?.removeEventListener('load', loadCodebaseFrame);
-    }
-    ;
-    element.addEventListener('click', async () => {
-        // @ts-ignore
-        openFrame('', '1/1/4/5');
-        if (!frame) {
-            (0, variableError_1.variableIsIncorrect)('frame', frame);
-        }
-        frame?.addEventListener('load', loadCodebaseFrame);
-    });
+    if (!frame)
+        return;
+    (0, addLoadListener_1.addLoadListener)(element, frame, s);
     //run functions
-    modules_1.modules.forEach(async (el) => {
-        try {
-            if (s[el.settingsTarget]) {
-                if (location.pathname != "/" && el.allSite) {
-                    await el.func(s);
-                }
-                if (location.pathname == "/") {
-                    await el.func(s);
-                }
-            }
-        }
-        catch (e) {
-            console.error(`Fehler im Modul ${el.name}: ${e}`);
-        }
-    });
-    //write log on main site
-    if (window.location.pathname == '/') {
-        var log = `Running ${scriptInfo_1.scriptInfo.name} in Version ${scriptInfo_1.scriptInfo.version} on site ${window.location.href}!`;
-        modules_1.modules.forEach((el) => {
-            log += `\n${el.name}: ${s[el.settingsTarget] ? '✔ aktiv' : '✘ inaktiv'}`;
-        });
-        log += `\nDas Team der Codebase wünscht viel Spaß!
-Bei Fehlern kopiere bitte diesen Text und füge ihn in deine Fehlermeldung ein. Der Text enthält wichtige Informationenn zu deinen verwendeten Modulen.`;
-        console.log(log);
-    }
-    document.querySelectorAll('.openCodebaseSettings').forEach((el) => {
-        el?.addEventListener('click', () => {
-            document.querySelector('#Codebase')?.click();
-        });
-    });
+    (0, run_1.run)(s);
+    //write log
+    (0, writeLog_1.writeLog)(scriptInfo_1.scriptInfo);
+    (0, addListenerForOpenSettings_1.addListenerForOpenSettings)();
 })();
 
 })();
