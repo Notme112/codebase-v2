@@ -14,6 +14,6 @@
 // ==/UserScript==
 (() => {
     let script = document.createElement('script');
-    script.src = `https://cdn.jsdelivr.net/gh/Notme112/codebase-v2@main/public/bundle.js?scriptVersion=${GM_info.script.version}&gameVersion=${ReSi.resiVersion}`;
+    script.src = `https://cdn.jsdelivr.net/gh/Notme112/codebase-v2@master/public/bundle.js?scriptVersion=${GM_info.script.version}&gameVersion=${ReSi.resiVersion}`;
     document.body.appendChild(script);
 })();
