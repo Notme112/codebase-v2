@@ -6,7 +6,7 @@ labels: bug
 assignees: NiZi112
 
 ---
-# Bug
+# Bug:
 ## Beschreibung:
 ...
 
