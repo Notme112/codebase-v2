@@ -29,6 +29,12 @@ import { searchVehicle } from "./modules/searchVehicle";
 import { showAverageMoneyInMissionOverview } from "./modules/showAverageMoneyInMissionOverview";
 import { resetAAOHotkey } from "./modules/resetAAOHotkey";
 import { autofocusMissionNew } from "./modules/autofocusMissionNew";
+import { improvedAAOMovement } from "./modules/improvedAAOMovement";
+import { shortlinks } from "./modules/shortlinks";
+import { filterAssociationMembers } from "./modules/filterAccosiationMembers";
+import { averageMoneyInMissionOverview } from "./modules/averageMoneyInMissionOverview";
+import { removeEventText } from "./modules/removeEventText";
+import { bigMap } from "./modules/bigMap";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -599,5 +605,83 @@ export const modules = [{
                 {value: 'newMissionCustomText', name: 'Freitext'}
             ]
         }]
+    },
+    {
+        name: "Shortlinks",
+        description: "Bietet unter der Werbung einen schnellen Zugriff auf Forum, Wiki & FAQ.",
+        settingsTarget: "shortlinks",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "shortlinksCheck",
+        func: shortlinks,
+        keywords: ["schnell", "Zugriff", "Links", "Forum", "Wiki", "FAQ", "Fragen"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
+    },
+    {
+        name: "Verbessertes AAO-bearbeiten",
+        description: "Lässt euch beim bearbeiten eurer AAO diese gleich 5 Schritte auf einmal verschieben",
+        settingsTarget: "improvedAAOMovement",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "improvedAAOMovementCheck",
+        func: improvedAAOMovement,
+        keywords: ["AAO", "Alarm- und Auchrückeordnung", "Verbesserung", "einfacher", "Bewegung"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Verbandsmitglieder filtern",
+        description: "Lässt euch auf der Seite eines Verbandes auswählen, welche Art von Mitgliedern euch angezeigt werden soll",
+        settingsTarget: "FilterAssociationMembers",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "FilterAssociationMembersCheck",
+        func: filterAssociationMembers,
+        keywords: ["Verband", "Mitglieder", "Filter", "einfacher", "Überblick"],
+        hasSettings: false,
+        allSite: true,
+        settings:[]
+    },
+    {
+        name: "Durchschnittlicher Verdienst in der Einsatzübersicht",
+        description: "Zeigt euch den durchschnittlichen Verdienst aller Einsätze in der Einsatzübersicht.",
+        settingsTarget: "AverageMoneyInMissionOverview",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "AverageMoneyInMissionOverviewCheck",
+        func: averageMoneyInMissionOverview,
+        keywords: ["Einsatz", "Einsätze", "*bersicht", "Münzen", "Geld"],
+        hasSettings: false,
+        allSite: true,
+        settings:[]
+    },
+    {
+        name: "Event-Label in der Kopfleiste entfernen",
+        description: "Entfernt das Label aus der Kopfleiste, sofern es den Text \"Event\" enthält.",
+        settingsTarget: "RemoveEventtext",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "removeEventTextCheck",
+        func: removeEventText,
+        keywords: ["Event", "Saison", "Saisonal", "entfernen", "Einsätze"],
+        hasSettings: false,
+        allSite: false,
+        settings:[]
+    },
+    {
+        name: "Karte dauerhaft groß",
+        description: "Setzt die Karte nach dem Schließen eines Fenster wieder in den großen Modus",
+        settingsTarget: "bigMap",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "bigMapCheck",
+        func: bigMap,
+        keywords: ["Karte", "iFrame", "schließen", "groß", "Map"],
+        hasSettings: false,
+        allSite: false,
+        settings:[]
     }
 ];
