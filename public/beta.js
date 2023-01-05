@@ -1196,6 +1196,8 @@ const averageMoneyInMissionOverview_1 = __webpack_require__(/*! ./modules/averag
 const removeEventText_1 = __webpack_require__(/*! ./modules/removeEventText */ "./src/modules/removeEventText.ts");
 const bigMap_1 = __webpack_require__(/*! ./modules/bigMap */ "./src/modules/bigMap.ts");
 const mapMode_1 = __webpack_require__(/*! ./modules/mapMode */ "./src/modules/mapMode.ts");
+const associationDashboard_1 = __webpack_require__(/*! ./modules/associationDashboard */ "./src/modules/associationDashboard.ts");
+const nextFieldOnEnter_1 = __webpack_require__(/*! ./modules/nextFieldOnEnter */ "./src/modules/nextFieldOnEnter.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1856,6 +1858,40 @@ exports.modules = [{
         hasSettings: false,
         allSite: false,
         settings: []
+    },
+    {
+        name: "AssociationDashboard",
+        description: "Zeigt euch Verbandsstatistiken.",
+        settingsTarget: "AssociationDashboard",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "associationDashboardCheck",
+        func: associationDashboard_1.associationDashboard,
+        keywords: ["Verband", "Verbandsdhashboard", "Übersicht", "Überblick", "Verbandsübersicht"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
+    },
+    {
+        name: "Nächtest Feld mittels Enter / Klick auf Autocomplete-Element",
+        description: "Lässt euch beim Anlegen eines neuen Einsatzes mittels Enter oder Klick auf den Autocomplete ins nächste Feld wechseln.",
+        settingsTarget: "nextFieldOnEnter",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "nextFieldOnEnterCheck",
+        func: nextFieldOnEnter_1.nextFieldOnEnter,
+        keywords: ["nächstes Feld", "neuer Einsatz", "Enter", "Klick", "vorspringen"],
+        hasSettings: true,
+        allSite: true,
+        settings: [{
+                subtarget: "nextFieldSettings",
+                target: "openMissionOnNextFieldCheck",
+                name: "Einsatz öffnen nach dem Anlegen",
+                type: "checkbox",
+                settingsKey: "openMissionOnNextField",
+                preset: "CHECKBOX",
+                default: true
+            }]
     }
 ];
 
@@ -1925,6 +1961,132 @@ async function alertFMS5(s) {
     }
 }
 exports.alertFMS5 = alertFMS5;
+
+
+/***/ }),
+
+/***/ "./src/modules/associationDashboard.ts":
+/*!*********************************************!*\
+  !*** ./src/modules/associationDashboard.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.associationDashboard = void 0;
+const getAPI_1 = __webpack_require__(/*! ../generalFunctions/getAPI */ "./src/generalFunctions/getAPI.ts");
+async function associationDashboard(s) {
+    const buildingTypes = {
+        4: 'Krankenhaus'
+    };
+    const roles = {
+        1: 'Admin',
+        2: 'Co-Admin',
+        3: 'Schuldirektor',
+        4: 'Mitglied'
+    };
+    const apidata = (0, getAPI_1.getAPI)('association');
+    let li = document.createElement('li');
+    li.id = 'associationDashboard';
+    li.innerHTML = 'Verbandsdashboard';
+    document.querySelector('#darkMode')?.after(li);
+    var text = `
+                <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
+                <link rel='stylesheet' href='css/index.css?v=0.6a' charset='utf-8'>
+                <script src='https://rettungssimulator.online/js/index.js?v=0.7.1a'></script>
+                <script src='https://rettungssimulator.online/js/iframe.js?new=true&v=0.6.1e'></script>
+                <script src='https://rettungssimulator.online/js/controlCenter.js?v=0.6.1e'></script>
+                <script src="https://rettungssimulator.online/js/popper.js?v=0.7l" charset="utf-8"></script>
+                <script src='https://rettungssimulator.online/js/tippy.js?v=0.6.1e'></script>
+                <script>
+                if(localStorage.getItem('darkmode_resi_base') == 'true') document.body.classList.add('dark')
+                </script>
+                <div class='detail-header'>
+                <div class='detail-title'>Verbands-Statistiken <div class='right' onclick='window.parent.closeFrame()'> X </div></div>
+                <div class='detail-subtitle'>Schau dir hier Verbands-Statistiken an!</div></div>`;
+    text += `<h2>Team</h2>`;
+    text += `<table class="striped table-divider">
+               <thead>
+                 <th>Name</th>
+                 <th>Position</th>
+                 <th>Onlinestatus</th>
+               </thead>
+             <tbody>`;
+    var user = `<table class="striped table-divider">
+               <thead>
+                 <th>Name</th>
+                 <th>Onlinestatus</th>
+               </thead>
+             <tbody>`;
+    var adminOnline = 0;
+    var coadminOnline = 0;
+    var schooldirektorOnline = 0;
+    var onlineUser = 0;
+    apidata.associationUsers.forEach((obj) => {
+        if (obj.associationRoleID != 4) {
+            text += `<tr><td>${obj.userName}</td><td>${roles[obj.associationRoleID]}</td><td>${obj.isOnline ? '<span class="label label-success">Online</span>' : '<span class="label label-danger">Offline</span>'}</td></tr>`;
+            if (obj.isOnline) {
+                switch (obj.associationRoleID) {
+                    case 1:
+                        adminOnline++;
+                        break;
+                    case 2:
+                        coadminOnline++;
+                        break;
+                    case 3:
+                        schooldirektorOnline++;
+                        break;
+                }
+            }
+        }
+        ;
+        user += `<tr><td>${obj.userName}</td><td>${obj.isOnline ? '<span class="label label-success">Online</span>' : '<span class="label label-danger">Offline</span>'}</td></tr>`;
+        if (obj.isOnline)
+            onlineUser++;
+    });
+    text += `</tbody></table>`;
+    user += `</tbody></table>`;
+    text += `<h2>Status</h2>
+             Verbandsname: ${apidata.associationName}<br>
+             Admin's online: ${adminOnline}<br>
+             Co-Admin's online: ${coadminOnline}<br>
+             Schuldirektoren online: ${schooldirektorOnline}<br>
+             Mitglieder online: ${onlineUser}<br>
+             Mitglieder gesamt: ${apidata.associationUsers.length}<br>
+             Geteilte Geb채ude: ${apidata.associationSharedBuildings.length}<br>
+             ID: ${apidata.associationID}<br>
+             Münzen (gesamt verdient): ${apidata.associationMuenzenTotal}<br>
+             Münzen (aktull in der Kasse): ${apidata.associationMuenzenBank}
+             `;
+    text += `<h2>Mitglieder</h2>
+    ${user}`;
+    text += `<h2>Verbandsgeb채ude</h2>`;
+    var b = `<table class="striped table-divider">
+               <thead>
+                 <th>Typ</th>
+                 <th>Name</th>
+                 <th>Adresse</th>
+               </thead>
+             <tbody>`;
+    apidata.associationSharedBuildings.forEach((obj) => {
+        b += `<tr><td>${buildingTypes[obj.buildingType]}</td><td>${obj.userBuildingName}</td><td>${obj.address}</td></tr>`;
+    });
+    b += `</tbody></table>
+          <i>Werte aktualisieren sich bei neuladen mit Strg + F5 oder Strg + Umschalt + R</i>`;
+    text += b;
+    li.addEventListener('click', () => {
+        //@ts-ignore
+        openFrame('', '1/1/4/5');
+        const frame = document.querySelector('#iframe');
+        let div = document.createElement('div');
+        div.classList.add('panel-body');
+        div.innerHTML = text;
+        frame?.addEventListener('load', () => {
+            frame.contentDocument?.body.append(div);
+        });
+    });
+}
+exports.associationDashboard = associationDashboard;
 
 
 /***/ }),
@@ -2750,6 +2912,85 @@ exports.missionStatistics = missionStatistics;
 
 /***/ }),
 
+/***/ "./src/modules/nextFieldOnEnter.ts":
+/*!*****************************************!*\
+  !*** ./src/modules/nextFieldOnEnter.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.nextFieldOnEnter = void 0;
+async function nextFieldOnEnter(s) {
+    let inputs = [], changeHadHappen = false, actualInput = null;
+    let openNewMission = s.nextFieldSettings.openMissionOnNextField;
+    function save() {
+        document.querySelector('#missionNewSave')?.click();
+    }
+    function open() {
+        document.querySelector('#missionNewOpen')?.click();
+    }
+    function goToNextInput(originalInput) {
+        if (!inputs)
+            inputs = Array.from(document.querySelectorAll('input'));
+        inputs.forEach((input, i) => {
+            if (input == originalInput) {
+                if (inputs[inputs.length - 1] == originalInput) {
+                    if (openNewMission)
+                        open();
+                    else
+                        save();
+                }
+                else
+                    inputs[i + 1].focus();
+            }
+        });
+    }
+    document.addEventListener('change', (e) => {
+        if (!(e.currentTarget instanceof HTMLInputElement))
+            return;
+        if (!changeHadHappen) {
+            changeHadHappen = true;
+            actualInput = e.currentTarget;
+            setTimeout(() => {
+                changeHadHappen = false;
+            }, 1000);
+        }
+        else {
+            goToNextInput(e.currentTarget);
+        }
+        ;
+    });
+    document.addEventListener('click', (e) => {
+        if (!(e.currentTarget instanceof HTMLElement) || !(e.currentTarget?.classList.contains('.autocomplete-element')))
+            return;
+        if (!changeHadHappen) {
+            changeHadHappen = true;
+            setTimeout(() => {
+                changeHadHappen = false;
+            }, 1000);
+        }
+        else {
+            if (!actualInput)
+                return;
+            goToNextInput(actualInput);
+            actualInput = null;
+        }
+        ;
+    });
+    document.addEventListener('keydown', (e) => {
+        if (!(e.currentTarget instanceof HTMLInputElement))
+            return;
+        if (e.keyCode != 13)
+            return;
+        goToNextInput(e.currentTarget);
+    });
+}
+exports.nextFieldOnEnter = nextFieldOnEnter;
+
+
+/***/ }),
+
 /***/ "./src/modules/onwSound.ts":
 /*!*********************************!*\
   !*** ./src/modules/onwSound.ts ***!
@@ -2927,7 +3168,7 @@ async function searchVehicle(s) {
         <div class="input-label">Name</div>
         <div class="input-content">
           <input class="input-round" type="text" id="vehicleSearch" placeholder="Suche eingeben..." autocomplete="off">
-          <div class="input-icon"><i class="fas fa-filter" data-tooltip="Icons by Fontawsome (fontawesome.com) unter CC BY 4.0 Lizenz"></i></div>
+          <div class="input-icon"><i class="bi bi-funnel" data-tooltip="Icons by Fontawsome (fontawesome.com) unter CC BY 4.0 Lizenz"></i></div>
         </div>
       </div>
     </div>`;

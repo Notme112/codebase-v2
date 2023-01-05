@@ -36,6 +36,8 @@ import { averageMoneyInMissionOverview } from "./modules/averageMoneyInMissionOv
 import { removeEventText } from "./modules/removeEventText";
 import { bigMap } from "./modules/bigMap";
 import { mapMode } from "./modules/mapMode";
+import { associationDashboard } from "./modules/associationDashboard";
+import { nextFieldOnEnter } from "./modules/nextFieldOnEnter";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -697,5 +699,39 @@ export const modules = [{
         hasSettings: false,
         allSite: false,
         settings: []
+    },
+    {
+        name: "AssociationDashboard",
+        description: "Zeigt euch Verbandsstatistiken.",
+        settingsTarget: "AssociationDashboard",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "associationDashboardCheck",
+        func: associationDashboard,
+        keywords: ["Verband", "Verbandsdhashboard", "Übersicht", "Überblick", "Verbandsübersicht"],
+        hasSettings: false,
+        allSite: false,
+        settings:[]
+    },
+    {
+        name: "Nächstes Feld mittels Enter / Klick auf Autocomplete-Element",
+        description: "Lässt euch beim Anlegen eines neuen Einsatzes mittels Enter oder Klick auf den Autocomplete ins nächste Feld wechseln.",
+        settingsTarget: "nextFieldOnEnter",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "nextFieldOnEnterCheck",
+        func: nextFieldOnEnter,
+        keywords: ["nächstes Feld", "neuer Einsatz", "Enter", "Klick", "vorspringen"],
+        hasSettings: true,
+        allSite: true,
+        settings:[{
+            subtarget: "nextFieldSettings",
+            target: "openMissionOnNextFieldCheck",
+            name: "Einsatz öffnen nach dem Anlegen",
+            type: "checkbox",
+            settingsKey: "openMissionOnNextField",
+            preset: "CHECKBOX",
+            default: true
+        }]
     }
 ];

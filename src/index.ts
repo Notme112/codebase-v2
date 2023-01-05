@@ -1,5 +1,4 @@
 import { scriptInfo } from './generalFunctions/scriptInfo';
-import { variableIsIncorrect} from './generalFunctions/variableError';
 import { addListenerForOpenSettings } from './generalFunctions/addListenerForOpenSettings';
 import { run } from './generalFunctions/run';
 import { writeLog } from './generalFunctions/writeLog';
@@ -10,7 +9,6 @@ import { handleNewUser } from './generalFunctions/handleNewUser';
 import { removeStorageIfNeeded } from './generalFunctions/removeStorageIfNeeded';
 import { ReSiCodebase } from './generalFunctions/classes/Codebase.class';
 import { createListElement } from './iframeFunctions/createListElement';
-import { loadCodebaseFrame } from './iframeFunctions/loadCodebaseFrame';
 import { checkSettings } from './generalFunctions/checkSettings';
 import { addLoadListener } from './generalFunctions/addLoadListener';
 (async () => {
