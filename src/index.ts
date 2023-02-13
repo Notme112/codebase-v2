@@ -12,7 +12,7 @@ import { createListElement } from './iframeFunctions/createListElement';
 import { checkSettings } from './generalFunctions/checkSettings';
 import { addLoadListener } from './generalFunctions/addLoadListener';
 (async () => {
-    //return 
+    //return
     if (document.querySelectorAll('.landing-header').length) return;
     loadIcons();
     loadStyles();
@@ -23,16 +23,16 @@ import { addLoadListener } from './generalFunctions/addLoadListener';
     const s = JSON.parse(localStorage.storage_resi_base);
     //codebase class
     //function check settings and catching errors when there is a new branch
-
     checkSettings(s);
     //create object from codebase class
     let codebase = new ReSiCodebase(s);
-    //own frame
     //create list element
-    let element = createListElement();
-    const frame = document.querySelector<HTMLIFrameElement>('#iframe');
-    if(!frame) return;
-    addLoadListener(element, frame, s)
+    if(location.pathname == '/') {
+        let element = createListElement();
+        const frame = document.querySelector<HTMLIFrameElement>('#iframe');
+        if(!frame) return;
+        addLoadListener(element, frame, s);
+    }
     //run functions
     run(s);
     //write log

@@ -9,7 +9,8 @@ export async function alertChat(s: ReSiCodebaseSettingsType): Promise<void> {
             systemMessage({
                 'title': `${msg.userName}`,
                 'message': `${msg.message}`,
-                'type': 'info'
+                'type': 'info',
+                'timeout':5000
             });
         }
     });

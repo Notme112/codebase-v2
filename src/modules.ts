@@ -5,7 +5,6 @@ import { flogout } from "./modules/flogout";
 import { streammode } from "./modules/streammode";
 import { ownSound } from "./modules/onwSound";
 import { autocomplete } from "./modules/autocomplete";
-import { einsatzzaehler } from "./modules/einsatzzaehler";
 import { pushFMS5 } from "./modules/pushFMS5";
 import { zeitwechsel } from "./modules/zeitwechsel";
 import { uhr } from "./modules/uhr";
@@ -26,7 +25,6 @@ import { hideDevelopedStepsAtRoadmap } from "./modules/hideDevelopedStepsAtRoadm
 import { hideDeletedMessagesInChat } from "./modules/hideDeletedMessagesInChat";
 import { searchInMissionOverview } from "./modules/searchInMissionOverview";
 import { searchVehicle } from "./modules/searchVehicle";
-import { showAverageMoneyInMissionOverview } from "./modules/showAverageMoneyInMissionOverview";
 import { resetAAOHotkey } from "./modules/resetAAOHotkey";
 import { autofocusMissionNew } from "./modules/autofocusMissionNew";
 import { improvedAAOMovement } from "./modules/improvedAAOMovement";
@@ -38,6 +36,7 @@ import { bigMap } from "./modules/bigMap";
 import { mapMode } from "./modules/mapMode";
 import { associationDashboard } from "./modules/associationDashboard";
 import { nextFieldOnEnter } from "./modules/nextFieldOnEnter";
+import { notes } from "./modules/notes";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -186,20 +185,6 @@ export const modules = [{
         settings: [],
     },
     {
-        name: "[outdated] Einsatzzähler",
-        description: "Zeigt in Seitenleiste die Zahl der heute absolvierten Einsätze. Funktion in Statistics LST enthalten!",
-        helpLink: "",
-        version: "1.0.0 [outdatet]",
-        author: "NiZi112",
-        settingsTarget: "einsatzzaehler",
-        target: "einsatzzeahlerCheck",
-        keywords: ["Einsatz", "Zahl", "Zähler", "zählen", "Einsatze", "zählen"],
-        allSite: false,
-        func: einsatzzaehler,
-        hasSettings: false,
-        settings: [],
-    },
-    {
         name: "Push FMS5",
         description: "Sendet eine Brwoserbenachrichtigung bei einem Sprechwunsch.",
         helpLink: "",
@@ -286,7 +271,7 @@ export const modules = [{
         hasSettings: false,
         settings: [],
     }, {
-        name: "AlertChat",
+        name: "Chatnachrichtenanzeige",
         description: "Sendet kleine Popups bei einer Chatnachricht.",
         helpLink: "",
         version: "1.0.0",
@@ -299,7 +284,7 @@ export const modules = [{
         hasSettings: false,
         settings: [],
     }, {
-        name: "FilterKH",
+        name: "Krankenhausfilter",
         description: "Filtert die Krankenhäuser in einem Sprechwunsch.",
         helpLink: "",
         version: "1.0.0",
@@ -381,7 +366,7 @@ export const modules = [{
         allSite: false,
         settings: [],
     }, {
-        name: "ShowNAChance",
+        name: "Notarztchance anzeigen",
         description: "Zeigt im Einsatz mit Patienten die Chance der Grundvarinate, dass ein Notazt gebraucht wird.",
         settingsTarget: "ShowNAChance",
         helpLink: "",
@@ -407,7 +392,7 @@ export const modules = [{
         allSite: true,
         settings: [],
     }, {
-        name: "DistanceVehicle",
+        name: "Fahrzeugdistanzfilter",
         description: "Filtert die Fahrzeuge im Einsatz, die weiter als x Kilometer entfernt sind.",
         settingsTarget: "vehicleDistance",
         helpLink: "",
@@ -428,7 +413,7 @@ export const modules = [{
             default: 20
         }],
     }, {
-        name: "TitleChange",
+        name: "Webseitentitel anpassen",
         description: "Stellt einen individuellen Webseitentitel ein, welcher oben im Browsertab angezeigt wird.",
         settingsTarget: "titleChange",
         helpLink: "",
@@ -449,7 +434,7 @@ export const modules = [{
             default: 'rettungssimulator.online'
         }],
     }, {
-        name: "AlertFMS5",
+        name: "Sürechwünsche anzeigen",
         description: "Sobald ein Fahrzeug einen Sprechwunsch hat, wird euch das per Mitteilungsbox angezeigt.",
         settingsTarget: "alertFMS5",
         helpLink: "",
@@ -462,7 +447,7 @@ export const modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "StatisticsLST",
+        name: "Leitstellenstatistiken",
         description: "Dieses Modul zeit euch in eurer Leitstelle Fahrzeug- sowie Gebäudestatistiken. Weiter gibt es Statistiken zu den heute verdienten Münzen, absolvierten Einsätzen und transportierten Patienten.",
         settingsTarget: "statisticsLST",
         helpLink: "",
@@ -475,7 +460,7 @@ export const modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "CollapseCards in Association",
+        name: "Klappbare Karten in der Verbandsübersicht",
         description: "Die Karten auf der Verbandsseite bei den Mitgliedern lassen sich zusammenklappen.",
         settingsTarget: "collapseCardsAssociation",
         helpLink: "",
@@ -496,7 +481,7 @@ export const modules = [{
             default: false
         }]
     }, {
-        name: "HideDevelopedStepsAtRoadmap",
+        name: "Fertige Updates auf der Roadmap ausblenden",
         description: "Blendet bereits entwickelte Schritte auf der Roadmap aus.",
         settingsTarget: "hideDevelopedStepsAtRoadmap",
         helpLink: "",
@@ -509,7 +494,7 @@ export const modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "HideDeletedMessagesInChat",
+        name: "Gelöschte Nachrichten im Chat verstecken",
         description: "Blendet gelöschte Chatnachrichten aus.",
         settingsTarget: "hideDeletedMessagesInChat",
         helpLink: "",
@@ -522,7 +507,7 @@ export const modules = [{
         allSite: false,
         settings: []
     }, {
-        name: "SearchInMissionOverview",
+        name: "Suche in der Einsatzübersicht",
         description: "Fügt eine Suche zur Einsatzübersicht hinzu.",
         settingsTarget: "searchInMissionOverview",
         version: "1.0.0",
@@ -548,20 +533,7 @@ export const modules = [{
         settings:[]
     },
     {
-        name: "showAverageMoneyInMissionOverview",
-        description: "Zeigt den durchscnittlichen Verdienst pro Einsatz in der Einsatzübersicht an.",
-        settingsTarget: "showAverageMoneyInMissionOverview",
-        version: "1.0.0",
-        author: "NiZi112",
-        target: "showAberageMoneyInMissionOverviewCheck",
-        func: showAverageMoneyInMissionOverview,
-        keywords: ["Geld", "Einsatz", "Durchschnitt", "Münzen", "Übersicht", "Overview", "Einsatzübersicht"],
-        hasSettings: false,
-        allSite: false,
-        settings:[]
-    },
-    {
-        name: "ResetAAO per Hotkey",
+        name: "Reset AAO per Hotkey",
         description: "Tragt einen einzelnen Buchstaben hier ein, um mit diesem die AAO zurückzusetzen.",
         settingsTarget: "resetAAO",
         version: "1.0.0",
@@ -610,7 +582,7 @@ export const modules = [{
         }]
     },
     {
-        name: "Shortlinks",
+        name: "Linkübersicht",
         description: "Bietet unter der Werbung einen schnellen Zugriff auf Forum, Wiki & FAQ.",
         settingsTarget: "shortlinks",
         version: "1.0.0",
@@ -688,7 +660,7 @@ export const modules = [{
         settings: []
     },
     {
-        name: "Mapmode",
+        name: "Großer Kartenmodus",
         description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
         settingsTarget: "mapMode",
         version: "1.0.0",
@@ -701,7 +673,7 @@ export const modules = [{
         settings: []
     },
     {
-        name: "AssociationDashboard",
+        name: "Verbandsdashboard",
         description: "Zeigt euch Verbandsstatistiken.",
         settingsTarget: "AssociationDashboard",
         version: "1.0.0",
@@ -733,5 +705,18 @@ export const modules = [{
             preset: "CHECKBOX",
             default: true
         }]
+    },
+    {
+        name: "Notizen",
+        description: "Fügt eine Notizfunktion zum Spiel hinzu.",
+        settingsTarget: "notes",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "notesCheck",
+        func: notes,
+        keywords: ["Notizen", "merken", "Gedächnis", "Notes", "schrieben"],
+        hasSettings: false,
+        allSite: false,
+        settings:[]
     }
 ];

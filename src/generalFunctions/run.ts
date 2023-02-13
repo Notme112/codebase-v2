@@ -5,11 +5,10 @@ export async function run(s:ReSiCodebaseSettingsType){
     modules.forEach(async (el) => {
         try {
             if (s[el.settingsTarget]) {
-                if (location.pathname != "/" && el.allSite) {
-                    await el.func(s);
-                }
                 if (location.pathname == "/") {
-                    await el.func(s);
+                    el.func(s);
+                } else if (location.pathname != "/" && el.allSite) {
+                    el.func(s);
                 }
             }
         } catch (e) {

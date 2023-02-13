@@ -459,11 +459,11 @@ async function run(s) {
     modules_1.modules.forEach(async (el) => {
         try {
             if (s[el.settingsTarget]) {
-                if (location.pathname != "/" && el.allSite) {
-                    await el.func(s);
-                }
                 if (location.pathname == "/") {
-                    await el.func(s);
+                    el.func(s);
+                }
+                else if (location.pathname != "/" && el.allSite) {
+                    el.func(s);
                 }
             }
         }
@@ -1165,7 +1165,6 @@ const flogout_1 = __webpack_require__(/*! ./modules/flogout */ "./src/modules/fl
 const streammode_1 = __webpack_require__(/*! ./modules/streammode */ "./src/modules/streammode.ts");
 const onwSound_1 = __webpack_require__(/*! ./modules/onwSound */ "./src/modules/onwSound.ts");
 const autocomplete_1 = __webpack_require__(/*! ./modules/autocomplete */ "./src/modules/autocomplete.ts");
-const einsatzzaehler_1 = __webpack_require__(/*! ./modules/einsatzzaehler */ "./src/modules/einsatzzaehler.ts");
 const pushFMS5_1 = __webpack_require__(/*! ./modules/pushFMS5 */ "./src/modules/pushFMS5.ts");
 const zeitwechsel_1 = __webpack_require__(/*! ./modules/zeitwechsel */ "./src/modules/zeitwechsel.ts");
 const uhr_1 = __webpack_require__(/*! ./modules/uhr */ "./src/modules/uhr.ts");
@@ -1186,7 +1185,6 @@ const hideDevelopedStepsAtRoadmap_1 = __webpack_require__(/*! ./modules/hideDeve
 const hideDeletedMessagesInChat_1 = __webpack_require__(/*! ./modules/hideDeletedMessagesInChat */ "./src/modules/hideDeletedMessagesInChat.ts");
 const searchInMissionOverview_1 = __webpack_require__(/*! ./modules/searchInMissionOverview */ "./src/modules/searchInMissionOverview.ts");
 const searchVehicle_1 = __webpack_require__(/*! ./modules/searchVehicle */ "./src/modules/searchVehicle.ts");
-const showAverageMoneyInMissionOverview_1 = __webpack_require__(/*! ./modules/showAverageMoneyInMissionOverview */ "./src/modules/showAverageMoneyInMissionOverview.ts");
 const resetAAOHotkey_1 = __webpack_require__(/*! ./modules/resetAAOHotkey */ "./src/modules/resetAAOHotkey.ts");
 const autofocusMissionNew_1 = __webpack_require__(/*! ./modules/autofocusMissionNew */ "./src/modules/autofocusMissionNew.ts");
 const improvedAAOMovement_1 = __webpack_require__(/*! ./modules/improvedAAOMovement */ "./src/modules/improvedAAOMovement.ts");
@@ -1198,6 +1196,7 @@ const bigMap_1 = __webpack_require__(/*! ./modules/bigMap */ "./src/modules/bigM
 const mapMode_1 = __webpack_require__(/*! ./modules/mapMode */ "./src/modules/mapMode.ts");
 const associationDashboard_1 = __webpack_require__(/*! ./modules/associationDashboard */ "./src/modules/associationDashboard.ts");
 const nextFieldOnEnter_1 = __webpack_require__(/*! ./modules/nextFieldOnEnter */ "./src/modules/nextFieldOnEnter.ts");
+const notes_1 = __webpack_require__(/*! ./modules/notes */ "./src/modules/notes.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1345,20 +1344,6 @@ exports.modules = [{
         settings: [],
     },
     {
-        name: "[outdated] Einsatzzähler",
-        description: "Zeigt in Seitenleiste die Zahl der heute absolvierten Einsätze. Funktion in Statistics LST enthalten!",
-        helpLink: "",
-        version: "1.0.0 [outdatet]",
-        author: "NiZi112",
-        settingsTarget: "einsatzzaehler",
-        target: "einsatzzeahlerCheck",
-        keywords: ["Einsatz", "Zahl", "Zähler", "zählen", "Einsatze", "zählen"],
-        allSite: false,
-        func: einsatzzaehler_1.einsatzzaehler,
-        hasSettings: false,
-        settings: [],
-    },
-    {
         name: "Push FMS5",
         description: "Sendet eine Brwoserbenachrichtigung bei einem Sprechwunsch.",
         helpLink: "",
@@ -1445,7 +1430,7 @@ exports.modules = [{
         hasSettings: false,
         settings: [],
     }, {
-        name: "AlertChat",
+        name: "Chatnachrichtenanzeige",
         description: "Sendet kleine Popups bei einer Chatnachricht.",
         helpLink: "",
         version: "1.0.0",
@@ -1458,7 +1443,7 @@ exports.modules = [{
         hasSettings: false,
         settings: [],
     }, {
-        name: "FilterKH",
+        name: "Krankenhausfilter",
         description: "Filtert die Krankenhäuser in einem Sprechwunsch.",
         helpLink: "",
         version: "1.0.0",
@@ -1540,7 +1525,7 @@ exports.modules = [{
         allSite: false,
         settings: [],
     }, {
-        name: "ShowNAChance",
+        name: "Notarztchance anzeigen",
         description: "Zeigt im Einsatz mit Patienten die Chance der Grundvarinate, dass ein Notazt gebraucht wird.",
         settingsTarget: "ShowNAChance",
         helpLink: "",
@@ -1566,7 +1551,7 @@ exports.modules = [{
         allSite: true,
         settings: [],
     }, {
-        name: "DistanceVehicle",
+        name: "Fahrzeugdistanzfilter",
         description: "Filtert die Fahrzeuge im Einsatz, die weiter als x Kilometer entfernt sind.",
         settingsTarget: "vehicleDistance",
         helpLink: "",
@@ -1587,7 +1572,7 @@ exports.modules = [{
                 default: 20
             }],
     }, {
-        name: "TitleChange",
+        name: "Webseitentitel anpassen",
         description: "Stellt einen individuellen Webseitentitel ein, welcher oben im Browsertab angezeigt wird.",
         settingsTarget: "titleChange",
         helpLink: "",
@@ -1608,7 +1593,7 @@ exports.modules = [{
                 default: 'rettungssimulator.online'
             }],
     }, {
-        name: "AlertFMS5",
+        name: "Sürechwünsche anzeigen",
         description: "Sobald ein Fahrzeug einen Sprechwunsch hat, wird euch das per Mitteilungsbox angezeigt.",
         settingsTarget: "alertFMS5",
         helpLink: "",
@@ -1621,7 +1606,7 @@ exports.modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "StatisticsLST",
+        name: "Leitstellenstatistiken",
         description: "Dieses Modul zeit euch in eurer Leitstelle Fahrzeug- sowie Gebäudestatistiken. Weiter gibt es Statistiken zu den heute verdienten Münzen, absolvierten Einsätzen und transportierten Patienten.",
         settingsTarget: "statisticsLST",
         helpLink: "",
@@ -1634,7 +1619,7 @@ exports.modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "CollapseCards in Association",
+        name: "Klappbare Karten in der Verbandsübersicht",
         description: "Die Karten auf der Verbandsseite bei den Mitgliedern lassen sich zusammenklappen.",
         settingsTarget: "collapseCardsAssociation",
         helpLink: "",
@@ -1655,7 +1640,7 @@ exports.modules = [{
                 default: false
             }]
     }, {
-        name: "HideDevelopedStepsAtRoadmap",
+        name: "Fertige Updates auf der Roadmap ausblenden",
         description: "Blendet bereits entwickelte Schritte auf der Roadmap aus.",
         settingsTarget: "hideDevelopedStepsAtRoadmap",
         helpLink: "",
@@ -1668,7 +1653,7 @@ exports.modules = [{
         allSite: true,
         settings: []
     }, {
-        name: "HideDeletedMessagesInChat",
+        name: "Gelöschte Nachrichten im Chat verstecken",
         description: "Blendet gelöschte Chatnachrichten aus.",
         settingsTarget: "hideDeletedMessagesInChat",
         helpLink: "",
@@ -1681,7 +1666,7 @@ exports.modules = [{
         allSite: false,
         settings: []
     }, {
-        name: "SearchInMissionOverview",
+        name: "Suche in der Einsatzübersicht",
         description: "Fügt eine Suche zur Einsatzübersicht hinzu.",
         settingsTarget: "searchInMissionOverview",
         version: "1.0.0",
@@ -1707,20 +1692,7 @@ exports.modules = [{
         settings: []
     },
     {
-        name: "showAverageMoneyInMissionOverview",
-        description: "Zeigt den durchscnittlichen Verdienst pro Einsatz in der Einsatzübersicht an.",
-        settingsTarget: "showAverageMoneyInMissionOverview",
-        version: "1.0.0",
-        author: "NiZi112",
-        target: "showAberageMoneyInMissionOverviewCheck",
-        func: showAverageMoneyInMissionOverview_1.showAverageMoneyInMissionOverview,
-        keywords: ["Geld", "Einsatz", "Durchschnitt", "Münzen", "Übersicht", "Overview", "Einsatzübersicht"],
-        hasSettings: false,
-        allSite: false,
-        settings: []
-    },
-    {
-        name: "ResetAAO per Hotkey",
+        name: "Reset AAO per Hotkey",
         description: "Tragt einen einzelnen Buchstaben hier ein, um mit diesem die AAO zurückzusetzen.",
         settingsTarget: "resetAAO",
         version: "1.0.0",
@@ -1769,7 +1741,7 @@ exports.modules = [{
             }]
     },
     {
-        name: "Shortlinks",
+        name: "Linkübersicht",
         description: "Bietet unter der Werbung einen schnellen Zugriff auf Forum, Wiki & FAQ.",
         settingsTarget: "shortlinks",
         version: "1.0.0",
@@ -1847,7 +1819,7 @@ exports.modules = [{
         settings: []
     },
     {
-        name: "Mapmode",
+        name: "Großer Kartenmodus",
         description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
         settingsTarget: "mapMode",
         version: "1.0.0",
@@ -1860,7 +1832,7 @@ exports.modules = [{
         settings: []
     },
     {
-        name: "AssociationDashboard",
+        name: "Verbandsdashboard",
         description: "Zeigt euch Verbandsstatistiken.",
         settingsTarget: "AssociationDashboard",
         version: "1.0.0",
@@ -1873,7 +1845,7 @@ exports.modules = [{
         settings: []
     },
     {
-        name: "Nächtest Feld mittels Enter / Klick auf Autocomplete-Element",
+        name: "Nächstes Feld mittels Enter / Klick auf Autocomplete-Element",
         description: "Lässt euch beim Anlegen eines neuen Einsatzes mittels Enter oder Klick auf den Autocomplete ins nächste Feld wechseln.",
         settingsTarget: "nextFieldOnEnter",
         version: "1.0.0",
@@ -1892,6 +1864,19 @@ exports.modules = [{
                 preset: "CHECKBOX",
                 default: true
             }]
+    },
+    {
+        name: "Notizen",
+        description: "Fügt eine Notizfunktion zum Spiel hinzu.",
+        settingsTarget: "notes",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "notesCheck",
+        func: notes_1.notes,
+        keywords: ["Notizen", "merken", "Gedächnis", "Notes", "schrieben"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
     }
 ];
 
@@ -1916,7 +1901,8 @@ async function alertChat(s) {
             systemMessage({
                 'title': `${msg.userName}`,
                 'message': `${msg.message}`,
-                'type': 'info'
+                'type': 'info',
+                'timeout': 5000
             });
         }
     });
@@ -2409,54 +2395,6 @@ exports.einsatzlisteMax = einsatzlisteMax;
 
 /***/ }),
 
-/***/ "./src/modules/einsatzzaehler.ts":
-/*!***************************************!*\
-  !*** ./src/modules/einsatzzaehler.ts ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.einsatzzaehler = void 0;
-const variableError_1 = __webpack_require__(/*! ../generalFunctions/variableError */ "./src/generalFunctions/variableError.ts");
-async function einsatzzaehler(s) {
-    let today = (new Date()).getDate();
-    if (!localStorage.getItem("finished_missions_nizi") || !localStorage.getItem("finished_missions_nizi_time")) {
-        localStorage.setItem("finished_missions_nizi", "0");
-        localStorage.setItem("finished_missions_nizi_time", today.toString());
-    }
-    ;
-    if (localStorage.getItem("finished_missions_nizi_time") != today.toString()) {
-        localStorage.setItem("finished_missions_nizi", "0");
-        localStorage.setItem("finished_missions_nizi_time", today.toString());
-    }
-    ;
-    let newElement = document.createElement("li");
-    newElement.id = "finishedMissionsToday";
-    newElement.innerHTML = `Einsätze heute: ${localStorage.getItem("finished_missions_nizi")}`;
-    document.querySelector("#darkMode")?.after(newElement);
-    // @ts-ignore
-    socket.on("finishMission", (e) => {
-        // @ts-ignore
-        let mission = ControlCenter.missions[e];
-        if (!mission || (mission.isShared && !mission.ownParticipation))
-            return;
-        var missions = parseInt(localStorage.getItem("finished_missions_nizi") || "0");
-        missions++;
-        localStorage.setItem("finished_missions_nizi", missions.toString());
-        let element = document.querySelector('#finishedMissionsToday');
-        if (!element) {
-            (0, variableError_1.variableIsIncorrect)('element (mission counter)', element);
-            return;
-        }
-        element.innerHTML = `Einsätze heute: ${localStorage.getItem("finished_missions_nizi")}`;
-    });
-}
-exports.einsatzzaehler = einsatzzaehler;
-
-
-/***/ }),
-
 /***/ "./src/modules/filterAccosiationMembers.ts":
 /*!*************************************************!*\
   !*** ./src/modules/filterAccosiationMembers.ts ***!
@@ -2561,6 +2499,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.filterKH = void 0;
 const variableError_1 = __webpack_require__(/*! ../generalFunctions/variableError */ "./src/generalFunctions/variableError.ts");
 async function filterKH(s) {
+    console.log('hi');
     let containsUebernehmen = Array.from(document.querySelectorAll('.label-info')).filter((e) => e.innerHTML.includes('übernommen'));
     let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'));
     if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0) || containsUebernehmen.length > 0) {
@@ -2991,6 +2930,55 @@ exports.nextFieldOnEnter = nextFieldOnEnter;
 
 /***/ }),
 
+/***/ "./src/modules/notes.ts":
+/*!******************************!*\
+  !*** ./src/modules/notes.ts ***!
+  \******************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.notes = void 0;
+async function notes(s) {
+    if (!localStorage.notesNiZi)
+        localStorage.notesNiZi = "Notizen";
+    var btn = document.querySelector("#darkMode");
+    btn?.addEventListener("click", function () { if (localStorage.getItem("darkmode_resi_base") == "true") {
+        localStorage.setItem("darkmode_resi_base", "false");
+    }
+    else {
+        localStorage.setItem("darkmode_resi_base", "true");
+    } ; });
+    let li = document.createElement('li');
+    li.id = "notes_nizi";
+    document.querySelector('#darkMode')?.after(li);
+    document.querySelector("#notes_nizi")?.addEventListener("click", () => {
+        //@ts-ignore
+        openFrame("", "1/1/4/4");
+        let frame = document.querySelector("#iframe");
+        frame?.addEventListener("load", () => {
+            let body = frame?.contentDocument?.querySelector("body");
+            if (!(body instanceof HTMLElement))
+                return;
+            body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
+            <script src="https://rettungssimulator.online/js/frame.js?v=0.6.1e" charset="utf-8"></script><script>
+            if(localStorage.getItem('darkmode_resi_base')=='true'){document.getElementsByTagName('body')[0].classList.add('dark');};
+            </script>
+            <link rel='stylesheet' href='css/index.css?v=0.6a' charset='utf-8'>
+            <div class='detail-header'>
+            <div class='detail-title'>Notizen</div>
+            <div class='detail-subtitle'>Deine eigenen Notizen</div>
+            </div>
+            <textarea class='input-round' rows='10' autocomplete='off' id='notes_nizi_resi'>${localStorage.notesNiZi}</textarea>
+            <button class='button button-round button-success' onclick='localStorage.notesNiZi = $("#notes_nizi_resi").val(); parent.closeFrame()'>Speichern</button>`;
+        });
+    });
+}
+exports.notes = notes;
+
+
+/***/ }),
+
 /***/ "./src/modules/onwSound.ts":
 /*!*********************************!*\
   !*** ./src/modules/onwSound.ts ***!
@@ -3247,36 +3235,6 @@ async function shortlinks(s) {
     document.querySelector('#ad')?.append(div);
 }
 exports.shortlinks = shortlinks;
-
-
-/***/ }),
-
-/***/ "./src/modules/showAverageMoneyInMissionOverview.ts":
-/*!**********************************************************!*\
-  !*** ./src/modules/showAverageMoneyInMissionOverview.ts ***!
-  \**********************************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.showAverageMoneyInMissionOverview = void 0;
-async function showAverageMoneyInMissionOverview(s) {
-    if (!location.pathname.includes("/missionOverview"))
-        return;
-    function getAverageMissionCredits() {
-        let list = document.querySelectorAll('table > tbody > tr > td:nth-child(3) > a');
-        let sum = 0;
-        list.forEach((el) => {
-            sum += parseInt(el.innerHTML.replaceAll('.', ''));
-        });
-        return (sum / list.length).toFixed(2);
-    }
-    let newElement = document.createElement("span");
-    newElement.classList.add('label', 'label-info');
-    newElement.innerHTML = `Durchschnittlicher Verdienst pro Einsatz: ${getAverageMissionCredits()} Münzen`;
-    document.querySelector('.detail-subtitle')?.append(newElement);
-}
-exports.showAverageMoneyInMissionOverview = showAverageMoneyInMissionOverview;
 
 
 /***/ }),
@@ -3645,7 +3603,7 @@ const createListElement_1 = __webpack_require__(/*! ./iframeFunctions/createList
 const checkSettings_1 = __webpack_require__(/*! ./generalFunctions/checkSettings */ "./src/generalFunctions/checkSettings.ts");
 const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadListener */ "./src/generalFunctions/addLoadListener.ts");
 (async () => {
-    //return 
+    //return
     if (document.querySelectorAll('.landing-header').length)
         return;
     (0, loadIcons_1.loadIcons)();
@@ -3660,13 +3618,14 @@ const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadList
     (0, checkSettings_1.checkSettings)(s);
     //create object from codebase class
     let codebase = new Codebase_class_1.ReSiCodebase(s);
-    //own frame
     //create list element
-    let element = (0, createListElement_1.createListElement)();
-    const frame = document.querySelector('#iframe');
-    if (!frame)
-        return;
-    (0, addLoadListener_1.addLoadListener)(element, frame, s);
+    if (location.pathname == '/') {
+        let element = (0, createListElement_1.createListElement)();
+        const frame = document.querySelector('#iframe');
+        if (!frame)
+            return;
+        (0, addLoadListener_1.addLoadListener)(element, frame, s);
+    }
     //run functions
     (0, run_1.run)(s);
     //write log
