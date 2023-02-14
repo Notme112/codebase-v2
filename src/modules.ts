@@ -37,6 +37,7 @@ import { mapMode } from "./modules/mapMode";
 import { associationDashboard } from "./modules/associationDashboard";
 import { nextFieldOnEnter } from "./modules/nextFieldOnEnter";
 import { notes } from "./modules/notes";
+import { highlightOwnMissionProtokollEntries } from "./modules/highlightOwnMissionProtokollEntries";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -717,6 +718,19 @@ export const modules = [{
         keywords: ["Notizen", "merken", "Gedächnis", "Notes", "schrieben"],
         hasSettings: false,
         allSite: false,
+        settings:[]
+    },
+    {
+        name: "Eigene Einsatzprotokolleinträge hervorheben",
+        description: "Hebt eigene Einträge im Einsatzprotokoll im Einsatz hervor!",
+        settingsTarget: "highlightOwnMissionProtokollEntries",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "highlightOwnMissionProtokollEntriesCheck",
+        func: highlightOwnMissionProtokollEntries,
+        keywords: ["hervorheben", "Grafik", "Protokoll", "Einsatz", "Einsätze"],
+        hasSettings: false,
+        allSite: true,
         settings:[]
     }
 ];

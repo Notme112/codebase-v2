@@ -14,7 +14,10 @@ import { onTabClick } from "./tabs";
 
 export async function loadCodebaseFrame(frame: HTMLIFrameElement, s:ReSiCodebaseSettingsType) {
     //build frame content
-    if(frame?.contentWindow?.location.href != 'about:blank') return;
+    // @ts-ignore
+    if(window['clickedCoodebase'] != true) return;
+    // @ts-ignore
+    window['clickedCoodebase'] = false;
     var frameContent = `<div class='panel-body'>
 <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
         // @ts-ignore
@@ -155,4 +158,8 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     frame.contentDocument.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => autoUncollapseCards(e, frame)));
     frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => collapsecards(event)));
     frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => saveCodebaseSettings(s, frame));
+    frame.contentWindow.addEventListener('unload', () => {
+        if(!frame.contentDocument) return;
+        frame.contentDocument.body.innerHTML = ''
+    });
 };

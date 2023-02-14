@@ -38,7 +38,13 @@ const loadCodebaseFrame_1 = __webpack_require__(/*! ../iframeFunctions/loadCodeb
 function addLoadListener(element, frame, s) {
     element.addEventListener('click', async () => {
         // @ts-ignore
-        openFrame('', '1/1/4/5');
+        openFrame('about:blank', '1/1/4/5');
+        // @ts-ignore
+        window['clickedCoodebase'] = true;
+        setTimeout(() => {
+            // @ts-ignore
+            window['clickedCoodebase'] = false;
+        }, 1000);
         frame?.addEventListener('load', () => (0, loadCodebaseFrame_1.loadCodebaseFrame)(frame, s));
     });
 }
@@ -75,46 +81,6 @@ function buildDefaultStorage() {
     return obj;
 }
 exports.buildDefaultStorage = buildDefaultStorage;
-
-
-/***/ }),
-
-/***/ "./src/generalFunctions/checkForDarkmode.ts":
-/*!**************************************************!*\
-  !*** ./src/generalFunctions/checkForDarkmode.ts ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkForDarkmode = void 0;
-const variableError_1 = __webpack_require__(/*! ./variableError */ "./src/generalFunctions/variableError.ts");
-function checkForDarkmode() {
-    if (location.pathname == '/') {
-        let darkModeBtn = document.querySelector('#darkMode');
-        if (!darkModeBtn) {
-            (0, variableError_1.variableIsIncorrect)('darkModeBtn', darkModeBtn);
-        }
-        try {
-            if (darkModeBtn?.innerHTML?.includes('Tag'))
-                localStorage.setItem('darkmode_resi_base', 'true');
-            else
-                localStorage.setItem('darkmode_resi_base', 'false');
-        }
-        catch {
-            console.error('Darkmode-Button nicht gefunden');
-        }
-        ;
-        darkModeBtn?.addEventListener('click', () => {
-            if (localStorage.getItem('darkmode_resi_base') == 'true')
-                localStorage.setItem('darkmode_resi_base', 'false');
-            else
-                localStorage.setItem('darkmode_resi_base', 'true');
-        });
-    }
-    ;
-}
-exports.checkForDarkmode = checkForDarkmode;
 
 
 /***/ }),
@@ -730,8 +696,11 @@ const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunc
 const tabs_1 = __webpack_require__(/*! ./tabs */ "./src/iframeFunctions/tabs.ts");
 async function loadCodebaseFrame(frame, s) {
     //build frame content
-    if (frame?.contentWindow?.location.href != 'about:blank')
+    // @ts-ignore
+    if (window['clickedCoodebase'] != true)
         return;
+    // @ts-ignore
+    window['clickedCoodebase'] = false;
     var frameContent = `<div class='panel-body'>
 <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
         // @ts-ignore
@@ -875,6 +844,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     frame.contentDocument.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e, frame)));
     frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => (0, collapseCards_1.collapsecards)(event)));
     frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s, frame));
+    frame.contentWindow.addEventListener('unload', () => {
+        if (!frame.contentDocument)
+            return;
+        frame.contentDocument.body.innerHTML = '';
+    });
 }
 exports.loadCodebaseFrame = loadCodebaseFrame;
 ;
@@ -1194,6 +1168,7 @@ const mapMode_1 = __webpack_require__(/*! ./modules/mapMode */ "./src/modules/ma
 const associationDashboard_1 = __webpack_require__(/*! ./modules/associationDashboard */ "./src/modules/associationDashboard.ts");
 const nextFieldOnEnter_1 = __webpack_require__(/*! ./modules/nextFieldOnEnter */ "./src/modules/nextFieldOnEnter.ts");
 const notes_1 = __webpack_require__(/*! ./modules/notes */ "./src/modules/notes.ts");
+const highlightOwnMissionProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightOwnMissionProtokollEntries */ "./src/modules/highlightOwnMissionProtokollEntries.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1874,6 +1849,19 @@ exports.modules = [{
         hasSettings: false,
         allSite: false,
         settings: []
+    },
+    {
+        name: "Eigene Einsatzprotokolleinträge hervorheben",
+        description: "Hebt eigene Einträge im Einsatzprotokoll im Einsatz hervor!",
+        settingsTarget: "highlightOwnMissionProtokollEntries",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "highlightOwnMissionProtokollEntriesCheck",
+        func: highlightOwnMissionProtokollEntries_1.highlightOwnMissionProtokollEntries,
+        keywords: ["hervorheben", "Grafik", "Protokoll", "Einsatz", "Einsätze"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
     }
 ];
 
@@ -1982,7 +1970,7 @@ async function associationDashboard(s) {
                 <script src="https://rettungssimulator.online/js/popper.js?v=0.7l" charset="utf-8"></script>
                 <script src='https://rettungssimulator.online/js/tippy.js?v=0.6.1e'></script>
                 <script>
-                if(localStorage.getItem('darkmode_resi_base') == 'true') document.body.classList.add('dark')
+                if(parent.document.body.classList.contains('dark')) document.body.classList.add('dark')
                 </script>
                 <div class='detail-header'>
                 <div class='detail-title'>Verbands-Statistiken <div class='right' onclick='window.parent.closeFrame()'> X </div></div>
@@ -2707,6 +2695,32 @@ exports.hideDevelopedStepsAtRoadmap = hideDevelopedStepsAtRoadmap;
 
 /***/ }),
 
+/***/ "./src/modules/highlightOwnMissionProtokollEntries.ts":
+/*!************************************************************!*\
+  !*** ./src/modules/highlightOwnMissionProtokollEntries.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.highlightOwnMissionProtokollEntries = void 0;
+async function highlightOwnMissionProtokollEntries(s) {
+    if (!location.pathname.includes("mission/"))
+        return;
+    let els = document.querySelectorAll('#missionLogs > tbody > tr > td:nth-child(2)');
+    els.forEach((el, i) => {
+        if (!els[i].innerHTML.trim().startsWith('<svg')) {
+            if (!el.parentElement || !(el.parentElement instanceof HTMLElement))
+                return;
+            el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'yellow';
+        }
+    });
+}
+exports.highlightOwnMissionProtokollEntries = highlightOwnMissionProtokollEntries;
+
+
+/***/ }),
+
 /***/ "./src/modules/improvedAAOMovement.ts":
 /*!********************************************!*\
   !*** ./src/modules/improvedAAOMovement.ts ***!
@@ -2938,13 +2952,6 @@ exports.notes = void 0;
 async function notes(s) {
     if (!localStorage.notesNiZi)
         localStorage.notesNiZi = "Notizen";
-    var btn = document.querySelector("#darkMode");
-    btn?.addEventListener("click", function () { if (localStorage.getItem("darkmode_resi_base") == "true") {
-        localStorage.setItem("darkmode_resi_base", "false");
-    }
-    else {
-        localStorage.setItem("darkmode_resi_base", "true");
-    } ; });
     let li = document.createElement('li');
     li.id = "notes_nizi";
     document.querySelector('#darkMode')?.after(li);
@@ -2958,7 +2965,7 @@ async function notes(s) {
                 return;
             body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
             <script src="https://rettungssimulator.online/js/frame.js?v=0.6.1e" charset="utf-8"></script><script>
-            if(localStorage.getItem('darkmode_resi_base')=='true'){document.getElementsByTagName('body')[0].classList.add('dark');};
+            if(parent.document.body.classList.contains('dark')){document.getElementsByTagName('body')[0].classList.add('dark');};
             </script>
             <link rel='stylesheet' href='css/index.css?v=0.6a' charset='utf-8'>
             <div class='detail-header'>
@@ -3591,7 +3598,6 @@ const run_1 = __webpack_require__(/*! ./generalFunctions/run */ "./src/generalFu
 const writeLog_1 = __webpack_require__(/*! ./generalFunctions/writeLog */ "./src/generalFunctions/writeLog.ts");
 const loadIcons_1 = __webpack_require__(/*! ./generalFunctions/loadIcons */ "./src/generalFunctions/loadIcons.ts");
 const loadStyles_1 = __webpack_require__(/*! ./generalFunctions/loadStyles */ "./src/generalFunctions/loadStyles.ts");
-const checkForDarkmode_1 = __webpack_require__(/*! ./generalFunctions/checkForDarkmode */ "./src/generalFunctions/checkForDarkmode.ts");
 const handleNewUser_1 = __webpack_require__(/*! ./generalFunctions/handleNewUser */ "./src/generalFunctions/handleNewUser.ts");
 const removeStorageIfNeeded_1 = __webpack_require__(/*! ./generalFunctions/removeStorageIfNeeded */ "./src/generalFunctions/removeStorageIfNeeded.ts");
 const Codebase_class_1 = __webpack_require__(/*! ./generalFunctions/classes/Codebase.class */ "./src/generalFunctions/classes/Codebase.class.ts");
@@ -3604,7 +3610,6 @@ const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadList
         return;
     (0, loadIcons_1.loadIcons)();
     (0, loadStyles_1.loadStyles)();
-    (0, checkForDarkmode_1.checkForDarkmode)();
     (0, handleNewUser_1.handleNewUser)();
     (0, removeStorageIfNeeded_1.removeStorageIfNeeded)();
     //load storage
