@@ -24,7 +24,7 @@ export async function associationDashboard(s: ReSiCodebaseSettingsType): Promise
                 <script src="https://rettungssimulator.online/js/popper.js?v=0.7l" charset="utf-8"></script>
                 <script src='https://rettungssimulator.online/js/tippy.js?v=0.6.1e'></script>
                 <script>
-                if(localStorage.getItem('darkmode_resi_base') == 'true') document.body.classList.add('dark')
+                if(parent.document.body.classList.contains('dark')) document.body.classList.add('dark')
                 </script>
                 <div class='detail-header'>
                 <div class='detail-title'>Verbands-Statistiken <div class='right' onclick='window.parent.closeFrame()'> X </div></div>

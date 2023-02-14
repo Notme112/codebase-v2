@@ -4,7 +4,6 @@ import { run } from './generalFunctions/run';
 import { writeLog } from './generalFunctions/writeLog';
 import { loadIcons } from './generalFunctions/loadIcons';
 import { loadStyles } from './generalFunctions/loadStyles';
-import { checkForDarkmode } from './generalFunctions/checkForDarkmode';
 import { handleNewUser } from './generalFunctions/handleNewUser';
 import { removeStorageIfNeeded } from './generalFunctions/removeStorageIfNeeded';
 import { ReSiCodebase } from './generalFunctions/classes/Codebase.class';
@@ -16,7 +15,6 @@ import { addLoadListener } from './generalFunctions/addLoadListener';
     if (document.querySelectorAll('.landing-header').length) return;
     loadIcons();
     loadStyles();
-    checkForDarkmode();
     handleNewUser();
     removeStorageIfNeeded()
     //load storage

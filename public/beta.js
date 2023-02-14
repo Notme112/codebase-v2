@@ -35,14 +35,10 @@ exports.addListenerForOpenSettings = addListenerForOpenSettings;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.addLoadListener = void 0;
 const loadCodebaseFrame_1 = __webpack_require__(/*! ../iframeFunctions/loadCodebaseFrame */ "./src/iframeFunctions/loadCodebaseFrame.ts");
-const variableError_1 = __webpack_require__(/*! ./variableError */ "./src/generalFunctions/variableError.ts");
 function addLoadListener(element, frame, s) {
     element.addEventListener('click', async () => {
         // @ts-ignore
         openFrame('', '1/1/4/5');
-        if (!frame) {
-            (0, variableError_1.variableIsIncorrect)('frame', frame);
-        }
         frame?.addEventListener('load', () => (0, loadCodebaseFrame_1.loadCodebaseFrame)(frame, s));
     });
 }
@@ -734,6 +730,8 @@ const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunc
 const tabs_1 = __webpack_require__(/*! ./tabs */ "./src/iframeFunctions/tabs.ts");
 async function loadCodebaseFrame(frame, s) {
     //build frame content
+    if (frame?.contentWindow?.location.href != 'about:blank')
+        return;
     var frameContent = `<div class='panel-body'>
 <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
         // @ts-ignore
@@ -811,8 +809,7 @@ async function loadCodebaseFrame(frame, s) {
                             frameContent += `<option value="${option.value}" ${(option.value === valueOfSetting || (!valueOfSetting && option.value == setting.default)) ? ' selected' : ''}>${option.name}</option>`;
                         });
                         frameContent += `</select>
-                            </div></div>
-                        </div>`;
+                            </div></div>`;
                         break;
                     default:
                         frameContent += `<div class='alert alert-info'>Unbekannte Einstellungsmöglichkeit ${setting.type} @ ${el.name}</div>`;
@@ -2499,7 +2496,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.filterKH = void 0;
 const variableError_1 = __webpack_require__(/*! ../generalFunctions/variableError */ "./src/generalFunctions/variableError.ts");
 async function filterKH(s) {
-    console.log('hi');
     let containsUebernehmen = Array.from(document.querySelectorAll('.label-info')).filter((e) => e.innerHTML.includes('übernommen'));
     let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'));
     if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0) || containsUebernehmen.length > 0) {
@@ -3202,10 +3198,10 @@ exports.searchVehicle = searchVehicle;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.settingsInNavbar = void 0;
 async function settingsInNavbar(s) {
-    let newElement = document.createElement("span");
+    let newElement = document.createElement("div");
     newElement.classList.add("openCodebaseSettings");
     newElement.innerHTML = `<i class="bi bi-gear codebase" data-tooltip="ReSi-Codebase-Einstellungen"></i>`;
-    document.querySelector(".brand")?.appendChild(newElement);
+    document.querySelector(".dropdown")?.prepend(newElement);
     newElement.addEventListener('click', () => {
         let element = document.querySelector('#Codebase');
         if (element instanceof HTMLElement)

@@ -14,6 +14,7 @@ import { onTabClick } from "./tabs";
 
 export async function loadCodebaseFrame(frame: HTMLIFrameElement, s:ReSiCodebaseSettingsType) {
     //build frame content
+    if(frame?.contentWindow?.location.href != 'about:blank') return;
     var frameContent = `<div class='panel-body'>
 <script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
         // @ts-ignore
@@ -91,8 +92,7 @@ export async function loadCodebaseFrame(frame: HTMLIFrameElement, s:ReSiCodebase
                             frameContent += `<option value="${option.value}" ${(option.value === valueOfSetting || (!valueOfSetting && option.value == setting.default)) ? ' selected' : ''}>${option.name}</option>`
                         });
                         frameContent += `</select>
-                            </div></div>
-                        </div>`;
+                            </div></div>`;
                         break;
                     default:
                         frameContent += `<div class='alert alert-info'>Unbekannte Einstellungsmöglichkeit ${setting.type} @ ${el.name}</div>`

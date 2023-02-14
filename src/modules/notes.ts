@@ -1,8 +1,6 @@
 import { ReSiCodebaseSettingsType } from "../types/codebase";
 export async function notes(s: ReSiCodebaseSettingsType): Promise<void> {
     if(!localStorage.notesNiZi) localStorage.notesNiZi = "Notizen";
-    var btn = document.querySelector("#darkMode");
-    btn?.addEventListener("click", function() {if(localStorage.getItem("darkmode_resi_base") == "true"){localStorage.setItem("darkmode_resi_base", "false");}else{localStorage.setItem("darkmode_resi_base", "true");};});
     let li = document.createElement('li');
     li.id = "notes_nizi";
     document.querySelector('#darkMode')?.after(li);
@@ -15,7 +13,7 @@ export async function notes(s: ReSiCodebaseSettingsType): Promise<void> {
             if(!(body instanceof HTMLElement)) return;
             body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
             <script src="https://rettungssimulator.online/js/frame.js?v=0.6.1e" charset="utf-8"></script><script>
-            if(localStorage.getItem('darkmode_resi_base')=='true'){document.getElementsByTagName('body')[0].classList.add('dark');};
+            if(parent.document.body.classList.contains('dark')){document.getElementsByTagName('body')[0].classList.add('dark');};
             </script>
             <link rel='stylesheet' href='css/index.css?v=0.6a' charset='utf-8'>
             <div class='detail-header'>

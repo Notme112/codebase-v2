@@ -2,7 +2,6 @@ import { variableIsIncorrect } from "../generalFunctions/variableError";
 import { ReSiCodebaseSettingsType } from "../types/codebase";
 
 export async function filterKH(s: ReSiCodebaseSettingsType): Promise<void>{
-    console.log('hi')
     let containsUebernehmen = Array.from(document.querySelectorAll('.label-info')).filter((e) => e.innerHTML.includes('übernommen'));
     let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'))
     if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0) || containsUebernehmen.length > 0) {
