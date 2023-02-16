@@ -435,7 +435,7 @@ export const modules = [{
             default: 'rettungssimulator.online'
         }],
     }, {
-        name: "Sürechwünsche anzeigen",
+        name: "Sprechwünsche anzeigen",
         description: "Sobald ein Fahrzeug einen Sprechwunsch hat, wird euch das per Mitteilungsbox angezeigt.",
         settingsTarget: "alertFMS5",
         helpLink: "",
@@ -534,7 +534,7 @@ export const modules = [{
         settings:[]
     },
     {
-        name: "Reset AAO per Hotkey",
+        name: "Zurücksetzen der AAO per Hotkey",
         description: "Tragt einen einzelnen Buchstaben hier ein, um mit diesem die AAO zurückzusetzen.",
         settingsTarget: "resetAAO",
         version: "1.0.0",
