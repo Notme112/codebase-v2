@@ -186,7 +186,7 @@ export const modules = [{
         settings: [],
     },
     {
-        name: "Push FMS5",
+        name: "FMS5 per Dialogbox anzeigen",
         description: "Sendet eine Brwoserbenachrichtigung bei einem Sprechwunsch.",
         helpLink: "",
         version: "1.0.0",
@@ -246,7 +246,7 @@ export const modules = [{
         settings: [],
     },
     {
-        name: "Settings in der Navbar",
+        name: "Einstellungen in der Navbar",
         description: "Die Codebase-Einstellungen lassen sich so auch direkt über die Navbar aufrufen.",
         helpLink: "",
         version: "1.0.0",
