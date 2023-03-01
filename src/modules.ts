@@ -38,6 +38,8 @@ import { associationDashboard } from "./modules/associationDashboard";
 import { nextFieldOnEnter } from "./modules/nextFieldOnEnter";
 import { notes } from "./modules/notes";
 import { highlightOwnMissionProtokollEntries } from "./modules/highlightOwnMissionProtokollEntries";
+import { highlightWrittenMissionProtokollEntries } from "./modules/highlightWrittenProtokollEntries";
+import { searchInAssociationProtokoll } from "./modules/searchInAssociationProtokoll.user";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -342,7 +344,7 @@ export const modules = [{
         ],
     }, {
         name: "Alarmansichtswechsler",
-        description: "Wechselt im Einsatz mit der Taste \"U\" zwischen der Wachen- und Fahrzeugansicht.",
+        description: "Wechselt im Einsatz mit einer konfigurierbaren Taste zwischen der Wachen- und Fahrzeugansicht.",
         settingsTarget: "switchAlarmingMode",
         helpLink: "",
         version: "1.0.0",
@@ -352,7 +354,15 @@ export const modules = [{
         keywords: ['Switch', 'Einsatz', 'Mission', 'Wachenansicht', 'wechseln', 'Fahrzeugansicht'],
         hasSettings: false,
         allSite: true,
-        settings: [],
+        settings: [{
+            subtarget: "switchAlarmingMode",
+            target: "keyToSwitchCheck",
+            name: "Taste (bitte nur ein Buchstabe / Zahl)",
+            type: "input-text",
+            settingsKey: "keyToSwitch",
+            preset: "TEXT",
+            default: "R"
+        }],
     }, {
         name: "Einsatzstatistiken",
         description: "Zeigt in der Einsatzliste, wie viele Einsätze in welchem Status (rot, gelb, grün) ihr aktuell offen habt und wie viel Prozent von euren gesamten Einsötzen dieser Anteil ausmacht.",
@@ -626,6 +636,7 @@ export const modules = [{
         description: "Zeigt euch den durchschnittlichen Verdienst aller Einsätze in der Einsatzübersicht.",
         settingsTarget: "AverageMoneyInMissionOverview",
         version: "1.0.0",
+        helpLink: "",
         author: "NiZi112",
         target: "AverageMoneyInMissionOverviewCheck",
         func: averageMoneyInMissionOverview,
@@ -638,6 +649,7 @@ export const modules = [{
         name: "Event-Label in der Kopfleiste entfernen",
         description: "Entfernt das Label aus der Kopfleiste, sofern es den Text \"Event\" enthält.",
         settingsTarget: "RemoveEventtext",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "removeEventTextCheck",
@@ -651,6 +663,7 @@ export const modules = [{
         name: "Karte dauerhaft groß",
         description: "Setzt die Karte nach dem Schließen eines Fenster wieder in den großen Modus",
         settingsTarget: "bigMap",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "bigMapCheck",
@@ -664,6 +677,7 @@ export const modules = [{
         name: "Großer Kartenmodus",
         description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
         settingsTarget: "mapMode",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "mapModeCheck",
@@ -678,6 +692,7 @@ export const modules = [{
         description: "Zeigt euch Verbandsstatistiken.",
         settingsTarget: "AssociationDashboard",
         version: "1.0.0",
+        helpLink: "",
         author: "NiZi112",
         target: "associationDashboardCheck",
         func: associationDashboard,
@@ -693,6 +708,7 @@ export const modules = [{
         version: "1.0.0",
         author: "NiZi112",
         target: "nextFieldOnEnterCheck",
+        helpLink: "",
         func: nextFieldOnEnter,
         keywords: ["nächstes Feld", "neuer Einsatz", "Enter", "Klick", "vorspringen"],
         hasSettings: true,
@@ -708,9 +724,10 @@ export const modules = [{
         }]
     },
     {
-        name: "Notizen",
+        name: "[nicht funktional] Notizen",
         description: "Fügt eine Notizfunktion zum Spiel hinzu.",
         settingsTarget: "notes",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "notesCheck",
@@ -724,11 +741,38 @@ export const modules = [{
         name: "Eigene Einsatzprotokolleinträge hervorheben",
         description: "Hebt eigene Einträge im Einsatzprotokoll im Einsatz hervor!",
         settingsTarget: "highlightOwnMissionProtokollEntries",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "highlightOwnMissionProtokollEntriesCheck",
         func: highlightOwnMissionProtokollEntries,
         keywords: ["hervorheben", "Grafik", "Protokoll", "Einsatz", "Einsätze"],
+        hasSettings: false,
+        allSite: true,
+        settings:[]
+    },
+    {
+        name: "Nutzergeschriebene Protokolleinträge hervorheben",
+        description: "Hebt alle Einträge im Einsatzprotokoll hervor, die von Nutzern geschrieben wurden und z.B. nicht den Funk der Fahrzeuge!",
+        settingsTarget: "highlightWrittenProtokolEntries",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "highlightWrittenProtokollEntriesCheck",
+        func: highlightWrittenMissionProtokollEntries,
+        keywords: ["Einsatz", "Einsatzprotokoll", "highlightWrittenProtokollEntries", "Highlight", "markieren"],
+        hasSettings: false,
+        allSite: true,
+        settings:[]
+    },
+    {
+        name: "Suche im Verbandsprotokoll",
+        description: "Erlaubt eine Suche im Verbandsprotokoll",
+        settingsTarget: "searchInAssociationLog",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "searchInAssociationLogCheck",
+        func: searchInAssociationProtokoll,
+        keywords: ["Verband", "Admin", "Protokoll", "Suche", "SearchInAssociationLog"],
         hasSettings: false,
         allSite: true,
         settings:[]

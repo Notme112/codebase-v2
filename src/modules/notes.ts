@@ -3,13 +3,14 @@ export async function notes(s: ReSiCodebaseSettingsType): Promise<void> {
     if(!localStorage.notesNiZi) localStorage.notesNiZi = "Notizen";
     let li = document.createElement('li');
     li.id = "notes_nizi";
+    li.innerHTML = 'Notizen';
     document.querySelector('#darkMode')?.after(li);
     document.querySelector("#notes_nizi")?.addEventListener("click", () => {
         //@ts-ignore
-        openFrame("", "1/1/4/4");
+        openFrame("notes", "1/1/4/4");
         let frame = document.querySelector<HTMLIFrameElement>("#iframe");
         frame?.addEventListener("load", () => {
-            let body = frame?.contentDocument?.querySelector("body");
+            let body = frame?.contentDocument?.body;
             if(!(body instanceof HTMLElement)) return;
             body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
             <script src="https://rettungssimulator.online/js/frame.js?v=0.6.1e" charset="utf-8"></script><script>

@@ -47,21 +47,27 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
         buildingCategories.forEach((el) => {
             table += `<tr><td>${el.buildingName}</td><td>${el.count ? el.count : 0}</td></tr>`;
         });
-        table += `</tbody><thead><tr><th><u>Fahrzeugtyp</u></th><th><u>Anzahl</u></th></tr></thead></tbody>`;
+        table += `</tbody><thead><tr><th><u>Fahrzeugtyp</u></th><th><u>Anzahl</u></th></tr></thead><tbody>Test`;
         // @ts-ignore
         for (i in vehicleCategories) {
             // @ts-ignore
-            if (!vehicleCategories[i].ids.length || vehicleCategories[i].ids[0]>10000) continue
-            table += `
-        <tr><td>` + 
-        // @ts-ignore
-        vehicleCategories[i].name + `</td><td>` + vehicleCategories[i].count ? vehicleCategories[i].count : 0 + `</td></tr>`   
+            if (!vehicleCategories[i].ids.length || vehicleCategories[i].ids[0]>10000) continue;
+            console.log(i)
+            table += `<tr><td>`;
+            // @ts-ignore
+            table += vehicleCategories[i].name + `</td><td>`;
+            // @ts-ignore
+            table += vehicleCategories[i].count ? vehicleCategories[i].count : 0;
+            table += `</td></tr>`;  
         }
-        table += `</tbody><thead><tr><th><u>Typ</u></th><th><u>Anzahl</u></th></tr></thead><tbody><tr><td>Einsätze heute</td><td>${config.missionsToday.toLocaleString()}</td></tr><tr><td>Einsätze dieses Jahr</td><td>${config.missionsYear.toLocaleString()}</td></tr><tr><td>Patienten heute</td><td>${config.patientsToday.toLocaleString()}</td></tr><tr><td>Patienten dieses Jahr</td><td>${config.patientsYear.toLocaleString()}</td></tr><tr><td>Münzen heute</td><td>${config.moneyToday.toLocaleString()}</td></tr><tr><td>Münzen dieses Jahr</td><td>${config.moneyYear.toLocaleString()}</td></tr></tbody></table>`;
+        table += `</tbody><br><thead><tr><th><u>Typ</u></th><th><u>Anzahl</u></th></tr></thead><tbody><tr><td>Einsätze heute</td><td>${config.missionsToday.toLocaleString()}</td></tr><tr><td>Einsätze dieses Jahr</td><td>${config.missionsYear.toLocaleString()}</td></tr><tr><td>Patienten heute</td><td>${config.patientsToday.toLocaleString()}</td></tr><tr><td>Patienten dieses Jahr</td><td>${config.patientsYear.toLocaleString()}</td></tr><tr><td>Münzen heute</td><td>${config.moneyToday.toLocaleString()}</td></tr><tr><td>Münzen dieses Jahr</td><td>${config.moneyYear.toLocaleString()}</td></tr></tbody></table>`;
+        //new Element
         let newElement = document.createElement('div');
         newElement.innerHTML = table;
         document.querySelector('#tab_controlCenter_stats')?.append(newElement)
-        document.querySelector('#tab_controlCenter_stats')?.querySelector('.label')?.setAttribute('style', '')
+        //change label
+        let label = document.querySelector<HTMLElement>('#tab_controlCenter_stats')?.querySelector<HTMLElement>('.label');
+        if(label) label.style.textDecoration = 'strike-through'
     }
     if (location.pathname == '/') {
         const config = JSON.parse(localStorage.counterConfig);
@@ -105,7 +111,7 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
         // @ts-ignore
         socket.on('patientStatus', async (e) => {
             // @ts-ignore
-            if (((e.treatmentUserVehicleID == NULL || await getAPI(`userVehicles?id=${e.treatmentUserVehicleID}`)).status == 'error') && (e.transportUserVehicleID != NULL || await getAPI(`userVehicles?id=${e.transportUserVehicleID}`)).status == 'error') return;
+            if (((e.treatmentUserVehicleID == null || await getAPI(`userVehicles?id=${e.treatmentUserVehicleID}`)).status == 'error') && (e.transportUserVehicleID != null || await getAPI(`userVehicles?id=${e.transportUserVehicleID}`)).status == 'error') return;
             if (e.userPatientStatus == 3)
                 changeConfig('patients')
         });
@@ -126,6 +132,6 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
             let mission = ControlCenter.missions[e];
             if (!mission || (mission.isShared && !mission.ownParticipation)) return;
             changeConfig('missions')
-        })
+        });
     }
 }

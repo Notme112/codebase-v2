@@ -1,3 +1,5 @@
+import { hideLoader } from "../generalFunctions/hideLoader";
+import { showLoader } from "../generalFunctions/showLoader";
 import { modules } from "../modules";
 import { ReSiCodebaseSettingsType, Setting } from "../types/codebase";
 import { autoUncollapseCards } from "./autoUnCollapseWhenUnChecked";
@@ -5,41 +7,27 @@ import { collapsecards } from "./collapseCards";
 import { exportSettings } from "./exportSettings";
 import { importSettings } from "./importSettings";
 import { leaveSettings } from "./leaveSettings";
+import { loadScript } from "./loadScript";
 import { openProfile } from "./openProfile";
 import { resetStorage } from "./resetSettings";
 import { saveCodebaseSettings } from "./saveSettings";
 import { searchInFrame } from "./searchInFrame";
+import { shareLink } from "./share";
 import { showStorage } from "./showStorage";
 import { onTabClick } from "./tabs";
+import { unload } from "./unload";
 
 export async function loadCodebaseFrame(frame: HTMLIFrameElement, s:ReSiCodebaseSettingsType) {
+    showLoader();
     //build frame content
     // @ts-ignore
     if(window['clickedCoodebase'] != true) return;
     // @ts-ignore
     window['clickedCoodebase'] = false;
     var frameContent = `<div class='panel-body'>
-<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
 <link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
         // @ts-ignore
         + ReSi.resiVersion + `' charset='utf-8'>
-<script src='https://rettungssimulator.online/js/index.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src='https://rettungssimulator.online/js/iframe.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src='https://rettungssimulator.online/js/controlCenter.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src="https://rettungssimulator.online/js/popper.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `" charset="utf-8"></script>
-<script src='https://rettungssimulator.online/js/tippy.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='detail-header'><div class='detail-title'>ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
 <div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
@@ -116,14 +104,28 @@ JQuery:<br>Copyright (c) 2021 OpenJS Foundation and other contributors, https://
 <br>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
 THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</div></div>
 <center>Joine unserem Discord-Server: <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs <i class="bi bi-discord"></i></a><br><br></center>
-<h3>Danke für die Nutzung der ReSi-Codebase!</h3></div>`
+<h3>Danke für die Nutzung der ReSi-Codebase!</h3></div>`;
     if (!frame || !frame.contentWindow || !frame.contentDocument) return;
     frame.contentDocument.body.innerHTML = frameContent;
     if(document.body.classList.contains('dark')){
         frame.contentDocument.body.classList.add('dark');
     }
+    await loadScript('popper.js', frame);
+    setTimeout(() => loadScript('tippy.js', frame), 2000);
+    setTimeout(() => {
+        console.log('hi')
+        //@ts-ignore
+        frame.contentWindow?.tippy?.delegate('body', {
+            target: '[data-tooltip]',
+            //@ts-ignore
+            onShow(instance) {
+                instance.setContent(instance.reference.dataset.tooltip);
+            },
+            animation: 'shift-away-subtle',
+            allowHTML: true
+        });
+    }, 3000);
     let closeFrameOrig = closeFrame;
-
     function closeFrame() {
         if (!frame || !frame.contentWindow || !frame.contentDocument) return;
         frame.contentDocument.body.innerHTML = '';
@@ -158,8 +160,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     frame.contentDocument.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => autoUncollapseCards(e, frame)));
     frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => collapsecards(event)));
     frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => saveCodebaseSettings(s, frame));
-    frame.contentWindow.addEventListener('unload', () => {
-        if(!frame.contentDocument) return;
-        frame.contentDocument.body.innerHTML = ''
-    });
+    frame.contentWindow.addEventListener('unload', () => unload(frame));
+    frame.contentDocument.querySelector('.share')?.addEventListener('click', shareLink);
+    hideLoader();
 };

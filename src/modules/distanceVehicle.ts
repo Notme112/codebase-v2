@@ -5,23 +5,26 @@ import {
 export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void> {
     if (!location.pathname.includes('/mission/')) return;
     let distance = s.distaceVehicle ? s.distaceVehicle.distance : 10;
-
-    function applyFilter(dis: number) {
-        const el = document.querySelectorAll<HTMLElement>('.mission-vehicle')
-        const km = document.querySelectorAll<HTMLElement>('.vehicle-distance')
-        for (var i = 0; i<el.length; i++) {
-            var e = el[i];
-            if (parseFloat(km[i]?.innerText?.replace('~', ''))>dis) {
-                e?.classList.remove('vehicle');
+    function applyFilter(dis: number){
+        const elements = document.getElementsByClassName('mission-vehicle')
+        const KMs = document.getElementsByClassName('vehicle-distance')
+        for(let i = 0; i < elements.length; i++){
+            let e = elements[i];
+            let km = KMs[i];
+            if(!(km instanceof HTMLElement)) return;
+            if(parseFloat(km.innerText.trim().replace('~', '')) > dis){
+                if(!(e instanceof HTMLElement)) return;
+                e.classList.remove('vehicle');
                 e.style.display = 'none';
-            } else {
-                if (!e.classList.contains('vehicle')) {
-                    e?.classList.add('vehicle');
+            }else{
+                if(!e.classList.contains('vehicle')){
+                    if(!(e instanceof HTMLElement)) return;
+                    e.classList.add('vehicle');
                     e.style.display = '';
                 };
             };
         }
-        // @ts-ignore
+        //@ts-ignore
         updateAAOButtons()
     };
     if (s.filterKMActualActive) applyFilter(distance ? distance : 10)

@@ -148,6 +148,45 @@ exports.ReSiCodebase = ReSiCodebase;
 
 /***/ }),
 
+/***/ "./src/generalFunctions/createLoader.ts":
+/*!**********************************************!*\
+  !*** ./src/generalFunctions/createLoader.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createLoaderSvg = void 0;
+function createLoaderSvg(d) {
+    let element = document.createElement('span');
+    element.style.position = "fixed";
+    element.style.bottom = "10px";
+    element.style.right = "10px";
+    element.style.padding = "5px";
+    element.style.zIndex = '30';
+    element.id = "codebaseLoader";
+    element.innerHTML = '<i class="bi bi-hourglass-top"></i>';
+    d.body.appendChild(element);
+    setInterval(() => {
+        if (element.querySelector('.bi')?.classList.contains('bi-hourglass-top')) {
+            element.querySelector('.bi')?.classList.remove('bi-hourglass-top');
+            element.querySelector('.bi')?.classList.add('bi-hourglass-split');
+        }
+        else if (element.querySelector('.bi')?.classList.contains('bi-hourglass-split')) {
+            element.querySelector('.bi')?.classList.remove('bi-hourglass-split');
+            element.querySelector('.bi')?.classList.add('bi-hourglass-bottom');
+        }
+        else if (element.querySelector('.bi')?.classList.contains('bi-hourglass-bottom')) {
+            element.querySelector('.bi')?.classList.remove('bi-hourglass-bottom');
+            element.querySelector('.bi')?.classList.add('bi-hourglass-top');
+        }
+    }, 1000);
+}
+exports.createLoaderSvg = createLoaderSvg;
+
+
+/***/ }),
+
 /***/ "./src/generalFunctions/getAPI.ts":
 /*!****************************************!*\
   !*** ./src/generalFunctions/getAPI.ts ***!
@@ -280,6 +319,25 @@ Dein Team der ReSi-Codebase`,
     }
 }
 exports.handleNewUser = handleNewUser;
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/hideLoader.ts":
+/*!********************************************!*\
+  !*** ./src/generalFunctions/hideLoader.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.hideLoader = void 0;
+function hideLoader() {
+    let loader = document.querySelector('#codebaseLoader');
+    if (loader)
+        loader.style.display = 'none';
+}
+exports.hideLoader = hideLoader;
 
 
 /***/ }),
@@ -429,8 +487,8 @@ async function run(s) {
                 }
             }
         }
-        catch (e) {
-            console.error(`Fehler im Modul ${el.name}: ${e}`);
+        catch (error) {
+            console.error(`Fehler im Modul ${el.name}: %e`, error);
         }
     });
 }
@@ -454,6 +512,25 @@ exports.scriptInfo = {
     //@ts-ignore
     isProduktion: ReSi.userName === 'NiZi112'
 };
+
+
+/***/ }),
+
+/***/ "./src/generalFunctions/showLoader.ts":
+/*!********************************************!*\
+  !*** ./src/generalFunctions/showLoader.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.showLoader = void 0;
+function showLoader() {
+    let loader = document.querySelector('#codebaseLoader');
+    if (loader)
+        loader.style.display = 'block';
+}
+exports.showLoader = showLoader;
 
 
 /***/ }),
@@ -682,19 +759,25 @@ exports.leaveSettings = leaveSettings;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.loadCodebaseFrame = void 0;
+const hideLoader_1 = __webpack_require__(/*! ../generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
+const showLoader_1 = __webpack_require__(/*! ../generalFunctions/showLoader */ "./src/generalFunctions/showLoader.ts");
 const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
 const autoUnCollapseWhenUnChecked_1 = __webpack_require__(/*! ./autoUnCollapseWhenUnChecked */ "./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts");
 const collapseCards_1 = __webpack_require__(/*! ./collapseCards */ "./src/iframeFunctions/collapseCards.ts");
 const exportSettings_1 = __webpack_require__(/*! ./exportSettings */ "./src/iframeFunctions/exportSettings.ts");
 const importSettings_1 = __webpack_require__(/*! ./importSettings */ "./src/iframeFunctions/importSettings.ts");
 const leaveSettings_1 = __webpack_require__(/*! ./leaveSettings */ "./src/iframeFunctions/leaveSettings.ts");
+const loadScript_1 = __webpack_require__(/*! ./loadScript */ "./src/iframeFunctions/loadScript.ts");
 const openProfile_1 = __webpack_require__(/*! ./openProfile */ "./src/iframeFunctions/openProfile.ts");
 const resetSettings_1 = __webpack_require__(/*! ./resetSettings */ "./src/iframeFunctions/resetSettings.ts");
 const saveSettings_1 = __webpack_require__(/*! ./saveSettings */ "./src/iframeFunctions/saveSettings.ts");
 const searchInFrame_1 = __webpack_require__(/*! ./searchInFrame */ "./src/iframeFunctions/searchInFrame.ts");
+const share_1 = __webpack_require__(/*! ./share */ "./src/iframeFunctions/share.ts");
 const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunctions/showStorage.ts");
 const tabs_1 = __webpack_require__(/*! ./tabs */ "./src/iframeFunctions/tabs.ts");
+const unload_1 = __webpack_require__(/*! ./unload */ "./src/iframeFunctions/unload.ts");
 async function loadCodebaseFrame(frame, s) {
+    (0, showLoader_1.showLoader)();
     //build frame content
     // @ts-ignore
     if (window['clickedCoodebase'] != true)
@@ -702,27 +785,9 @@ async function loadCodebaseFrame(frame, s) {
     // @ts-ignore
     window['clickedCoodebase'] = false;
     var frameContent = `<div class='panel-body'>
-<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
 <link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
         // @ts-ignore
         + ReSi.resiVersion + `' charset='utf-8'>
-<script src='https://rettungssimulator.online/js/index.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src='https://rettungssimulator.online/js/iframe.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src='https://rettungssimulator.online/js/controlCenter.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
-<script src="https://rettungssimulator.online/js/popper.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `" charset="utf-8"></script>
-<script src='https://rettungssimulator.online/js/tippy.js?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `'></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='detail-header'><div class='detail-title'>ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
 <div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
@@ -806,6 +871,21 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     if (document.body.classList.contains('dark')) {
         frame.contentDocument.body.classList.add('dark');
     }
+    await (0, loadScript_1.loadScript)('popper.js', frame);
+    setTimeout(() => (0, loadScript_1.loadScript)('tippy.js', frame), 2000);
+    setTimeout(() => {
+        console.log('hi');
+        //@ts-ignore
+        frame.contentWindow?.tippy?.delegate('body', {
+            target: '[data-tooltip]',
+            //@ts-ignore
+            onShow(instance) {
+                instance.setContent(instance.reference.dataset.tooltip);
+            },
+            animation: 'shift-away-subtle',
+            allowHTML: true
+        });
+    }, 3000);
     let closeFrameOrig = closeFrame;
     function closeFrame() {
         if (!frame || !frame.contentWindow || !frame.contentDocument)
@@ -844,14 +924,43 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     frame.contentDocument.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e, frame)));
     frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => (0, collapseCards_1.collapsecards)(event)));
     frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s, frame));
-    frame.contentWindow.addEventListener('unload', () => {
-        if (!frame.contentDocument)
-            return;
-        frame.contentDocument.body.innerHTML = '';
-    });
+    frame.contentWindow.addEventListener('unload', () => (0, unload_1.unload)(frame));
+    frame.contentDocument.querySelector('.share')?.addEventListener('click', share_1.shareLink);
+    (0, hideLoader_1.hideLoader)();
 }
 exports.loadCodebaseFrame = loadCodebaseFrame;
 ;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/loadScript.ts":
+/*!*******************************************!*\
+  !*** ./src/iframeFunctions/loadScript.ts ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadScript = void 0;
+const hideLoader_1 = __webpack_require__(/*! ../generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
+const showLoader_1 = __webpack_require__(/*! ../generalFunctions/showLoader */ "./src/generalFunctions/showLoader.ts");
+async function loadScript(name, context) {
+    (0, showLoader_1.showLoader)();
+    context.contentWindow?.parent.document;
+    let script = document.createElement('script');
+    try {
+        //@ts-ignore
+        script.innerHTML = await (await fetch('https://rettungssimulator.online/js/' + name + '?v=' + ReSi.resiVersion)).text();
+    }
+    catch (error) {
+        console.error('Error while fetching script: ' + name + '%e');
+        return false;
+    }
+    context.contentDocument?.body?.appendChild(script);
+    (0, hideLoader_1.hideLoader)();
+}
+exports.loadScript = loadScript;
 
 
 /***/ }),
@@ -1029,6 +1138,27 @@ exports.searchInFrame = searchInFrame;
 
 /***/ }),
 
+/***/ "./src/iframeFunctions/share.ts":
+/*!**************************************!*\
+  !*** ./src/iframeFunctions/share.ts ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shareLink = void 0;
+function shareLink(e) {
+    if (!(e.target instanceof HTMLElement))
+        return;
+    navigator.share({
+        url: e?.target?.getAttribute('share-url') ?? ''
+    });
+}
+exports.shareLink = shareLink;
+
+
+/***/ }),
+
 /***/ "./src/iframeFunctions/showStorage.ts":
 /*!********************************************!*\
   !*** ./src/iframeFunctions/showStorage.ts ***!
@@ -1120,6 +1250,25 @@ exports.onTabClick = onTabClick;
 
 /***/ }),
 
+/***/ "./src/iframeFunctions/unload.ts":
+/*!***************************************!*\
+  !*** ./src/iframeFunctions/unload.ts ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unload = void 0;
+function unload(frame) {
+    if (!frame.contentDocument)
+        return;
+    frame.contentDocument.body.innerHTML = '';
+}
+exports.unload = unload;
+
+
+/***/ }),
+
 /***/ "./src/modules.ts":
 /*!************************!*\
   !*** ./src/modules.ts ***!
@@ -1169,6 +1318,8 @@ const associationDashboard_1 = __webpack_require__(/*! ./modules/associationDash
 const nextFieldOnEnter_1 = __webpack_require__(/*! ./modules/nextFieldOnEnter */ "./src/modules/nextFieldOnEnter.ts");
 const notes_1 = __webpack_require__(/*! ./modules/notes */ "./src/modules/notes.ts");
 const highlightOwnMissionProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightOwnMissionProtokollEntries */ "./src/modules/highlightOwnMissionProtokollEntries.ts");
+const highlightWrittenProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightWrittenProtokollEntries */ "./src/modules/highlightWrittenProtokollEntries.ts");
+const searchInAssociationProtokoll_user_1 = __webpack_require__(/*! ./modules/searchInAssociationProtokoll.user */ "./src/modules/searchInAssociationProtokoll.user.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1472,7 +1623,7 @@ exports.modules = [{
         ],
     }, {
         name: "Alarmansichtswechsler",
-        description: "Wechselt im Einsatz mit der Taste \"U\" zwischen der Wachen- und Fahrzeugansicht.",
+        description: "Wechselt im Einsatz mit einer konfigurierbaren Taste zwischen der Wachen- und Fahrzeugansicht.",
         settingsTarget: "switchAlarmingMode",
         helpLink: "",
         version: "1.0.0",
@@ -1482,7 +1633,15 @@ exports.modules = [{
         keywords: ['Switch', 'Einsatz', 'Mission', 'Wachenansicht', 'wechseln', 'Fahrzeugansicht'],
         hasSettings: false,
         allSite: true,
-        settings: [],
+        settings: [{
+                subtarget: "switchAlarmingMode",
+                target: "keyToSwitchCheck",
+                name: "Taste (bitte nur ein Buchstabe / Zahl)",
+                type: "input-text",
+                settingsKey: "keyToSwitch",
+                preset: "TEXT",
+                default: "R"
+            }],
     }, {
         name: "Einsatzstatistiken",
         description: "Zeigt in der Einsatzliste, wie viele Einsätze in welchem Status (rot, gelb, grün) ihr aktuell offen habt und wie viel Prozent von euren gesamten Einsötzen dieser Anteil ausmacht.",
@@ -1756,6 +1915,7 @@ exports.modules = [{
         description: "Zeigt euch den durchschnittlichen Verdienst aller Einsätze in der Einsatzübersicht.",
         settingsTarget: "AverageMoneyInMissionOverview",
         version: "1.0.0",
+        helpLink: "",
         author: "NiZi112",
         target: "AverageMoneyInMissionOverviewCheck",
         func: averageMoneyInMissionOverview_1.averageMoneyInMissionOverview,
@@ -1768,6 +1928,7 @@ exports.modules = [{
         name: "Event-Label in der Kopfleiste entfernen",
         description: "Entfernt das Label aus der Kopfleiste, sofern es den Text \"Event\" enthält.",
         settingsTarget: "RemoveEventtext",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "removeEventTextCheck",
@@ -1781,6 +1942,7 @@ exports.modules = [{
         name: "Karte dauerhaft groß",
         description: "Setzt die Karte nach dem Schließen eines Fenster wieder in den großen Modus",
         settingsTarget: "bigMap",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "bigMapCheck",
@@ -1794,6 +1956,7 @@ exports.modules = [{
         name: "Großer Kartenmodus",
         description: "Erweiter das Spiel um einen Modus, in dem nur die Karte zu sehen ist.",
         settingsTarget: "mapMode",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "mapModeCheck",
@@ -1808,6 +1971,7 @@ exports.modules = [{
         description: "Zeigt euch Verbandsstatistiken.",
         settingsTarget: "AssociationDashboard",
         version: "1.0.0",
+        helpLink: "",
         author: "NiZi112",
         target: "associationDashboardCheck",
         func: associationDashboard_1.associationDashboard,
@@ -1823,6 +1987,7 @@ exports.modules = [{
         version: "1.0.0",
         author: "NiZi112",
         target: "nextFieldOnEnterCheck",
+        helpLink: "",
         func: nextFieldOnEnter_1.nextFieldOnEnter,
         keywords: ["nächstes Feld", "neuer Einsatz", "Enter", "Klick", "vorspringen"],
         hasSettings: true,
@@ -1838,9 +2003,10 @@ exports.modules = [{
             }]
     },
     {
-        name: "Notizen",
+        name: "[nicht funktional] Notizen",
         description: "Fügt eine Notizfunktion zum Spiel hinzu.",
         settingsTarget: "notes",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "notesCheck",
@@ -1854,11 +2020,38 @@ exports.modules = [{
         name: "Eigene Einsatzprotokolleinträge hervorheben",
         description: "Hebt eigene Einträge im Einsatzprotokoll im Einsatz hervor!",
         settingsTarget: "highlightOwnMissionProtokollEntries",
+        helpLink: "",
         version: "1.0.0",
         author: "NiZi112",
         target: "highlightOwnMissionProtokollEntriesCheck",
         func: highlightOwnMissionProtokollEntries_1.highlightOwnMissionProtokollEntries,
         keywords: ["hervorheben", "Grafik", "Protokoll", "Einsatz", "Einsätze"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Nutzergeschriebene Protokolleinträge hervorheben",
+        description: "Hebt alle Einträge im Einsatzprotokoll hervor, die von Nutzern geschrieben wurden und z.B. nicht den Funk der Fahrzeuge!",
+        settingsTarget: "highlightWrittenProtokolEntries",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "highlightWrittenProtokollEntriesCheck",
+        func: highlightWrittenProtokollEntries_1.highlightWrittenMissionProtokollEntries,
+        keywords: ["Einsatz", "Einsatzprotokoll", "highlightWrittenProtokollEntries", "Highlight", "markieren"],
+        hasSettings: false,
+        allSite: true,
+        settings: []
+    },
+    {
+        name: "Suche im Verbandsprotokoll",
+        description: "Erlaubt eine Suche im Verbandsprotokoll",
+        settingsTarget: "searchInAssociationLog",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "searchInAssociationLogCheck",
+        func: searchInAssociationProtokoll_user_1.searchInAssociationProtokoll,
+        keywords: ["Verband", "Admin", "Protokoll", "Suche", "SearchInAssociationLog"],
         hasSettings: false,
         allSite: true,
         settings: []
@@ -2307,24 +2500,31 @@ async function distanceVehicle(s) {
         return;
     let distance = s.distaceVehicle ? s.distaceVehicle.distance : 10;
     function applyFilter(dis) {
-        const el = document.querySelectorAll('.mission-vehicle');
-        const km = document.querySelectorAll('.vehicle-distance');
-        for (var i = 0; i < el.length; i++) {
-            var e = el[i];
-            if (parseFloat(km[i]?.innerText?.replace('~', '')) > dis) {
-                e?.classList.remove('vehicle');
+        const elements = document.getElementsByClassName('mission-vehicle');
+        const KMs = document.getElementsByClassName('vehicle-distance');
+        for (let i = 0; i < elements.length; i++) {
+            let e = elements[i];
+            let km = KMs[i];
+            if (!(km instanceof HTMLElement))
+                return;
+            if (parseFloat(km.innerText.trim().replace('~', '')) > dis) {
+                if (!(e instanceof HTMLElement))
+                    return;
+                e.classList.remove('vehicle');
                 e.style.display = 'none';
             }
             else {
                 if (!e.classList.contains('vehicle')) {
-                    e?.classList.add('vehicle');
+                    if (!(e instanceof HTMLElement))
+                        return;
+                    e.classList.add('vehicle');
                     e.style.display = '';
                 }
                 ;
             }
             ;
         }
-        // @ts-ignore
+        //@ts-ignore
         updateAAOButtons();
     }
     ;
@@ -2707,16 +2907,48 @@ exports.highlightOwnMissionProtokollEntries = void 0;
 async function highlightOwnMissionProtokollEntries(s) {
     if (!location.pathname.includes("mission/"))
         return;
-    let els = document.querySelectorAll('#missionLogs > tbody > tr > td:nth-child(2)');
-    els.forEach((el, i) => {
-        if (!els[i].innerHTML.trim().startsWith('<svg')) {
-            if (!el.parentElement || !(el.parentElement instanceof HTMLElement))
-                return;
-            el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'yellow';
-        }
-    });
+    function main() {
+        let els = document.querySelectorAll('#missionLogs > tbody > tr > td:nth-child(2)');
+        els.forEach((el, i) => {
+            if (!els[i].innerHTML.trim().startsWith('<svg')) {
+                if (!el.parentElement || !(el.parentElement instanceof HTMLElement))
+                    return;
+                el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'yellow';
+            }
+        });
+    }
+    main();
+    setInterval(main, 1000);
 }
 exports.highlightOwnMissionProtokollEntries = highlightOwnMissionProtokollEntries;
+
+
+/***/ }),
+
+/***/ "./src/modules/highlightWrittenProtokollEntries.ts":
+/*!*********************************************************!*\
+  !*** ./src/modules/highlightWrittenProtokollEntries.ts ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.highlightWrittenMissionProtokollEntries = void 0;
+async function highlightWrittenMissionProtokollEntries(s) {
+    if (!location.pathname.includes("mission/"))
+        return;
+    function main() {
+        let els = document.querySelectorAll('.fa-pencil');
+        els.forEach((el, i) => {
+            if (!el.parentElement || !(el.parentElement instanceof HTMLElement) || !el.parentElement.parentElement || !(el.parentElement.parentElement instanceof HTMLElement))
+                return;
+            el.parentElement.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'darkblue' : 'lightgreen';
+        });
+    }
+    main();
+    setInterval(main, 1000);
+}
+exports.highlightWrittenMissionProtokollEntries = highlightWrittenMissionProtokollEntries;
 
 
 /***/ }),
@@ -2954,13 +3186,14 @@ async function notes(s) {
         localStorage.notesNiZi = "Notizen";
     let li = document.createElement('li');
     li.id = "notes_nizi";
+    li.innerHTML = 'Notizen';
     document.querySelector('#darkMode')?.after(li);
     document.querySelector("#notes_nizi")?.addEventListener("click", () => {
         //@ts-ignore
-        openFrame("", "1/1/4/4");
+        openFrame("notes", "1/1/4/4");
         let frame = document.querySelector("#iframe");
         frame?.addEventListener("load", () => {
-            let body = frame?.contentDocument?.querySelector("body");
+            let body = frame?.contentDocument?.body;
             if (!(body instanceof HTMLElement))
                 return;
             body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
@@ -3075,6 +3308,62 @@ async function resetAAOHotkey(s) {
         });
 }
 exports.resetAAOHotkey = resetAAOHotkey;
+
+
+/***/ }),
+
+/***/ "./src/modules/searchInAssociationProtokoll.user.ts":
+/*!**********************************************************!*\
+  !*** ./src/modules/searchInAssociationProtokoll.user.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.searchInAssociationProtokoll = void 0;
+async function searchInAssociationProtokoll(s) {
+    if (!location.pathname.includes("/association/") || !document.querySelector('#tab_associationLogs'))
+        return;
+    let newElement = document.createElement("div");
+    newElement.innerHTML = `<input class="input-round input-inline nochange" type="text" value="" style="padding-left:10px;" id="input_search" placeholder="Suche..." autocomplete="off">`;
+    newElement.classList.add('input-container', 'right');
+    document.querySelector('#tab_associationLogs .tab-headline')?.insertAdjacentElement('beforeend', newElement);
+    let newElement2 = document.createElement("div");
+    newElement2.innerHTML = `<h4 class='label label-info searchNoResult hidden'>Die Suche lieferte keine Ergebnisse! Bitte probiere es mit einem anderen Suchwort!</h4>`;
+    document.querySelector('#tab_associationLogs .tab-headline')?.after(newElement2);
+    let newElement3 = document.createElement("style");
+    newElement3.innerHTML = `.searchHidden { display: none !important };`;
+    document.head.appendChild(newElement3);
+    let query = '[associationlogid]';
+    function search() {
+        var searchWord = document.querySelector('#input_search')?.value?.toLowerCase() || '';
+        if (searchWord == '') {
+            document.querySelectorAll(query).forEach((el) => {
+                el.classList.remove('searchHidden');
+                document.querySelector('.searchNoResult')?.classList.add('hidden');
+            });
+            return;
+        }
+        let elems = document.querySelectorAll(query);
+        for (var j = 0; j < document.querySelectorAll(query).length; j++) {
+            if (elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord) || elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord)) {
+                elems[j].classList.remove('searchHidden');
+                document.querySelector('.searchNoResult')?.classList.add('hidden');
+            }
+            else {
+                elems[j].classList.add('searchHidden');
+            }
+        }
+        if (elems.length == document.querySelectorAll('.searchHidden td').length) {
+            document.querySelector('.searchNoResult')?.classList.remove('hidden');
+        }
+    }
+    ;
+    ['input', 'change', 'keyup'].forEach((event) => {
+        document.querySelector('#input_search')?.addEventListener(event, search);
+    });
+}
+exports.searchInAssociationProtokoll = searchInAssociationProtokoll;
 
 
 /***/ }),
@@ -3328,22 +3617,29 @@ async function statisticsLST(s) {
         buildingCategories.forEach((el) => {
             table += `<tr><td>${el.buildingName}</td><td>${el.count ? el.count : 0}</td></tr>`;
         });
-        table += `</tbody><thead><tr><th><u>Fahrzeugtyp</u></th><th><u>Anzahl</u></th></tr></thead></tbody>`;
+        table += `</tbody><thead><tr><th><u>Fahrzeugtyp</u></th><th><u>Anzahl</u></th></tr></thead><tbody>Test`;
         // @ts-ignore
         for (i in vehicleCategories) {
             // @ts-ignore
             if (!vehicleCategories[i].ids.length || vehicleCategories[i].ids[0] > 10000)
                 continue;
-            table += `
-        <tr><td>` +
-                // @ts-ignore
-                vehicleCategories[i].name + `</td><td>` + vehicleCategories[i].count ? vehicleCategories[i].count : 0;
+            console.log(i);
+            table += `<tr><td>`;
+            // @ts-ignore
+            table += vehicleCategories[i].name + `</td><td>`;
+            // @ts-ignore
+            table += vehicleCategories[i].count ? vehicleCategories[i].count : 0;
+            table += `</td></tr>`;
         }
-        table += `</tbody><thead><tr><th><u>Typ</u></th><th><u>Anzahl</u></th></tr></thead><tbody><tr><td>Einsätze heute</td><td>${config.missionsToday.toLocaleString()}</td></tr><tr><td>Einsätze dieses Jahr</td><td>${config.missionsYear.toLocaleString()}</td></tr><tr><td>Patienten heute</td><td>${config.patientsToday.toLocaleString()}</td></tr><tr><td>Patienten dieses Jahr</td><td>${config.patientsYear.toLocaleString()}</td></tr><tr><td>Münzen heute</td><td>${config.moneyToday.toLocaleString()}</td></tr><tr><td>Münzen dieses Jahr</td><td>${config.moneyYear.toLocaleString()}</td></tr></tbody></table>`;
+        table += `</tbody><br><thead><tr><th><u>Typ</u></th><th><u>Anzahl</u></th></tr></thead><tbody><tr><td>Einsätze heute</td><td>${config.missionsToday.toLocaleString()}</td></tr><tr><td>Einsätze dieses Jahr</td><td>${config.missionsYear.toLocaleString()}</td></tr><tr><td>Patienten heute</td><td>${config.patientsToday.toLocaleString()}</td></tr><tr><td>Patienten dieses Jahr</td><td>${config.patientsYear.toLocaleString()}</td></tr><tr><td>Münzen heute</td><td>${config.moneyToday.toLocaleString()}</td></tr><tr><td>Münzen dieses Jahr</td><td>${config.moneyYear.toLocaleString()}</td></tr></tbody></table>`;
+        //new Element
         let newElement = document.createElement('div');
         newElement.innerHTML = table;
         document.querySelector('#tab_controlCenter_stats')?.append(newElement);
-        document.querySelector('#tab_controlCenter_stats')?.querySelector('.label')?.setAttribute('style', '');
+        //change label
+        let label = document.querySelector('#tab_controlCenter_stats')?.querySelector('.label');
+        if (label)
+            label.style.textDecoration = 'strike-through';
     }
     if (location.pathname == '/') {
         const config = JSON.parse(localStorage.counterConfig);
@@ -3388,7 +3684,7 @@ async function statisticsLST(s) {
         // @ts-ignore
         socket.on('patientStatus', async (e) => {
             // @ts-ignore
-            if (((e.treatmentUserVehicleID == NULL || await (0, getAPI_1.getAPI)(`userVehicles?id=${e.treatmentUserVehicleID}`)).status == 'error') && (e.transportUserVehicleID != NULL || await (0, getAPI_1.getAPI)(`userVehicles?id=${e.transportUserVehicleID}`)).status == 'error')
+            if (((e.treatmentUserVehicleID == null || await (0, getAPI_1.getAPI)(`userVehicles?id=${e.treatmentUserVehicleID}`)).status == 'error') && (e.transportUserVehicleID != null || await (0, getAPI_1.getAPI)(`userVehicles?id=${e.transportUserVehicleID}`)).status == 'error')
                 return;
             if (e.userPatientStatus == 3)
                 changeConfig('patients');
@@ -3456,7 +3752,7 @@ async function switchAlarmingMode(s) {
     if (!location.pathname.includes('/mission/'))
         return;
     document.addEventListener('keyup', (e) => {
-        if (e.keyCode == 85) {
+        if (e.key.toLowerCase() == s.switchAlarmingMode.keyToSwitch) {
             document.querySelector('.detail-right .button-gray')?.click();
         }
     });
@@ -3521,7 +3817,7 @@ exports.uhr = void 0;
 async function uhr(s) {
     let newElement = document.createElement("div");
     newElement.id = "clock";
-    document.querySelector(".brand")?.appendChild(newElement);
+    document.querySelector(".brand")?.insertAdjacentElement('afterend', newElement);
     var updateClock = function () {
         var date = new Date();
         var stunde = date.getHours().toString();
@@ -3604,12 +3900,15 @@ const Codebase_class_1 = __webpack_require__(/*! ./generalFunctions/classes/Code
 const createListElement_1 = __webpack_require__(/*! ./iframeFunctions/createListElement */ "./src/iframeFunctions/createListElement.ts");
 const checkSettings_1 = __webpack_require__(/*! ./generalFunctions/checkSettings */ "./src/generalFunctions/checkSettings.ts");
 const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadListener */ "./src/generalFunctions/addLoadListener.ts");
+const createLoader_1 = __webpack_require__(/*! ./generalFunctions/createLoader */ "./src/generalFunctions/createLoader.ts");
+const hideLoader_1 = __webpack_require__(/*! ./generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
 (async () => {
     //return
     if (document.querySelectorAll('.landing-header').length)
         return;
     (0, loadIcons_1.loadIcons)();
     (0, loadStyles_1.loadStyles)();
+    (0, createLoader_1.createLoaderSvg)(document);
     (0, handleNewUser_1.handleNewUser)();
     (0, removeStorageIfNeeded_1.removeStorageIfNeeded)();
     //load storage
@@ -3632,6 +3931,7 @@ const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadList
     //write log
     (0, writeLog_1.writeLog)(scriptInfo_1.scriptInfo);
     (0, addListenerForOpenSettings_1.addListenerForOpenSettings)();
+    (0, hideLoader_1.hideLoader)();
 })();
 
 })();

@@ -11,8 +11,8 @@ export async function run(s:ReSiCodebaseSettingsType){
                     el.func(s);
                 }
             }
-        } catch (e) {
-            console.error(`Fehler im Modul ${el.name}: ${e}`)
+        } catch (error) {
+            console.error(`Fehler im Modul ${el.name}: %e`, error)
         }
     });
 }

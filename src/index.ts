@@ -10,11 +10,14 @@ import { ReSiCodebase } from './generalFunctions/classes/Codebase.class';
 import { createListElement } from './iframeFunctions/createListElement';
 import { checkSettings } from './generalFunctions/checkSettings';
 import { addLoadListener } from './generalFunctions/addLoadListener';
+import { createLoaderSvg } from './generalFunctions/createLoader';
+import { hideLoader } from './generalFunctions/hideLoader';
 (async () => {
     //return
     if (document.querySelectorAll('.landing-header').length) return;
     loadIcons();
     loadStyles();
+    createLoaderSvg(document);
     handleNewUser();
     removeStorageIfNeeded()
     //load storage
@@ -36,4 +39,5 @@ import { addLoadListener } from './generalFunctions/addLoadListener';
     //write log
     writeLog(scriptInfo)
     addListenerForOpenSettings();
+    hideLoader();
 })();
