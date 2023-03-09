@@ -724,7 +724,7 @@ export const modules = [{
         }]
     },
     {
-        name: "[nicht funktional] Notizen",
+        name: "Notizen",
         description: "Fügt eine Notizfunktion zum Spiel hinzu.",
         settingsTarget: "notes",
         helpLink: "",
@@ -734,7 +734,7 @@ export const modules = [{
         func: notes,
         keywords: ["Notizen", "merken", "Gedächnis", "Notes", "schrieben"],
         hasSettings: false,
-        allSite: false,
+        allSite: true,
         settings:[]
     },
     {

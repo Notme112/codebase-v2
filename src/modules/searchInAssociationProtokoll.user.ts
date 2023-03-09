@@ -8,7 +8,7 @@ export async function searchInAssociationProtokoll(s: ReSiCodebaseSettingsType):
             document.querySelector('#tab_associationLogs .tab-headline')?.insertAdjacentElement('beforeend', newElement);
             let newElement2 = document.createElement("div");
             newElement2.innerHTML = `<h4 class='label label-info searchNoResult hidden'>Die Suche lieferte keine Ergebnisse! Bitte probiere es mit einem anderen Suchwort!</h4>`;
-            document.querySelector('#tab_associationLogs .tab-headline')?.after(newElement2)
+            document.querySelector('#tab_associationLogs .card-headline.card-headline-danger')?.after(newElement2)
             let newElement3 = document.createElement("style");
             newElement3.innerHTML = `.searchHidden { display: none !important };`
             document.head.appendChild(newElement3);
@@ -23,16 +23,16 @@ export async function searchInAssociationProtokoll(s: ReSiCodebaseSettingsType):
                     });
                     return;
                 }
-                let elems = document.querySelectorAll(query);
-                for (var j = 0; j<document.querySelectorAll(query).length; j++) {
-                    if (elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord) || elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord)) {
+                let elems = document.querySelectorAll<HTMLElement>(query);
+                for (var j = 0; j<elems.length; j++) {
+                    if (elems[j]?.innerText.toLowerCase().includes(searchWord) || elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord)) {
                         elems[j].classList.remove('searchHidden');
                         document.querySelector('.searchNoResult')?.classList.add('hidden');
                     } else {
                         elems[j].classList.add('searchHidden')
                     }
                 }
-                if (elems.length == document.querySelectorAll('.searchHidden td').length) {
+                if (elems.length == document.querySelectorAll('.searchHidden').length) {
                     document.querySelector('.searchNoResult')?.classList.remove('hidden');
                 }
             };

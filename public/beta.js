@@ -2003,7 +2003,7 @@ exports.modules = [{
             }]
     },
     {
-        name: "[nicht funktional] Notizen",
+        name: "Notizen",
         description: "Fügt eine Notizfunktion zum Spiel hinzu.",
         settingsTarget: "notes",
         helpLink: "",
@@ -2013,7 +2013,7 @@ exports.modules = [{
         func: notes_1.notes,
         keywords: ["Notizen", "merken", "Gedächnis", "Notes", "schrieben"],
         hasSettings: false,
-        allSite: false,
+        allSite: true,
         settings: []
     },
     {
@@ -3184,31 +3184,24 @@ exports.notes = void 0;
 async function notes(s) {
     if (!localStorage.notesNiZi)
         localStorage.notesNiZi = "Notizen";
-    let li = document.createElement('li');
-    li.id = "notes_nizi";
-    li.innerHTML = 'Notizen';
-    document.querySelector('#darkMode')?.after(li);
-    document.querySelector("#notes_nizi")?.addEventListener("click", () => {
-        //@ts-ignore
-        openFrame("notes", "1/1/4/4");
-        let frame = document.querySelector("#iframe");
-        frame?.addEventListener("load", () => {
-            let body = frame?.contentDocument?.body;
-            if (!(body instanceof HTMLElement))
-                return;
-            body.innerHTML = `<script src='https://rettungssimulator.online/js/jquery-3.5.0.min.js'></script>
-            <script src="https://rettungssimulator.online/js/frame.js?v=0.6.1e" charset="utf-8"></script><script>
-            if(parent.document.body.classList.contains('dark')){document.getElementsByTagName('body')[0].classList.add('dark');};
-            </script>
-            <link rel='stylesheet' href='css/index.css?v=0.6a' charset='utf-8'>
-            <div class='detail-header'>
-            <div class='detail-title'>Notizen</div>
-            <div class='detail-subtitle'>Deine eigenen Notizen</div>
-            </div>
-            <textarea class='input-round' rows='10' autocomplete='off' id='notes_nizi_resi'>${localStorage.notesNiZi}</textarea>
-            <button class='button button-round button-success' onclick='localStorage.notesNiZi = $("#notes_nizi_resi").val(); parent.closeFrame()'>Speichern</button>`;
+    if (location.pathname == '/') {
+        let li = document.createElement('li');
+        li.id = "notes_nizi";
+        li.innerHTML = 'Notizen';
+        document.querySelector('#darkMode')?.after(li);
+        document.querySelector("#notes_nizi")?.addEventListener("click", () => {
+            //@ts-ignore
+            openFrame("script/NiZi112/notes", "1/1/4/4");
         });
-    });
+    }
+    else if (location.pathname == '/script/NiZi112/notes') {
+        document.body.innerHTML = `<div class='detail-header'>
+        <div class='detail-title'>Notizen</div>
+        <div class='detail-subtitle'>Deine eigenen Notizen</div>
+        </div>
+        <textarea class='input-round' rows='10' autocomplete='off' id='notes_nizi_resi'>${localStorage.notesNiZi}</textarea>
+        <button class='button button-round button-success' onclick='localStorage.notesNiZi = document.querySelector("#notes_nizi_resi").value; parent.closeFrame()'>Speichern</button>`;
+    }
 }
 exports.notes = notes;
 
@@ -3330,7 +3323,7 @@ async function searchInAssociationProtokoll(s) {
     document.querySelector('#tab_associationLogs .tab-headline')?.insertAdjacentElement('beforeend', newElement);
     let newElement2 = document.createElement("div");
     newElement2.innerHTML = `<h4 class='label label-info searchNoResult hidden'>Die Suche lieferte keine Ergebnisse! Bitte probiere es mit einem anderen Suchwort!</h4>`;
-    document.querySelector('#tab_associationLogs .tab-headline')?.after(newElement2);
+    document.querySelector('#tab_associationLogs .card-headline.card-headline-danger')?.after(newElement2);
     let newElement3 = document.createElement("style");
     newElement3.innerHTML = `.searchHidden { display: none !important };`;
     document.head.appendChild(newElement3);
@@ -3345,8 +3338,8 @@ async function searchInAssociationProtokoll(s) {
             return;
         }
         let elems = document.querySelectorAll(query);
-        for (var j = 0; j < document.querySelectorAll(query).length; j++) {
-            if (elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord) || elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord)) {
+        for (var j = 0; j < elems.length; j++) {
+            if (elems[j]?.innerText.toLowerCase().includes(searchWord) || elems[j].querySelectorAll('td')[1].innerText.toLowerCase().includes(searchWord)) {
                 elems[j].classList.remove('searchHidden');
                 document.querySelector('.searchNoResult')?.classList.add('hidden');
             }
@@ -3354,7 +3347,7 @@ async function searchInAssociationProtokoll(s) {
                 elems[j].classList.add('searchHidden');
             }
         }
-        if (elems.length == document.querySelectorAll('.searchHidden td').length) {
+        if (elems.length == document.querySelectorAll('.searchHidden').length) {
             document.querySelector('.searchNoResult')?.classList.remove('hidden');
         }
     }
