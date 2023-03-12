@@ -52,7 +52,6 @@ export async function statisticsLST(s: ReSiCodebaseSettingsType): Promise<void>{
         for (i in vehicleCategories) {
             // @ts-ignore
             if (!vehicleCategories[i].ids.length || vehicleCategories[i].ids[0]>10000) continue;
-            console.log(i)
             table += `<tr><td>`;
             // @ts-ignore
             table += vehicleCategories[i].name + `</td><td>`;

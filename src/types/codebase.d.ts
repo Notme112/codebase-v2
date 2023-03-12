@@ -23,6 +23,7 @@ type ReSiCodebaseSettingsType = {
     [k:string]: any
 }
 type ReSiCodebaseSubsettingType = {
+    onlyHideAAO: any;
     keyToReset?: string;
     newCall?: string;
     fms5?: string;

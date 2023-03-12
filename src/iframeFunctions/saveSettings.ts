@@ -4,36 +4,36 @@ import { validate } from "../generalFunctions/validate";
 import { modules } from "../modules";
 import { ReSiCodebaseSettingsType, Setting } from "../types/codebase";
 
-export function saveCodebaseSettings(s:ReSiCodebaseSettingsType, frame:HTMLIFrameElement) {
+export function saveCodebaseSettings(s:ReSiCodebaseSettingsType) {
     checkSettings(s);
     modules.forEach((el) => {
-        s[el.settingsTarget] = frame?.contentDocument?.querySelector<HTMLInputElement>(`#${el.target}`)?.checked;
+        s[el.settingsTarget] = document.querySelector<HTMLInputElement>(`#${el.target}`)?.checked;
         if (el.hasSettings) {
             el.settings.forEach((setting: Setting) => {
                 switch (setting.type) {
                     case 'checkbox':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.checked;
+                            s[setting.subtarget][setting.settingsKey] = document.querySelector<HTMLInputElement>(`#${setting.target}`)?.checked;
                         } else {
-                            s[setting.settingsKey] = frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.checked;
+                            s[setting.settingsKey] = document.querySelector<HTMLInputElement>(`#${setting.target}`)?.checked;
                         }
                         break;
                     case 'input-text':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = validate(frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '') || 'Fehler';
+                            s[setting.subtarget][setting.settingsKey] = validate(document.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '') || 'Fehler';
                         } else {
-                            s[setting.settingsKey] = validate(frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '') || 'Fehler';
+                            s[setting.settingsKey] = validate(document.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '') || 'Fehler';
                         }
                         break;
                     case 'input-number':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '0') || 0;
+                            s[setting.subtarget][setting.settingsKey] = parseFloat(document.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '0') || 0;
                         } else {
-                            s[setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '0') || 0
+                            s[setting.settingsKey] = parseFloat(document.querySelector<HTMLInputElement>(`#${setting.target}`)?.value || '0') || 0
                         }
                         break;
                     case 'input-choose':
-                        let value:string|number|boolean|undefined = frame?.contentDocument?.querySelector<HTMLInputElement>(`#${setting.target}`)?.value,
+                        let value:string|number|boolean|undefined = document.querySelector<HTMLInputElement>(`#${setting.target}`)?.value,
                             found = false;
                         setting.options.forEach((option: {value: string; name: string}) => {
                             if(option.value == value)  found = true;

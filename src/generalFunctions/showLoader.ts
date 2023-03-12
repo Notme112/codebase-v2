@@ -1,5 +1,5 @@
 export function showLoader() {
-    let loader = document.querySelector<HTMLElement>('#codebaseLoader');
+    let loader = parent.document.querySelector<HTMLElement>('#codebaseLoader');
     if (loader)
         loader.style.display = 'block';
 }

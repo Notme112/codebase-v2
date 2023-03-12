@@ -12,6 +12,7 @@ import { checkSettings } from './generalFunctions/checkSettings';
 import { addLoadListener } from './generalFunctions/addLoadListener';
 import { createLoaderSvg } from './generalFunctions/createLoader';
 import { hideLoader } from './generalFunctions/hideLoader';
+import { loadCodebaseFrame } from './iframeFunctions/loadCodebaseFrame';
 (async () => {
     //return
     if (document.querySelectorAll('.landing-header').length) return;
@@ -32,7 +33,9 @@ import { hideLoader } from './generalFunctions/hideLoader';
         let element = createListElement();
         const frame = document.querySelector<HTMLIFrameElement>('#iframe');
         if(!frame) return;
-        addLoadListener(element, frame, s);
+        addLoadListener(element);
+    } else if (location.pathname == '/script/NiZi112/codebase-mainFrame'){
+        loadCodebaseFrame(s);
     }
     //run functions
     run(s);

@@ -4,24 +4,30 @@ import {
 
 export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void> {
     if (!location.pathname.includes('/mission/')) return;
-    let distance = s.distaceVehicle ? s.distaceVehicle.distance : 10;
+    let distance = s.distaceVehicle.distance ?? 10;
+    let onlyHideAAO = s.distaceVehicle.onlyHideAAO ?? false;
     function applyFilter(dis: number){
-        const elements = document.getElementsByClassName('mission-vehicle')
-        const KMs = document.getElementsByClassName('vehicle-distance')
+        const elements = document.getElementsByClassName('mission-vehicle');
+        const KMs = document.getElementsByClassName('vehicle-distance');
+        const wasAAOIgnored: any = {};
         for(let i = 0; i < elements.length; i++){
             let e = elements[i];
             let km = KMs[i];
+            if(!(e instanceof HTMLElement)) return;
             if(!(km instanceof HTMLElement)) return;
+            if(e.getAttribute('ignoreaao')) wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'yyy'] ;
             if(parseFloat(km.innerText.trim().replace('~', '')) > dis){
-                if(!(e instanceof HTMLElement)) return;
-                e.classList.remove('vehicle');
-                e.style.display = 'none';
-            }else{
+                if(!onlyHideAAO){
+                    e.classList.remove('vehicle');
+                    e.style.display = 'none';
+                } else {
+                    e.setAttribute('ignoreaao', '');
+                }
+            } else {
                 if(!e.classList.contains('vehicle')){
-                    if(!(e instanceof HTMLElement)) return;
                     e.classList.add('vehicle');
                     e.style.display = '';
-                };
+                } else if(!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'xxx'] && e.getAttribute('aaoignored')) e.removeAttribute('aaoignored');
             };
         }
         //@ts-ignore

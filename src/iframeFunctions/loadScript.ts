@@ -1,9 +1,8 @@
 import { hideLoader } from "../generalFunctions/hideLoader";
 import { showLoader } from "../generalFunctions/showLoader";
 
-export async function loadScript(name: string, context: HTMLIFrameElement){
+export async function loadScript(name: string){
     showLoader();
-    context.contentWindow?.parent.document
     let script = document.createElement('script');
     try {
         //@ts-ignore
@@ -12,6 +11,6 @@ export async function loadScript(name: string, context: HTMLIFrameElement){
         console.error('Error while fetching script: ' + name + '%e')
         return false;
     }
-    context.contentDocument?.body?.appendChild(script);
+    document.body?.appendChild(script);
     hideLoader();
 }

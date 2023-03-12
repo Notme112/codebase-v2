@@ -3,45 +3,19 @@ import { showLoader } from "../generalFunctions/showLoader";
 import { modules } from "../modules";
 import { ReSiCodebaseSettingsType, Setting } from "../types/codebase";
 import { autoUncollapseCards } from "./autoUnCollapseWhenUnChecked";
-import { collapsecards } from "./collapseCards";
 import { exportSettings } from "./exportSettings";
 import { importSettings } from "./importSettings";
 import { leaveSettings } from "./leaveSettings";
-import { loadScript } from "./loadScript";
 import { openProfile } from "./openProfile";
 import { resetStorage } from "./resetSettings";
 import { saveCodebaseSettings } from "./saveSettings";
 import { searchInFrame } from "./searchInFrame";
-import { shareLink } from "./share";
 import { showStorage } from "./showStorage";
-import { onTabClick } from "./tabs";
-import { unload } from "./unload";
 
-export async function loadCodebaseFrame(frame: HTMLIFrameElement, s:ReSiCodebaseSettingsType) {
+export async function loadCodebaseFrame(s:ReSiCodebaseSettingsType) {
     showLoader();
     //build frame content
-    // @ts-ignore
-    if(window['clickedCoodebase'] != true) return;
-    // @ts-ignore
-    window['clickedCoodebase'] = false;
-    var frameContent = `<div class='panel-body'>
-<link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `' charset='utf-8'>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
-<div class='detail-header'><div class='detail-title'>ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
-<div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
-<i class="bi bi-share" style="padding-left:5px;"></i></div><div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
-<a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent"><i class="bi bi-discord" style="padding-left:5px;"></i></a></div>
-<div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen"><a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
-<i class="bi bi-chat-left-text" style="padding-left:5px;"></i></a></div></div><div class='detail-subtitle'>Verwalte hier deine Einstellungen für die ReSi-Codebase
-<button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
-<button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
-<button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
-<button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
-<div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
-<input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div></div></div>
-<!-- ENDE HEADER -->
+    var frameContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='tabs tabs-horizotal'>
 <div class='tab tab-active' for='settings-moduls'>Module</div>
 <div class='tab' for='licence'>Sonstiges & Lizenzen</div>
@@ -104,63 +78,48 @@ JQuery:<br>Copyright (c) 2021 OpenJS Foundation and other contributors, https://
 <br>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
 THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</div></div>
 <center>Joine unserem Discord-Server: <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs <i class="bi bi-discord"></i></a><br><br></center>
-<h3>Danke für die Nutzung der ReSi-Codebase!</h3></div>`;
-    if (!frame || !frame.contentWindow || !frame.contentDocument) return;
-    frame.contentDocument.body.innerHTML = frameContent;
-    if(document.body.classList.contains('dark')){
-        frame.contentDocument.body.classList.add('dark');
-    }
-    await loadScript('popper.js', frame);
-    setTimeout(() => loadScript('tippy.js', frame), 2000);
-    setTimeout(() => {
-        console.log('hi')
-        //@ts-ignore
-        frame.contentWindow?.tippy?.delegate('body', {
-            target: '[data-tooltip]',
-            //@ts-ignore
-            onShow(instance) {
-                instance.setContent(instance.reference.dataset.tooltip);
-            },
-            animation: 'shift-away-subtle',
-            allowHTML: true
-        });
-    }, 3000);
-    let closeFrameOrig = closeFrame;
-    function closeFrame() {
-        if (!frame || !frame.contentWindow || !frame.contentDocument) return;
-        frame.contentDocument.body.innerHTML = '';
-        closeFrameOrig();
-        // @ts-ignore
-        closeFrame = closeFrameOrig;
-    }
+<h3>Danke für die Nutzung der ReSi-Codebase!</h3>`;
+    let detailTitle = document.querySelector('.detail-title');
+    if(detailTitle) detailTitle.innerHTML = `ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
+<div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
+<i class="bi bi-share" style="padding-left:5px;"></i></div><div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
+<a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent"><i class="bi bi-discord" style="padding-left:5px;"></i></a></div>
+<div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen"><a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
+<i class="bi bi-chat-left-text" style="padding-left:5px;"></i></a></div></div>`;
+    let detailSubtitle = document.querySelector('.detail-subtitle');
+    if(detailSubtitle) detailSubtitle.innerHTML = `Verwalte hier deine Einstellungen für die ReSi-Codebase
+    <button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
+    <button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
+    <button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
+    <button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
+    <input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div>`;
+    let panelBody = document.querySelector('.panel-body');
+    if(panelBody) panelBody.innerHTML = frameContent;
     //frame functions
     let changes = false;
-    frame.contentDocument.querySelectorAll<HTMLElement>('.checkbox-container, .input-round').forEach((element) => {
+    document.querySelectorAll<HTMLElement>('.checkbox-container, .input-round').forEach((element) => {
         ['click', 'keyup', 'change'].forEach((event) => {
             element?.addEventListener(event, (e) => {
                 if(!(e?.target as HTMLElement).classList.contains('nochange')) changes = true;
             });
         });
     });
-    frame.contentDocument?.body?.addEventListener('keyup', (e) => {
-        if (e.key === 'Escape') frame.contentDocument?.querySelector<HTMLElement>(".right.pointer")?.click();
+    document.body.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') document.querySelector<HTMLElement>(".right.pointer")?.click();
     });
-    frame.contentDocument?.querySelectorAll<HTMLElement>('.open-profile').forEach((el) => {
-        el.addEventListener('click', (e) => openProfile(e, frame));
+    document.querySelectorAll<HTMLElement>('.open-profile').forEach((el) => {
+        el.addEventListener('click', (e) => openProfile(e));
     });
     ['keyup', 'change', 'input'].forEach((event) => {
-        frame?.contentDocument?.querySelector('#input_search')?.addEventListener(event, (e) => searchInFrame(frame));
+        document.querySelector('#input_search')?.addEventListener(event, (e) => searchInFrame());
     }),
-    frame.contentDocument.querySelector('.right.pointer')?.addEventListener('click', () => leaveSettings(frame, changes));
-    frame.contentDocument.querySelector('#showStorage')?.addEventListener('click', showStorage);
-    frame.contentDocument.querySelector('#importSettings')?.addEventListener('click', importSettings)
-    frame.contentDocument.querySelector('#exportSettings')?.addEventListener('click', () => exportSettings(s));
-    frame.contentDocument.querySelector('#resetStorage')?.addEventListener('click', resetStorage);    
-    frame.contentDocument.querySelectorAll('.tab[for]').forEach(el => el.addEventListener('click', (e) => onTabClick(e, frame)));
-    frame.contentDocument.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => autoUncollapseCards(e, frame)));
-    frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => collapsecards(event)));
-    frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => saveCodebaseSettings(s, frame));
-    frame.contentWindow.addEventListener('unload', () => unload(frame));
-    frame.contentDocument.querySelector('.share')?.addEventListener('click', shareLink);
+    document.querySelector('.right.pointer')?.addEventListener('click', () => leaveSettings(changes));
+    document.querySelector('#showStorage')?.addEventListener('click', showStorage);
+    document.querySelector('#importSettings')?.addEventListener('click', importSettings)
+    document.querySelector('#exportSettings')?.addEventListener('click', () => exportSettings(s));
+    document.querySelector('#resetStorage')?.addEventListener('click', resetStorage);    
+    document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => autoUncollapseCards(e)));
+    document.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => saveCodebaseSettings(s));
     hideLoader();
 };

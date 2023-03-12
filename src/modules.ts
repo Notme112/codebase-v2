@@ -40,6 +40,7 @@ import { notes } from "./modules/notes";
 import { highlightOwnMissionProtokollEntries } from "./modules/highlightOwnMissionProtokollEntries";
 import { highlightWrittenMissionProtokollEntries } from "./modules/highlightWrittenProtokollEntries";
 import { searchInAssociationProtokoll } from "./modules/searchInAssociationProtokoll.user";
+import { alertNewSharedMissions } from "./modules/alertNewSharedMissions";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -422,6 +423,15 @@ export const modules = [{
             settingsKey: "distance",
             preset: "ZAHL",
             default: 20
+        },
+        {
+            subtarget: "distaceVehicle",
+            target: "distaceVehicleOnlyHideAAOCheck",
+            name: "Nur in AAo ausblenden?",
+            type: "checkbox",
+            settingsKey: "onlyHideAAO",
+            preset: "CHECKBOX",
+            default: false
         }],
     }, {
         name: "Webseitentitel anpassen",
@@ -775,6 +785,19 @@ export const modules = [{
         keywords: ["Verband", "Admin", "Protokoll", "Suche", "SearchInAssociationLog"],
         hasSettings: false,
         allSite: true,
+        settings:[]
+    },
+    {
+        name: "Neue geteilte Einsätze anzeigen",
+        description: "Zeigt neue geteilte Einsätze mittels eines Modals an",
+        settingsTarget: "alertnewSharedMissions",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "alertNewSharedMissionsCheck",
+        func: alertNewSharedMissions,
+        keywords: ["Verband", "Verbandseinsatz", "Verbandseinsätze", "Anzeige", "Modal"],
+        hasSettings: false,
+        allSite: false,
         settings:[]
     }
 ];

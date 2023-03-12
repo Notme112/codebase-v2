@@ -29,23 +29,15 @@ exports.addListenerForOpenSettings = addListenerForOpenSettings;
 /*!*************************************************!*\
   !*** ./src/generalFunctions/addLoadListener.ts ***!
   \*************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.addLoadListener = void 0;
-const loadCodebaseFrame_1 = __webpack_require__(/*! ../iframeFunctions/loadCodebaseFrame */ "./src/iframeFunctions/loadCodebaseFrame.ts");
-function addLoadListener(element, frame, s) {
+function addLoadListener(element) {
     element.addEventListener('click', async () => {
         // @ts-ignore
-        openFrame('about:blank', '1/1/4/5');
-        // @ts-ignore
-        window['clickedCoodebase'] = true;
-        setTimeout(() => {
-            // @ts-ignore
-            window['clickedCoodebase'] = false;
-        }, 1000);
-        frame?.addEventListener('load', () => (0, loadCodebaseFrame_1.loadCodebaseFrame)(frame, s));
+        openFrame('/script/NiZi112/codebase-mainFrame', '1/1/4/5');
     });
 }
 exports.addLoadListener = addLoadListener;
@@ -333,7 +325,7 @@ exports.handleNewUser = handleNewUser;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hideLoader = void 0;
 function hideLoader() {
-    let loader = document.querySelector('#codebaseLoader');
+    let loader = parent.document.querySelector('#codebaseLoader');
     if (loader)
         loader.style.display = 'none';
 }
@@ -526,7 +518,7 @@ exports.scriptInfo = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.showLoader = void 0;
 function showLoader() {
-    let loader = document.querySelector('#codebaseLoader');
+    let loader = parent.document.querySelector('#codebaseLoader');
     if (loader)
         loader.style.display = 'block';
 }
@@ -595,32 +587,14 @@ exports.writeLog = writeLog;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.autoUncollapseCards = void 0;
-function autoUncollapseCards(e, frame) {
-    let el = frame.contentDocument?.querySelector(`.card-collapse[for-module="${e.id}"]`);
+function autoUncollapseCards(e) {
+    let el = document.querySelector(`.card-collapse[for-module="${e.id}"]`);
     if (e.checked && el?.classList.contains('collapsed'))
         el?.classList.remove('collapsed');
     if (!e.checked && !el?.classList.contains('collapsed'))
         el?.classList.add('collapsed');
 }
 exports.autoUncollapseCards = autoUncollapseCards;
-
-
-/***/ }),
-
-/***/ "./src/iframeFunctions/collapseCards.ts":
-/*!**********************************************!*\
-  !*** ./src/iframeFunctions/collapseCards.ts ***!
-  \**********************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.collapsecards = void 0;
-function collapsecards(event) {
-    let el = event.target;
-    el.parentElement?.parentElement?.parentElement?.parentElement?.classList.toggle('collapsed');
-}
-exports.collapsecards = collapsecards;
 
 
 /***/ }),
@@ -731,12 +705,12 @@ exports.importSettings = importSettings;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.leaveSettings = void 0;
-function leaveSettings(frame, changes) {
+function leaveSettings(changes) {
     if (changes === true) {
         // @ts-ignore
         modal("Ohne Speichern verlassen?", "Du hast Änderungen vorgenommen, willst du diese Seichern?", "Speichern", "Ohne speichern verlassen", 
         // @ts-ignore
-        () => { frame?.contentDocument?.querySelector("#saveCodebaseSettings")?.click(); }, 
+        () => { document.querySelector("#saveCodebaseSettings")?.click(); }, 
         // @ts-ignore
         () => { parent?.closeFrame(); });
     }
@@ -763,45 +737,18 @@ const hideLoader_1 = __webpack_require__(/*! ../generalFunctions/hideLoader */ "
 const showLoader_1 = __webpack_require__(/*! ../generalFunctions/showLoader */ "./src/generalFunctions/showLoader.ts");
 const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
 const autoUnCollapseWhenUnChecked_1 = __webpack_require__(/*! ./autoUnCollapseWhenUnChecked */ "./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts");
-const collapseCards_1 = __webpack_require__(/*! ./collapseCards */ "./src/iframeFunctions/collapseCards.ts");
 const exportSettings_1 = __webpack_require__(/*! ./exportSettings */ "./src/iframeFunctions/exportSettings.ts");
 const importSettings_1 = __webpack_require__(/*! ./importSettings */ "./src/iframeFunctions/importSettings.ts");
 const leaveSettings_1 = __webpack_require__(/*! ./leaveSettings */ "./src/iframeFunctions/leaveSettings.ts");
-const loadScript_1 = __webpack_require__(/*! ./loadScript */ "./src/iframeFunctions/loadScript.ts");
 const openProfile_1 = __webpack_require__(/*! ./openProfile */ "./src/iframeFunctions/openProfile.ts");
 const resetSettings_1 = __webpack_require__(/*! ./resetSettings */ "./src/iframeFunctions/resetSettings.ts");
 const saveSettings_1 = __webpack_require__(/*! ./saveSettings */ "./src/iframeFunctions/saveSettings.ts");
 const searchInFrame_1 = __webpack_require__(/*! ./searchInFrame */ "./src/iframeFunctions/searchInFrame.ts");
-const share_1 = __webpack_require__(/*! ./share */ "./src/iframeFunctions/share.ts");
 const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunctions/showStorage.ts");
-const tabs_1 = __webpack_require__(/*! ./tabs */ "./src/iframeFunctions/tabs.ts");
-const unload_1 = __webpack_require__(/*! ./unload */ "./src/iframeFunctions/unload.ts");
-async function loadCodebaseFrame(frame, s) {
+async function loadCodebaseFrame(s) {
     (0, showLoader_1.showLoader)();
     //build frame content
-    // @ts-ignore
-    if (window['clickedCoodebase'] != true)
-        return;
-    // @ts-ignore
-    window['clickedCoodebase'] = false;
-    var frameContent = `<div class='panel-body'>
-<link rel='stylesheet' href='https://rettungssimulator.online/css/index.css?v=`
-        // @ts-ignore
-        + ReSi.resiVersion + `' charset='utf-8'>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
-<div class='detail-header'><div class='detail-title'>ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
-<div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
-<i class="bi bi-share" style="padding-left:5px;"></i></div><div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
-<a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent"><i class="bi bi-discord" style="padding-left:5px;"></i></a></div>
-<div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen"><a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
-<i class="bi bi-chat-left-text" style="padding-left:5px;"></i></a></div></div><div class='detail-subtitle'>Verwalte hier deine Einstellungen für die ReSi-Codebase
-<button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
-<button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
-<button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
-<button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
-<div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
-<input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div></div></div>
-<!-- ENDE HEADER -->
+    var frameContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='tabs tabs-horizotal'>
 <div class='tab tab-active' for='settings-moduls'>Module</div>
 <div class='tab' for='licence'>Sonstiges & Lizenzen</div>
@@ -864,40 +811,30 @@ JQuery:<br>Copyright (c) 2021 OpenJS Foundation and other contributors, https://
 <br>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
 THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</div></div>
 <center>Joine unserem Discord-Server: <a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent">discord.gg/8FyA6HBbXs <i class="bi bi-discord"></i></a><br><br></center>
-<h3>Danke für die Nutzung der ReSi-Codebase!</h3></div>`;
-    if (!frame || !frame.contentWindow || !frame.contentDocument)
-        return;
-    frame.contentDocument.body.innerHTML = frameContent;
-    if (document.body.classList.contains('dark')) {
-        frame.contentDocument.body.classList.add('dark');
-    }
-    await (0, loadScript_1.loadScript)('popper.js', frame);
-    setTimeout(() => (0, loadScript_1.loadScript)('tippy.js', frame), 2000);
-    setTimeout(() => {
-        console.log('hi');
-        //@ts-ignore
-        frame.contentWindow?.tippy?.delegate('body', {
-            target: '[data-tooltip]',
-            //@ts-ignore
-            onShow(instance) {
-                instance.setContent(instance.reference.dataset.tooltip);
-            },
-            animation: 'shift-away-subtle',
-            allowHTML: true
-        });
-    }, 3000);
-    let closeFrameOrig = closeFrame;
-    function closeFrame() {
-        if (!frame || !frame.contentWindow || !frame.contentDocument)
-            return;
-        frame.contentDocument.body.innerHTML = '';
-        closeFrameOrig();
-        // @ts-ignore
-        closeFrame = closeFrameOrig;
-    }
+<h3>Danke für die Nutzung der ReSi-Codebase!</h3>`;
+    let detailTitle = document.querySelector('.detail-title');
+    if (detailTitle)
+        detailTitle.innerHTML = `ReSi-Codebase-Einstellungen<div class='right pointer'><i class="bi bi-x"></i></div>
+<div class='right pointer share' data-tooltip='Die ReSi-Codebase weiterempfehlen' share-url='https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/'>
+<i class="bi bi-share" style="padding-left:5px;"></i></div><div class="right" data-tooltip="Besuche die ReSi-Codebase auf Discord">
+<a href="https://discord.gg/8FyA6HBbXs" target="_blank" class="no-prevent"><i class="bi bi-discord" style="padding-left:5px;"></i></a></div>
+<div class="right" data-tooltip="Die ReSi-Codebase im Forum besuchen"><a href="https://forum.rettungssimulator.online/index.php?thread/1423-resi-codebase-v1-5/" target="_blank" class="no-prevent">
+<i class="bi bi-chat-left-text" style="padding-left:5px;"></i></a></div></div>`;
+    let detailSubtitle = document.querySelector('.detail-subtitle');
+    if (detailSubtitle)
+        detailSubtitle.innerHTML = `Verwalte hier deine Einstellungen für die ReSi-Codebase
+    <button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
+    <button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
+    <button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
+    <button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
+    <input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div>`;
+    let panelBody = document.querySelector('.panel-body');
+    if (panelBody)
+        panelBody.innerHTML = frameContent;
     //frame functions
     let changes = false;
-    frame.contentDocument.querySelectorAll('.checkbox-container, .input-round').forEach((element) => {
+    document.querySelectorAll('.checkbox-container, .input-round').forEach((element) => {
         ['click', 'keyup', 'change'].forEach((event) => {
             element?.addEventListener(event, (e) => {
                 if (!e?.target.classList.contains('nochange'))
@@ -905,62 +842,27 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
             });
         });
     });
-    frame.contentDocument?.body?.addEventListener('keyup', (e) => {
+    document.body.addEventListener('keyup', (e) => {
         if (e.key === 'Escape')
-            frame.contentDocument?.querySelector(".right.pointer")?.click();
+            document.querySelector(".right.pointer")?.click();
     });
-    frame.contentDocument?.querySelectorAll('.open-profile').forEach((el) => {
-        el.addEventListener('click', (e) => (0, openProfile_1.openProfile)(e, frame));
+    document.querySelectorAll('.open-profile').forEach((el) => {
+        el.addEventListener('click', (e) => (0, openProfile_1.openProfile)(e));
     });
     ['keyup', 'change', 'input'].forEach((event) => {
-        frame?.contentDocument?.querySelector('#input_search')?.addEventListener(event, (e) => (0, searchInFrame_1.searchInFrame)(frame));
+        document.querySelector('#input_search')?.addEventListener(event, (e) => (0, searchInFrame_1.searchInFrame)());
     }),
-        frame.contentDocument.querySelector('.right.pointer')?.addEventListener('click', () => (0, leaveSettings_1.leaveSettings)(frame, changes));
-    frame.contentDocument.querySelector('#showStorage')?.addEventListener('click', showStorage_1.showStorage);
-    frame.contentDocument.querySelector('#importSettings')?.addEventListener('click', importSettings_1.importSettings);
-    frame.contentDocument.querySelector('#exportSettings')?.addEventListener('click', () => (0, exportSettings_1.exportSettings)(s));
-    frame.contentDocument.querySelector('#resetStorage')?.addEventListener('click', resetSettings_1.resetStorage);
-    frame.contentDocument.querySelectorAll('.tab[for]').forEach(el => el.addEventListener('click', (e) => (0, tabs_1.onTabClick)(e, frame)));
-    frame.contentDocument.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e, frame)));
-    frame.contentDocument.querySelectorAll('.card.card-collapse .card-collapse-toggle').forEach((e) => e.addEventListener('click', (event) => (0, collapseCards_1.collapsecards)(event)));
-    frame.contentDocument.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s, frame));
-    frame.contentWindow.addEventListener('unload', () => (0, unload_1.unload)(frame));
-    frame.contentDocument.querySelector('.share')?.addEventListener('click', share_1.shareLink);
+        document.querySelector('.right.pointer')?.addEventListener('click', () => (0, leaveSettings_1.leaveSettings)(changes));
+    document.querySelector('#showStorage')?.addEventListener('click', showStorage_1.showStorage);
+    document.querySelector('#importSettings')?.addEventListener('click', importSettings_1.importSettings);
+    document.querySelector('#exportSettings')?.addEventListener('click', () => (0, exportSettings_1.exportSettings)(s));
+    document.querySelector('#resetStorage')?.addEventListener('click', resetSettings_1.resetStorage);
+    document.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e)));
+    document.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s));
     (0, hideLoader_1.hideLoader)();
 }
 exports.loadCodebaseFrame = loadCodebaseFrame;
 ;
-
-
-/***/ }),
-
-/***/ "./src/iframeFunctions/loadScript.ts":
-/*!*******************************************!*\
-  !*** ./src/iframeFunctions/loadScript.ts ***!
-  \*******************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.loadScript = void 0;
-const hideLoader_1 = __webpack_require__(/*! ../generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
-const showLoader_1 = __webpack_require__(/*! ../generalFunctions/showLoader */ "./src/generalFunctions/showLoader.ts");
-async function loadScript(name, context) {
-    (0, showLoader_1.showLoader)();
-    context.contentWindow?.parent.document;
-    let script = document.createElement('script');
-    try {
-        //@ts-ignore
-        script.innerHTML = await (await fetch('https://rettungssimulator.online/js/' + name + '?v=' + ReSi.resiVersion)).text();
-    }
-    catch (error) {
-        console.error('Error while fetching script: ' + name + '%e');
-        return false;
-    }
-    context.contentDocument?.body?.appendChild(script);
-    (0, hideLoader_1.hideLoader)();
-}
-exports.loadScript = loadScript;
 
 
 /***/ }),
@@ -974,7 +876,7 @@ exports.loadScript = loadScript;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.openProfile = void 0;
-function openProfile(e, frame) {
+function openProfile(e) {
     e.preventDefault();
     let author = e.target.getAttribute('profile');
     if (!author)
@@ -982,14 +884,10 @@ function openProfile(e, frame) {
     // @ts-ignore
     if (changes)
         modal('Profil des Autors aufrufen?', `Willst du das Profil von <b>${author}</b> aufrufen? Du hast ungespeicherte Änderungen in den Einstellungen. Diese gehen verloren, wenn du das Profil des Autors aufrufst.`, 'Aufrufen', 'Hier bleiben', () => {
-            if (!frame.contentWindow)
-                return;
-            frame.contentWindow.location.href = '/profile/' + author;
+            window.location.href = '/profile/' + author;
         }, () => { });
     else {
-        if (!frame.contentWindow)
-            return;
-        frame.contentWindow.location.href = '/profile/' + author;
+        window.location.href = '/profile/' + author;
     }
 }
 exports.openProfile = openProfile;
@@ -1033,39 +931,39 @@ const checkSettings_1 = __webpack_require__(/*! ../generalFunctions/checkSetting
 const reload_1 = __webpack_require__(/*! ../generalFunctions/reload */ "./src/generalFunctions/reload.ts");
 const validate_1 = __webpack_require__(/*! ../generalFunctions/validate */ "./src/generalFunctions/validate.ts");
 const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
-function saveCodebaseSettings(s, frame) {
+function saveCodebaseSettings(s) {
     (0, checkSettings_1.checkSettings)(s);
     modules_1.modules.forEach((el) => {
-        s[el.settingsTarget] = frame?.contentDocument?.querySelector(`#${el.target}`)?.checked;
+        s[el.settingsTarget] = document.querySelector(`#${el.target}`)?.checked;
         if (el.hasSettings) {
             el.settings.forEach((setting) => {
                 switch (setting.type) {
                     case 'checkbox':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
+                            s[setting.subtarget][setting.settingsKey] = document.querySelector(`#${setting.target}`)?.checked;
                         }
                         else {
-                            s[setting.settingsKey] = frame?.contentDocument?.querySelector(`#${setting.target}`)?.checked;
+                            s[setting.settingsKey] = document.querySelector(`#${setting.target}`)?.checked;
                         }
                         break;
                     case 'input-text':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
+                            s[setting.subtarget][setting.settingsKey] = (0, validate_1.validate)(document.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
                         }
                         else {
-                            s[setting.settingsKey] = (0, validate_1.validate)(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
+                            s[setting.settingsKey] = (0, validate_1.validate)(document.querySelector(`#${setting.target}`)?.value || '') || 'Fehler';
                         }
                         break;
                     case 'input-number':
                         if (setting.subtarget) {
-                            s[setting.subtarget][setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
+                            s[setting.subtarget][setting.settingsKey] = parseFloat(document.querySelector(`#${setting.target}`)?.value || '0') || 0;
                         }
                         else {
-                            s[setting.settingsKey] = parseFloat(frame?.contentDocument?.querySelector(`#${setting.target}`)?.value || '0') || 0;
+                            s[setting.settingsKey] = parseFloat(document.querySelector(`#${setting.target}`)?.value || '0') || 0;
                         }
                         break;
                     case 'input-choose':
-                        let value = frame?.contentDocument?.querySelector(`#${setting.target}`)?.value, found = false;
+                        let value = document.querySelector(`#${setting.target}`)?.value, found = false;
                         setting.options.forEach((option) => {
                             if (option.value == value)
                                 found = true;
@@ -1103,22 +1001,22 @@ exports.saveCodebaseSettings = saveCodebaseSettings;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.searchInFrame = void 0;
-function searchInFrame(frame) {
-    var searchWord = frame?.contentDocument?.querySelector('#input_search')?.value?.toLowerCase() || '';
+function searchInFrame() {
+    var searchWord = document.querySelector('#input_search')?.value?.toLowerCase() || '';
     if (searchWord == '') {
-        frame?.contentDocument?.querySelectorAll('.searchable').forEach((el) => {
+        document.querySelectorAll('.searchable').forEach((el) => {
             el.classList.remove('searchHidde');
         });
-        frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+        document.querySelectorAll('.searchNoResult').forEach((el) => {
             el.classList.add('hidden');
         });
         return;
     }
-    let searchAbles = frame?.contentDocument?.querySelectorAll('.searchable') || [];
+    let searchAbles = document.querySelectorAll('.searchable') || [];
     for (var j = 0; j <= searchAbles?.length; j++) {
         if (searchAbles[j]?.textContent?.toLowerCase()?.includes(searchWord)) {
             searchAbles[j]?.classList?.remove('searchHidden');
-            frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+            document.querySelectorAll('.searchNoResult').forEach((el) => {
                 el?.classList?.add('hidden');
             });
         }
@@ -1126,35 +1024,14 @@ function searchInFrame(frame) {
             searchAbles[j]?.classList?.add('searchHidden');
         }
     }
-    if (searchAbles?.length == frame?.contentDocument?.querySelectorAll('.searchHidden')?.length) {
-        frame?.contentDocument?.querySelectorAll('.searchNoResult').forEach((el) => {
+    if (searchAbles?.length == document.querySelectorAll('.searchHidden')?.length) {
+        document.querySelectorAll('.searchNoResult').forEach((el) => {
             el?.classList?.remove('hidden');
         });
     }
 }
 exports.searchInFrame = searchInFrame;
 ;
-
-
-/***/ }),
-
-/***/ "./src/iframeFunctions/share.ts":
-/*!**************************************!*\
-  !*** ./src/iframeFunctions/share.ts ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shareLink = void 0;
-function shareLink(e) {
-    if (!(e.target instanceof HTMLElement))
-        return;
-    navigator.share({
-        url: e?.target?.getAttribute('share-url') ?? ''
-    });
-}
-exports.shareLink = shareLink;
 
 
 /***/ }),
@@ -1229,46 +1106,6 @@ exports.showStorage = showStorage;
 
 /***/ }),
 
-/***/ "./src/iframeFunctions/tabs.ts":
-/*!*************************************!*\
-  !*** ./src/iframeFunctions/tabs.ts ***!
-  \*************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.onTabClick = void 0;
-function onTabClick(e, frame) {
-    let target = e.target;
-    frame.contentDocument?.querySelector('.tab-active')?.classList.remove('tab-active');
-    frame.contentDocument?.querySelector('.tab-content-active')?.classList.remove('tab-content-active');
-    target?.classList.add('tab-active');
-    frame.contentDocument?.querySelector(`#tab_${target.getAttribute('for')}`)?.classList.add('tab-content-active');
-}
-exports.onTabClick = onTabClick;
-
-
-/***/ }),
-
-/***/ "./src/iframeFunctions/unload.ts":
-/*!***************************************!*\
-  !*** ./src/iframeFunctions/unload.ts ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.unload = void 0;
-function unload(frame) {
-    if (!frame.contentDocument)
-        return;
-    frame.contentDocument.body.innerHTML = '';
-}
-exports.unload = unload;
-
-
-/***/ }),
-
 /***/ "./src/modules.ts":
 /*!************************!*\
   !*** ./src/modules.ts ***!
@@ -1320,6 +1157,7 @@ const notes_1 = __webpack_require__(/*! ./modules/notes */ "./src/modules/notes.
 const highlightOwnMissionProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightOwnMissionProtokollEntries */ "./src/modules/highlightOwnMissionProtokollEntries.ts");
 const highlightWrittenProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightWrittenProtokollEntries */ "./src/modules/highlightWrittenProtokollEntries.ts");
 const searchInAssociationProtokoll_user_1 = __webpack_require__(/*! ./modules/searchInAssociationProtokoll.user */ "./src/modules/searchInAssociationProtokoll.user.ts");
+const alertNewSharedMissions_1 = __webpack_require__(/*! ./modules/alertNewSharedMissions */ "./src/modules/alertNewSharedMissions.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1701,6 +1539,15 @@ exports.modules = [{
                 settingsKey: "distance",
                 preset: "ZAHL",
                 default: 20
+            },
+            {
+                subtarget: "distaceVehicle",
+                target: "distaceVehicleOnlyHideAAOCheck",
+                name: "Nur in AAo ausblenden?",
+                type: "checkbox",
+                settingsKey: "onlyHideAAO",
+                preset: "CHECKBOX",
+                default: false
             }],
     }, {
         name: "Webseitentitel anpassen",
@@ -2055,6 +1902,19 @@ exports.modules = [{
         hasSettings: false,
         allSite: true,
         settings: []
+    },
+    {
+        name: "Neue geteilte Einsätze anzeigen",
+        description: "Zeigt neue geteilte Einsätze mittels eines Modals an",
+        settingsTarget: "alertnewSharedMissions",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "alertNewSharedMissionsCheck",
+        func: alertNewSharedMissions_1.alertNewSharedMissions,
+        keywords: ["Verband", "Verbandseinsatz", "Verbandseinsätze", "Anzeige", "Modal"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
     }
 ];
 
@@ -2125,6 +1985,28 @@ async function alertFMS5(s) {
     }
 }
 exports.alertFMS5 = alertFMS5;
+
+
+/***/ }),
+
+/***/ "./src/modules/alertNewSharedMissions.ts":
+/*!***********************************************!*\
+  !*** ./src/modules/alertNewSharedMissions.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.alertNewSharedMissions = void 0;
+async function alertNewSharedMissions(s) {
+    //@ts-ignore
+    socket.on("newMission", (mission) => {
+        //@ts-ignore
+        if (mission.isShared)
+            noticeModal('Freigabe', 'Neue Verbandsfreigabe von ' + mission.userName);
+    });
+}
+exports.alertNewSharedMissions = alertNewSharedMissions;
 
 
 /***/ }),
@@ -2498,29 +2380,37 @@ exports.distanceVehicle = void 0;
 async function distanceVehicle(s) {
     if (!location.pathname.includes('/mission/'))
         return;
-    let distance = s.distaceVehicle ? s.distaceVehicle.distance : 10;
+    let distance = s.distaceVehicle.distance ?? 10;
+    let onlyHideAAO = s.distaceVehicle.onlyHideAAO ?? false;
     function applyFilter(dis) {
         const elements = document.getElementsByClassName('mission-vehicle');
         const KMs = document.getElementsByClassName('vehicle-distance');
+        const wasAAOIgnored = {};
         for (let i = 0; i < elements.length; i++) {
             let e = elements[i];
             let km = KMs[i];
+            if (!(e instanceof HTMLElement))
+                return;
             if (!(km instanceof HTMLElement))
                 return;
+            if (e.getAttribute('ignoreaao'))
+                wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'yyy'];
             if (parseFloat(km.innerText.trim().replace('~', '')) > dis) {
-                if (!(e instanceof HTMLElement))
-                    return;
-                e.classList.remove('vehicle');
-                e.style.display = 'none';
+                if (!onlyHideAAO) {
+                    e.classList.remove('vehicle');
+                    e.style.display = 'none';
+                }
+                else {
+                    e.setAttribute('ignoreaao', '');
+                }
             }
             else {
                 if (!e.classList.contains('vehicle')) {
-                    if (!(e instanceof HTMLElement))
-                        return;
                     e.classList.add('vehicle');
                     e.style.display = '';
                 }
-                ;
+                else if (!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'xxx'] && e.getAttribute('aaoignored'))
+                    e.removeAttribute('aaoignored');
             }
             ;
         }
@@ -3895,6 +3785,7 @@ const checkSettings_1 = __webpack_require__(/*! ./generalFunctions/checkSettings
 const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadListener */ "./src/generalFunctions/addLoadListener.ts");
 const createLoader_1 = __webpack_require__(/*! ./generalFunctions/createLoader */ "./src/generalFunctions/createLoader.ts");
 const hideLoader_1 = __webpack_require__(/*! ./generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
+const loadCodebaseFrame_1 = __webpack_require__(/*! ./iframeFunctions/loadCodebaseFrame */ "./src/iframeFunctions/loadCodebaseFrame.ts");
 (async () => {
     //return
     if (document.querySelectorAll('.landing-header').length)
@@ -3917,7 +3808,10 @@ const hideLoader_1 = __webpack_require__(/*! ./generalFunctions/hideLoader */ ".
         const frame = document.querySelector('#iframe');
         if (!frame)
             return;
-        (0, addLoadListener_1.addLoadListener)(element, frame, s);
+        (0, addLoadListener_1.addLoadListener)(element);
+    }
+    else if (location.pathname == '/script/NiZi112/codebase-mainFrame') {
+        (0, loadCodebaseFrame_1.loadCodebaseFrame)(s);
     }
     //run functions
     (0, run_1.run)(s);

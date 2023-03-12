@@ -1,4 +1,4 @@
-export function leaveSettings(frame:HTMLIFrameElement, changes:boolean){
+export function leaveSettings(changes:boolean){
     if(changes === true){
         // @ts-ignore
         modal("Ohne Speichern verlassen?",
@@ -6,7 +6,7 @@ export function leaveSettings(frame:HTMLIFrameElement, changes:boolean){
             "Speichern",
             "Ohne speichern verlassen",
             // @ts-ignore
-            () => {frame?.contentDocument?.querySelector<HTMLElement>("#saveCodebaseSettings")?.click()}, 
+            () => {document.querySelector<HTMLElement>("#saveCodebaseSettings")?.click()}, 
             // @ts-ignore
             () => {parent?.closeFrame()}
         )
