@@ -1158,6 +1158,7 @@ const highlightOwnMissionProtokollEntries_1 = __webpack_require__(/*! ./modules/
 const highlightWrittenProtokollEntries_1 = __webpack_require__(/*! ./modules/highlightWrittenProtokollEntries */ "./src/modules/highlightWrittenProtokollEntries.ts");
 const searchInAssociationProtokoll_user_1 = __webpack_require__(/*! ./modules/searchInAssociationProtokoll.user */ "./src/modules/searchInAssociationProtokoll.user.ts");
 const alertNewSharedMissions_1 = __webpack_require__(/*! ./modules/alertNewSharedMissions */ "./src/modules/alertNewSharedMissions.ts");
+const shareInMissionList_1 = __webpack_require__(/*! ./modules/shareInMissionList */ "./src/modules/shareInMissionList.ts");
 exports.modules = [{
         name: "Gesamtmünzenzähler",
         description: "Zeigt in der Seitenleiste die gesamt verdienten Münzen an.",
@@ -1915,6 +1916,19 @@ exports.modules = [{
         hasSettings: false,
         allSite: false,
         settings: []
+    },
+    {
+        name: "Teilen aus der Einsatzliste",
+        description: "Erlaubt ein Teilen von Einsätzen direkt aus der Einsatzliste",
+        settingsTarget: "shareInMissionlist",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "shareInMissionListCheck",
+        func: shareInMissionList_1.shareInMissionList,
+        keywords: ["Teilen", "Verband", "Einsatz", "Einsatzliste", "Hilfe"],
+        hasSettings: false,
+        allSite: false,
+        settings: []
     }
 ];
 
@@ -2401,7 +2415,7 @@ async function distanceVehicle(s) {
                     e.style.display = 'none';
                 }
                 else {
-                    e.setAttribute('ignoreaao', '');
+                    document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.setAttribute('ignoreaao', '');
                 }
             }
             else {
@@ -2409,8 +2423,8 @@ async function distanceVehicle(s) {
                     e.classList.add('vehicle');
                     e.style.display = '';
                 }
-                else if (!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'xxx'] && e.getAttribute('aaoignored'))
-                    e.removeAttribute('aaoignored');
+                else if (!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 0] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.getAttribute('ignoreaao'))
+                    document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.removeAttribute('ignoreaao');
             }
             ;
         }
@@ -3392,6 +3406,34 @@ exports.settingsInNavbar = settingsInNavbar;
 
 /***/ }),
 
+/***/ "./src/modules/shareInMissionList.ts":
+/*!*******************************************!*\
+  !*** ./src/modules/shareInMissionList.ts ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shareInMissionList = void 0;
+async function shareInMissionList(s) {
+    document.querySelectorAll('#missions .mapLocate').forEach(e => {
+        let newEl = document.createElement('i');
+        newEl.classList.add('bi', 'bi-share-fill');
+        newEl.addEventListener('click', () => {
+            fetch('api/shareMission', {
+                method: 'POST',
+                body: JSON.stringify({ userMissionID: e?.parentElement?.parentElement?.getAttribute('usermissionid') })
+            });
+            e.remove();
+        });
+        e.after(newEl);
+    });
+}
+exports.shareInMissionList = shareInMissionList;
+
+
+/***/ }),
+
 /***/ "./src/modules/shortlinks.ts":
 /*!***********************************!*\
   !*** ./src/modules/shortlinks.ts ***!
@@ -3431,7 +3473,7 @@ async function showNAChance(s) {
     const data = (await (0, getAPI_1.getAPI)('missions', false))[parseInt(document.querySelector('.detail-title')?.getAttribute('missionid') || '0')];
     let newElement = document.createElement('span');
     // @ts-ignore
-    newElement.innerHTML = `Grundvariante: ${data.patients.min}-${data.patients.max} Patienten, ${data.patients.naChance}\% NA-Wahrscheinlichkeit`;
+    newElement.innerHTML = `Grundvariante: ${data.patients.min == data.patients.max ? data.patients.min : data.patients.min + '-' + data.patients.max} Patienten, ${data.patients.naChance}\% NA-Wahrscheinlichkeit`;
     newElement.classList.add('label', 'label-info');
     if (data.patients)
         document.querySelector('#s5')?.after(newElement);
@@ -3506,7 +3548,6 @@ async function statisticsLST(s) {
             // @ts-ignore
             if (!vehicleCategories[i].ids.length || vehicleCategories[i].ids[0] > 10000)
                 continue;
-            console.log(i);
             table += `<tr><td>`;
             // @ts-ignore
             table += vehicleCategories[i].name + `</td><td>`;

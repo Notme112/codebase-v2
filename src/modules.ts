@@ -41,6 +41,7 @@ import { highlightOwnMissionProtokollEntries } from "./modules/highlightOwnMissi
 import { highlightWrittenMissionProtokollEntries } from "./modules/highlightWrittenProtokollEntries";
 import { searchInAssociationProtokoll } from "./modules/searchInAssociationProtokoll.user";
 import { alertNewSharedMissions } from "./modules/alertNewSharedMissions";
+import { shareInMissionList } from "./modules/shareInMissionList";
 
 export const modules = [{
         name: "Gesamtmünzenzähler",
@@ -796,6 +797,19 @@ export const modules = [{
         target: "alertNewSharedMissionsCheck",
         func: alertNewSharedMissions,
         keywords: ["Verband", "Verbandseinsatz", "Verbandseinsätze", "Anzeige", "Modal"],
+        hasSettings: false,
+        allSite: false,
+        settings:[]
+    },
+    {
+        name: "Teilen aus der Einsatzliste",
+        description: "Erlaubt ein Teilen von Einsätzen direkt aus der Einsatzliste",
+        settingsTarget: "shareInMissionlist",
+        version: "1.0.0",
+        author: "NiZi112",
+        target: "shareInMissionListCheck",
+        func: shareInMissionList,
+        keywords: ["Teilen", "Verband", "Einsatz", "Einsatzliste", "Hilfe"],
         hasSettings: false,
         allSite: false,
         settings:[]
