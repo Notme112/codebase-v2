@@ -21,13 +21,14 @@ export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void
                     e.classList.remove('vehicle');
                     e.style.display = 'none';
                 } else {
-                    e.setAttribute('ignoreaao', '');
+                    document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.setAttribute('ignoreaao', '');
                 }
             } else {
                 if(!e.classList.contains('vehicle')){
                     e.classList.add('vehicle');
                     e.style.display = '';
-                } else if(!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'xxx'] && e.getAttribute('aaoignored')) e.removeAttribute('aaoignored');
+                } else if(!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 0] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.getAttribute('ignoreaao')) document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.removeAttribute('ignoreaao');
+
             };
         }
         //@ts-ignore
