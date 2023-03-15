@@ -11,7 +11,6 @@ import { createListElement } from './iframeFunctions/createListElement';
 import { checkSettings } from './generalFunctions/checkSettings';
 import { addLoadListener } from './generalFunctions/addLoadListener';
 import { createLoaderSvg } from './generalFunctions/createLoader';
-import { hideLoader } from './generalFunctions/hideLoader';
 import { loadCodebaseFrame } from './iframeFunctions/loadCodebaseFrame';
 (async () => {
     //return
@@ -42,5 +41,4 @@ import { loadCodebaseFrame } from './iframeFunctions/loadCodebaseFrame';
     //write log
     writeLog(scriptInfo)
     addListenerForOpenSettings();
-    hideLoader();
 })();

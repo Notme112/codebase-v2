@@ -1,5 +1,3 @@
-import { hideLoader } from "../generalFunctions/hideLoader";
-import { showLoader } from "../generalFunctions/showLoader";
 import { modules } from "../modules";
 import { ReSiCodebaseSettingsType, Setting } from "../types/codebase";
 import { autoUncollapseCards } from "./autoUnCollapseWhenUnChecked";
@@ -8,12 +6,12 @@ import { importSettings } from "./importSettings";
 import { leaveSettings } from "./leaveSettings";
 import { openProfile } from "./openProfile";
 import { resetStorage } from "./resetSettings";
+import { resolveProblems } from "./resolveProblems";
 import { saveCodebaseSettings } from "./saveSettings";
 import { searchInFrame } from "./searchInFrame";
 import { showStorage } from "./showStorage";
 
 export async function loadCodebaseFrame(s:ReSiCodebaseSettingsType) {
-    showLoader();
     //build frame content
     var frameContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='tabs tabs-horizotal'>
@@ -91,7 +89,8 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     <button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
     <button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
     <button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
-    <button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <button id="resetStorage" class="button button-round button-danger">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <button id="resolveProblems" class="button button-round button-warning">Scriptprobleme beheben <i class="bi bi-x-circle"></i></button>
     <div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
     <input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div>`;
     let panelBody = document.querySelector('.panel-body');
@@ -121,5 +120,5 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     document.querySelector('#resetStorage')?.addEventListener('click', resetStorage);    
     document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => autoUncollapseCards(e)));
     document.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => saveCodebaseSettings(s));
-    hideLoader();
+    document.querySelector('#resolveProblems')?.addEventListener('click', resolveProblems);
 };

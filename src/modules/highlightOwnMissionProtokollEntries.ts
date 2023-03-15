@@ -6,7 +6,7 @@ export async function highlightOwnMissionProtokollEntries(s: ReSiCodebaseSetting
         els.forEach((el, i) => {
             if(!els[i].innerHTML.trim().startsWith('<svg')) {
                 if(!el.parentElement || !(el.parentElement instanceof HTMLElement)) return;
-                el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'yellow';
+                el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'darkblue' : 'yellow';
             }
         });
     }

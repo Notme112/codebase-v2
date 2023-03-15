@@ -428,7 +428,7 @@ export const modules = [{
         {
             subtarget: "distaceVehicle",
             target: "distaceVehicleOnlyHideAAOCheck",
-            name: "Nur in AAo ausblenden?",
+            name: "Nur in AAO ausblenden?",
             type: "checkbox",
             settingsKey: "onlyHideAAO",
             preset: "CHECKBOX",

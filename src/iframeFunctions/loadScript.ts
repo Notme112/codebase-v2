@@ -1,8 +1,4 @@
-import { hideLoader } from "../generalFunctions/hideLoader";
-import { showLoader } from "../generalFunctions/showLoader";
-
 export async function loadScript(name: string){
-    showLoader();
     let script = document.createElement('script');
     try {
         //@ts-ignore
@@ -12,5 +8,4 @@ export async function loadScript(name: string){
         return false;
     }
     document.body?.appendChild(script);
-    hideLoader();
 }

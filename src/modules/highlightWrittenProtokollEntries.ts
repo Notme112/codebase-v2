@@ -5,7 +5,7 @@ export async function highlightWrittenMissionProtokollEntries(s: ReSiCodebaseSet
         let els = document.querySelectorAll('.fa-pencil');
         els.forEach((el, i) => {
             if(!el.parentElement || !(el.parentElement instanceof HTMLElement) || !el.parentElement.parentElement || !(el.parentElement.parentElement instanceof HTMLElement)) return;
-            el.parentElement.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'darkblue' : 'lightgreen';
+            el.parentElement.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'lightgreen';
         });
     }
     main();

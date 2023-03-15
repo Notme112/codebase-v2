@@ -315,25 +315,6 @@ exports.handleNewUser = handleNewUser;
 
 /***/ }),
 
-/***/ "./src/generalFunctions/hideLoader.ts":
-/*!********************************************!*\
-  !*** ./src/generalFunctions/hideLoader.ts ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.hideLoader = void 0;
-function hideLoader() {
-    let loader = parent.document.querySelector('#codebaseLoader');
-    if (loader)
-        loader.style.display = 'none';
-}
-exports.hideLoader = hideLoader;
-
-
-/***/ }),
-
 /***/ "./src/generalFunctions/loadIcons.ts":
 /*!*******************************************!*\
   !*** ./src/generalFunctions/loadIcons.ts ***!
@@ -504,25 +485,6 @@ exports.scriptInfo = {
     //@ts-ignore
     isProduktion: ReSi.userName === 'NiZi112'
 };
-
-
-/***/ }),
-
-/***/ "./src/generalFunctions/showLoader.ts":
-/*!********************************************!*\
-  !*** ./src/generalFunctions/showLoader.ts ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.showLoader = void 0;
-function showLoader() {
-    let loader = parent.document.querySelector('#codebaseLoader');
-    if (loader)
-        loader.style.display = 'block';
-}
-exports.showLoader = showLoader;
 
 
 /***/ }),
@@ -733,8 +695,6 @@ exports.leaveSettings = leaveSettings;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.loadCodebaseFrame = void 0;
-const hideLoader_1 = __webpack_require__(/*! ../generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
-const showLoader_1 = __webpack_require__(/*! ../generalFunctions/showLoader */ "./src/generalFunctions/showLoader.ts");
 const modules_1 = __webpack_require__(/*! ../modules */ "./src/modules.ts");
 const autoUnCollapseWhenUnChecked_1 = __webpack_require__(/*! ./autoUnCollapseWhenUnChecked */ "./src/iframeFunctions/autoUnCollapseWhenUnChecked.ts");
 const exportSettings_1 = __webpack_require__(/*! ./exportSettings */ "./src/iframeFunctions/exportSettings.ts");
@@ -742,11 +702,11 @@ const importSettings_1 = __webpack_require__(/*! ./importSettings */ "./src/ifra
 const leaveSettings_1 = __webpack_require__(/*! ./leaveSettings */ "./src/iframeFunctions/leaveSettings.ts");
 const openProfile_1 = __webpack_require__(/*! ./openProfile */ "./src/iframeFunctions/openProfile.ts");
 const resetSettings_1 = __webpack_require__(/*! ./resetSettings */ "./src/iframeFunctions/resetSettings.ts");
+const resolveProblems_1 = __webpack_require__(/*! ./resolveProblems */ "./src/iframeFunctions/resolveProblems.ts");
 const saveSettings_1 = __webpack_require__(/*! ./saveSettings */ "./src/iframeFunctions/saveSettings.ts");
 const searchInFrame_1 = __webpack_require__(/*! ./searchInFrame */ "./src/iframeFunctions/searchInFrame.ts");
 const showStorage_1 = __webpack_require__(/*! ./showStorage */ "./src/iframeFunctions/showStorage.ts");
 async function loadCodebaseFrame(s) {
-    (0, showLoader_1.showLoader)();
     //build frame content
     var frameContent = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"><style>.searchHidden{display: none;};</style>
 <div class='tabs tabs-horizotal'>
@@ -826,7 +786,8 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     <button class="button button-round button-success" id="showStorage">Gespeicherte Daten der Scripte anzeigen <i class="bi bi-clipboard-data"></i></button>
     <button id="exportSettings" class="button button-round button-success">Einstellungen exportieren <i class="bi bi-download"></i></button>
     <button id="importSettings" class="button button-round button-success">Einstellungen importieren <i class="bi bi-upload"></i></button>
-    <button id="resetStorage" class="button button-round button-success">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <button id="resetStorage" class="button button-round button-danger">Einstellungen zurücksetzen <i class="bi bi-x-circle"></i></button>
+    <button id="resolveProblems" class="button button-round button-warning">Scriptprobleme beheben <i class="bi bi-x-circle"></i></button>
     <div class="input-container nochange" style="float:right"><label for='input_search'>Suche <i class="bi bi-search" style="padding-left:5px;"></i></label>
     <input class="input-round input-inline nochange" type="text" value="" style="padding-left:20px;padding-right:20px;" id="input_search" placeholder="Suche..." autocomplete="off"></div>`;
     let panelBody = document.querySelector('.panel-body');
@@ -859,7 +820,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
     document.querySelector('#resetStorage')?.addEventListener('click', resetSettings_1.resetStorage);
     document.querySelectorAll('input[type="checkbox"]').forEach((e) => e.addEventListener('change', () => (0, autoUnCollapseWhenUnChecked_1.autoUncollapseCards)(e)));
     document.querySelector('#saveCodebaseSettings')?.addEventListener('click', () => (0, saveSettings_1.saveCodebaseSettings)(s));
-    (0, hideLoader_1.hideLoader)();
+    document.querySelector('#resolveProblems')?.addEventListener('click', resolveProblems_1.resolveProblems);
 }
 exports.loadCodebaseFrame = loadCodebaseFrame;
 ;
@@ -914,6 +875,27 @@ function resetStorage() {
     }, () => { });
 }
 exports.resetStorage = resetStorage;
+
+
+/***/ }),
+
+/***/ "./src/iframeFunctions/resolveProblems.ts":
+/*!************************************************!*\
+  !*** ./src/iframeFunctions/resolveProblems.ts ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolveProblems = void 0;
+async function resolveProblems() {
+    //@ts-ignore
+    modal('Achtung', 'Bei der folgenden Aktion werden temporäre Daten von Scripten gelöscht. Das kann helfen, Probleme zu beheben, löscht aber auch z.B. die weiteralarmierten Fahrzeuge aus dem Script von DrTraxx! Fortfahren?', 'Fortfahren', 'Abbrechen', () => {
+        sessionStorage.clear();
+        parent.location.reload();
+    });
+}
+exports.resolveProblems = resolveProblems;
 
 
 /***/ }),
@@ -1544,7 +1526,7 @@ exports.modules = [{
             {
                 subtarget: "distaceVehicle",
                 target: "distaceVehicleOnlyHideAAOCheck",
-                name: "Nur in AAo ausblenden?",
+                name: "Nur in AAO ausblenden?",
                 type: "checkbox",
                 settingsKey: "onlyHideAAO",
                 preset: "CHECKBOX",
@@ -2458,6 +2440,23 @@ async function distanceVehicle(s) {
             if (element)
                 element.innerHTML = 'Fahrzeuge filtern';
         }
+    });
+    document.querySelectorAll('.mission-vehicles').forEach((el) => {
+        let visibleOne = false;
+        Array.from(el.children).forEach((child) => {
+            if (visibleOne)
+                return;
+            if (!(child instanceof HTMLElement))
+                return;
+            if (child.style.display != 'none')
+                visibleOne = true;
+        });
+        if (!el.parentElement)
+            return;
+        if (!visibleOne)
+            el.parentElement.style.display = 'none';
+        else
+            el.parentElement.style.display = '';
     });
 }
 exports.distanceVehicle = distanceVehicle;
@@ -3825,7 +3824,6 @@ const createListElement_1 = __webpack_require__(/*! ./iframeFunctions/createList
 const checkSettings_1 = __webpack_require__(/*! ./generalFunctions/checkSettings */ "./src/generalFunctions/checkSettings.ts");
 const addLoadListener_1 = __webpack_require__(/*! ./generalFunctions/addLoadListener */ "./src/generalFunctions/addLoadListener.ts");
 const createLoader_1 = __webpack_require__(/*! ./generalFunctions/createLoader */ "./src/generalFunctions/createLoader.ts");
-const hideLoader_1 = __webpack_require__(/*! ./generalFunctions/hideLoader */ "./src/generalFunctions/hideLoader.ts");
 const loadCodebaseFrame_1 = __webpack_require__(/*! ./iframeFunctions/loadCodebaseFrame */ "./src/iframeFunctions/loadCodebaseFrame.ts");
 (async () => {
     //return
@@ -3859,7 +3857,6 @@ const loadCodebaseFrame_1 = __webpack_require__(/*! ./iframeFunctions/loadCodeba
     //write log
     (0, writeLog_1.writeLog)(scriptInfo_1.scriptInfo);
     (0, addListenerForOpenSettings_1.addListenerForOpenSettings)();
-    (0, hideLoader_1.hideLoader)();
 })();
 
 })();

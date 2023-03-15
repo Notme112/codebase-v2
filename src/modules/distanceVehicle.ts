@@ -55,5 +55,16 @@ export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void
             element?.classList.remove('button-success')
             if (element) element.innerHTML = 'Fahrzeuge filtern';
         }
-    })
+    });
+    document.querySelectorAll('.mission-vehicles').forEach((el) => {
+        let visibleOne = false;
+        Array.from(el.children).forEach((child) => {
+            if(visibleOne) return;
+            if(!(child instanceof HTMLElement)) return;
+            if(child.style.display != 'none') visibleOne = true;
+        });
+        if(!el.parentElement) return;
+        if(!visibleOne) el.parentElement.style.display = 'none'
+        else el.parentElement.style.display = '';
+    });
 }
