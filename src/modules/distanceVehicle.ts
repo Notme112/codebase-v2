@@ -7,16 +7,14 @@ export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void
     let distance = s.distaceVehicle.distance ?? 10;
     let onlyHideAAO = s.distaceVehicle.onlyHideAAO ?? false;
     function applyFilter(dis: number){
-        const elements = document.getElementsByClassName('mission-vehicle');
-        const KMs = document.getElementsByClassName('vehicle-distance');
+        const elements = document.querySelectorAll<HTMLElement>('.mission-vehicle') ?? [];
+        const KMs = document.querySelectorAll('.vehicle-distance') ?? [];
         const wasAAOIgnored: any = {};
         for(let i = 0; i < elements.length; i++){
             let e = elements[i];
-            let km = KMs[i];
-            if(!(e instanceof HTMLElement)) return;
-            if(!(km instanceof HTMLElement)) return;
-            if(e.getAttribute('ignoreaao')) wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'yyy'] ;
-            if(parseFloat(km.innerText.trim().replace('~', '')) > dis){
+            if(e.getAttribute('ignoreaao')) wasAAOIgnored[e.getAttribute('uservehicleid') ?? '.'];
+            //@ts-ignore
+            if(parseFloat(KMs[i].innerText.trim().replace('~', '')) > dis){
                 if(!onlyHideAAO){
                     e.classList.remove('vehicle');
                     e.style.display = 'none';
@@ -27,7 +25,7 @@ export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void
                 if(!e.classList.contains('vehicle')){
                     e.classList.add('vehicle');
                     e.style.display = '';
-                } else if(!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 0] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.getAttribute('ignoreaao')) document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.removeAttribute('ignoreaao');
+                } else if(!wasAAOIgnored[e.getAttribute('uservehicleid') ?? '0'] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.getAttribute('ignoreaao')) document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="'+e.getAttribute('uservehicleid')+'"]')?.removeAttribute('ignoreaao');
 
             };
         }
@@ -43,17 +41,19 @@ export async function distanceVehicle(s: ReSiCodebaseSettingsType): Promise<void
         s.filterKMActualActive = !s.filterKMActualActive;
         localStorage.storage_resi_base = JSON.stringify(s)
         if (s.filterKMActualActive) {
-            applyFilter(distance ? distance : 10)
+            applyFilter(distance ?? 10)
             let element = document.querySelector('#toggleVehicleFilter');
-            element?.classList.remove('button-danger')
-            element?.classList.add('button-success')
-            if (element) element.innerHTML = 'Fahrzeuge nicht filtern';
+            if(!element) return;
+            element.classList.remove('button-danger')
+            element.classList.add('button-success')
+            element.innerHTML = 'Fahrzeuge nicht filtern';
         } else {
             applyFilter(1000000)
             let element = document.querySelector('#toggleVehicleFilter');
-            element?.classList.add('button-danger')
-            element?.classList.remove('button-success')
-            if (element) element.innerHTML = 'Fahrzeuge filtern';
+            if(!element) return;
+            element.classList.add('button-danger')
+            element.classList.remove('button-success')
+            element.innerHTML = 'Fahrzeuge filtern';
         }
     });
     document.querySelectorAll('.mission-vehicles').forEach((el) => {
