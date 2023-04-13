@@ -1167,7 +1167,7 @@ exports.modules = [{
         allSite: false,
         func: toplist_1.toplist,
         hasSettings: false,
-        settings: [],
+        settings: []
     },
     {
         name: "Maximierte Einsatzliste",
@@ -2350,7 +2350,7 @@ const getAPI_1 = __webpack_require__(/*! ../generalFunctions/getAPI */ "./src/ge
 async function differenceToAnotherUser(s) {
     if (!location.pathname.includes('/profile/'))
         return;
-    const res = await (0, getAPI_1.getAPI)('user', false);
+    const res = await (0, getAPI_1.getAPI)('user', true);
     // @ts-ignore
     var diff = parseInt(document.querySelectorAll('.detail-subtitle b')[2]?.textContent?.replaceAll('.', '') || '0') - res.muenzenTotal, negative;
     diff < 0 ? negative = true : negative = false;
@@ -2379,19 +2379,15 @@ async function distanceVehicle(s) {
     let distance = s.distaceVehicle.distance ?? 10;
     let onlyHideAAO = s.distaceVehicle.onlyHideAAO ?? false;
     function applyFilter(dis) {
-        const elements = document.getElementsByClassName('mission-vehicle');
-        const KMs = document.getElementsByClassName('vehicle-distance');
+        const elements = document.querySelectorAll('.mission-vehicle') ?? [];
+        const KMs = document.querySelectorAll('.vehicle-distance') ?? [];
         const wasAAOIgnored = {};
         for (let i = 0; i < elements.length; i++) {
             let e = elements[i];
-            let km = KMs[i];
-            if (!(e instanceof HTMLElement))
-                return;
-            if (!(km instanceof HTMLElement))
-                return;
             if (e.getAttribute('ignoreaao'))
-                wasAAOIgnored[e.getAttribute('uservehicleid') ?? 'yyy'];
-            if (parseFloat(km.innerText.trim().replace('~', '')) > dis) {
+                wasAAOIgnored[e.getAttribute('uservehicleid') ?? '.'];
+            //@ts-ignore
+            if (parseFloat(KMs[i].innerText.trim().replace('~', '')) > dis) {
                 if (!onlyHideAAO) {
                     e.classList.remove('vehicle');
                     e.style.display = 'none';
@@ -2405,7 +2401,7 @@ async function distanceVehicle(s) {
                     e.classList.add('vehicle');
                     e.style.display = '';
                 }
-                else if (!wasAAOIgnored[e.getAttribute('uservehicleid') ?? 0] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.getAttribute('ignoreaao'))
+                else if (!wasAAOIgnored[e.getAttribute('uservehicleid') ?? '0'] && document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.getAttribute('ignoreaao'))
                     document.querySelector('#mission-vehicle-group-by-vehicle [uservehicleid="' + e.getAttribute('uservehicleid') + '"]')?.removeAttribute('ignoreaao');
             }
             ;
@@ -2425,20 +2421,22 @@ async function distanceVehicle(s) {
         s.filterKMActualActive = !s.filterKMActualActive;
         localStorage.storage_resi_base = JSON.stringify(s);
         if (s.filterKMActualActive) {
-            applyFilter(distance ? distance : 10);
+            applyFilter(distance ?? 10);
             let element = document.querySelector('#toggleVehicleFilter');
-            element?.classList.remove('button-danger');
-            element?.classList.add('button-success');
-            if (element)
-                element.innerHTML = 'Fahrzeuge nicht filtern';
+            if (!element)
+                return;
+            element.classList.remove('button-danger');
+            element.classList.add('button-success');
+            element.innerHTML = 'Fahrzeuge nicht filtern';
         }
         else {
             applyFilter(1000000);
             let element = document.querySelector('#toggleVehicleFilter');
-            element?.classList.add('button-danger');
-            element?.classList.remove('button-success');
-            if (element)
-                element.innerHTML = 'Fahrzeuge filtern';
+            if (!element)
+                return;
+            element.classList.add('button-danger');
+            element.classList.remove('button-success');
+            element.innerHTML = 'Fahrzeuge filtern';
         }
     });
     document.querySelectorAll('.mission-vehicles').forEach((el) => {
@@ -2589,7 +2587,8 @@ const variableError_1 = __webpack_require__(/*! ../generalFunctions/variableErro
 async function filterKH(s) {
     let containsUebernehmen = Array.from(document.querySelectorAll('.label-info')).filter((e) => e.innerHTML.includes('übernommen'));
     let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'));
-    if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0) || containsUebernehmen.length > 0) {
+    let containsWLF = Array.from(document.querySelectorAll('.tab')).filter((e) => e.innerHTML.includes('WLF'));
+    if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0 && containsWLF.length == 0) || containsUebernehmen.length > 0) {
         let val = s?.filterKHSettings?.maxDistanceKH || 0;
         let own = s?.filterKHSettings?.ownKH;
         let alli = s?.filterKHSettings?.alliKH;
@@ -2816,7 +2815,7 @@ async function highlightOwnMissionProtokollEntries(s) {
             if (!els[i].innerHTML.trim().startsWith('<svg')) {
                 if (!el.parentElement || !(el.parentElement instanceof HTMLElement))
                     return;
-                el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'yellow';
+                el.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'darkblue' : 'yellow';
             }
         });
     }
@@ -2845,7 +2844,7 @@ async function highlightWrittenMissionProtokollEntries(s) {
         els.forEach((el, i) => {
             if (!el.parentElement || !(el.parentElement instanceof HTMLElement) || !el.parentElement.parentElement || !(el.parentElement.parentElement instanceof HTMLElement))
                 return;
-            el.parentElement.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'darkblue' : 'lightgreen';
+            el.parentElement.parentElement.style.backgroundColor = document.body.classList.contains('dark') ? 'blue' : 'lightgreen';
         });
     }
     main();
