@@ -3,8 +3,9 @@ import { ReSiCodebaseSettingsType } from "../types/codebase";
 
 export async function filterKH(s: ReSiCodebaseSettingsType): Promise<void>{
     let containsUebernehmen = Array.from(document.querySelectorAll('.label-info')).filter((e) => e.innerHTML.includes('übernommen'));
-    let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'))
-    if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0) || containsUebernehmen.length > 0) {
+    let containsKrankenhauszuweisung = Array.from(document.querySelectorAll('.card-headline')).filter((e) => e.innerHTML.includes('Krankenhauszuweisung'));
+    let containsWLF = Array.from(document.querySelectorAll('.tab')).filter((e) => e.innerHTML.includes('WLF'));
+    if ((document.querySelectorAll('.s5').length > 0 && location.pathname.includes('vehicle') && containsKrankenhauszuweisung.length > 0 && containsWLF.length == 0) || containsUebernehmen.length > 0) {
         let val = s?.filterKHSettings?.maxDistanceKH || 0;
         let own = s?.filterKHSettings?.ownKH;
         let alli = s?.filterKHSettings?.alliKH;

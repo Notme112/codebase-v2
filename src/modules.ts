@@ -69,7 +69,7 @@ export const modules = [{
         allSite: false,
         func: toplist,
         hasSettings: false,
-        settings: [],
+        settings: []
     },
     {
         name: "Maximierte Einsatzliste",
